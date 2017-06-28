@@ -1,6 +1,10 @@
-$(document).ready(function(){
+
   var gm = new GameManager();
-  gm.metro = new Canvas('metro', 1000, 700);
-  gm.metro.ctx.fillStyle = 'black';
-  gm.metro.ctx.fillRect(0, 0, gm.metro.width, gm.metro.height);
-})
+  //gm.metro = new Canvas('metro', 900, 600);
+  //gm.metro.ctx.fillStyle = '#f2f6ff';
+  //gm.metro.ctx.fillRect(0, 0, gm.metro.width, gm.metro.height);
+  //var station = new Station(gm.metro.width/2, gm.metro.height/2, '#4f83ff');
+  //station.draw(gm.metro.ctx);
+
+  var gameLoop = setInterval(gm.draw.bind(gm), 10)
+  createStations(gm)
