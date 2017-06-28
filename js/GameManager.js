@@ -1,4 +1,5 @@
 var GameManager = function(){
+  this.metro;
   this.passengers = [];
   this.trains = [];
   this.stations = [];
