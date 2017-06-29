@@ -18,4 +18,6 @@ var createStations = function(gm){
     }
     gm.stations[i].last = gm.stations[i - 1];
   }
+  var start = gm.stations[0];
+  gm.trains.push(new Train(start.x, start.y))
 }

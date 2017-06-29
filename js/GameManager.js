@@ -20,6 +20,10 @@ var GameManager = function(){
       this.stations[i].draw(this.metro.ctx);
     }
 
+    for(var i in this.trains){
+      this.trains[i].draw(this.metro.ctx);
+    }
+
     
   }
 }
