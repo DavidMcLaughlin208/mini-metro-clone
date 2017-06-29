@@ -11,10 +11,15 @@ var GameManager = function(){
 
     this.metro.ctx.fillStyle = '#f2f6ff';
     this.metro.ctx.fillRect(0, 0, this.metro.width, this.metro.height);
+   
+    for(var i in this.stations){
+      this.stations[i].drawRoutes(this.metro.ctx);
+    }
 
     for(var i in this.stations){
       this.stations[i].draw(this.metro.ctx);
     }
+
     
   }
 }
