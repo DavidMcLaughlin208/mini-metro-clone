@@ -16,7 +16,12 @@ var createStations = function(gm){
     }else{
       gm.stations[i].next = gm.stations[i + 1];
     }
-    gm.stations[i].last = gm.stations[i - 1];
+
+    if(i == 0){
+      gm.stations[i].last = gm.stations[gm.stations.length - 1];
+    }else{
+      gm.stations[i].last = gm.stations[i - 1];
+    }
   }
   var start = gm.stations[0];
   gm.trains.push(new Train(start.x, start.y, start))
