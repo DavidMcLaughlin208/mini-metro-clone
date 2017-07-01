@@ -14,7 +14,7 @@ var TravelNode = function(){
 
     ctx.beginPath();
     ctx.moveTo(this.station.x, this.station.y)
-    ctx.lineTo(this.next.x, this.next.y);
+    ctx.lineTo(this.next.station.x, this.next.station.y);
     ctx.stroke();
     ctx.closePath();
   }

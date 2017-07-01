@@ -5,23 +5,43 @@ var Train = function(x, y, travelNode){
   this.height = 60;
   this.route = [];
   this.travelNode = travelNode;
+  this.state = "travel";
 
   this.draw = function(ctx){
     var target = this.travelNode.next;
-    var remainingDistanceX = Math.pow(this.x - target.x, 2);
-    var remainingDistanceY = Math.pow(this.y - target.y, 2);
-    var remainingdistance = Math.sqrt(remainingDistanceX + remainingDistanceY);
+    var remainingDistanceX = this.x - target.station.x
+    var remainingDistanceY = this.y - target.station.y
+    var remainingdistance = Math.sqrt(Math.pow(remainingDistanceX, 2) + Math.pow(remainingDistanceY, 2));
+    if(remainingdistance <= 1){
+      this.state = "pickup";
+    }
 
-    var distanceX = Math.pow(this.travelNode.x - target.x, 2);
-    var distanceY = Math.pow(this.travelNode.y - target.y, 2);
-    var totalDistance = Math.sqrt(distanceX + distanceY);
 
-    var normalizeFactor = Math.max(Math.max(Math.abs(remainingDistanceX), 1), Math.max(Math.abs(remainingDistanceY), 1));
-    var normalizedX = (remainingDistanceX/normalizeFactor) * 0.2;
-    var normalizedY = (remainingDistanceY/normalizeFactor) * 0.2;
-    this.x += normalizedX;
-    this.y += normalizedY;
+    switch(this.state) {
+      case "travel":
+        var distanceX = Math.pow(this.travelNode.x - target.x, 2);
+        var distanceY = Math.pow(this.travelNode.y - target.y, 2);
+        var totalDistance = Math.sqrt(distanceX + distanceY);
 
+        var normalizeFactor = Math.max(Math.max(Math.abs(remainingDistanceX), 1), Math.max(Math.abs(remainingDistanceY), 1));
+        var normalizedX = (remainingDistanceX/normalizeFactor) * 0.2;
+        var normalizedY = (remainingDistanceY/normalizeFactor) * 0.2;
+        this.x -= normalizedX;
+        this.y -= normalizedY;
+        break;
+      case "pickup":
+        this.travelNode = target;
+        this.state = "travel";
+        // if(this.target.station.passengers[0]){
+
+        // }
+        break;
+      default:
+        console.log("I DONT KNOW WHAT TO DO");
+    }
+
+
+    // Draw
     ctx.translate(this.x, this.y);
     ctx.beginPath();
     
@@ -35,5 +55,6 @@ var Train = function(x, y, travelNode){
     
     ctx.closePath();
     ctx.translate(-this.x, -this.y);
+
   }
 }

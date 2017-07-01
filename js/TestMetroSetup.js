@@ -16,17 +16,17 @@ var createStations = function(gm){
 
   for(var i = 0; i < gm.stations.length; i++){
     if(i + 1 === gm.stations.length){
-      gm.travelNodes[i].next = gm.stations[0];
+      gm.travelNodes[i].next = gm.travelNodes[0];
     }else{
-      gm.travelNodes[i].next = gm.stations[i + 1];
+      gm.travelNodes[i].next = gm.travelNodes[i + 1];
     }
 
     gm.travelNodes[i].station = gm.stations[i];
 
     if(i == 0){
-      gm.travelNodes[i].last = gm.stations[gm.stations.length - 1];
+      gm.travelNodes[i].last = gm.travelNodes[gm.stations.length - 1];
     }else{
-      gm.travelNodes[i].last = gm.stations[i - 1];
+      gm.travelNodes[i].last = gm.travelNodes[i - 1];
     }
   }
   var start = gm.travelNodes[0];
