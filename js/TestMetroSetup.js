@@ -11,18 +11,24 @@ var createStations = function(gm){
   gm.stations.push(new Station(150, 400, '#ff3feb'))
 
   for(var i = 0; i < gm.stations.length; i++){
+    gm.travelNodes.push(new TravelNode());
+  }
+
+  for(var i = 0; i < gm.stations.length; i++){
     if(i + 1 === gm.stations.length){
-      gm.stations[i].next = gm.stations[0];
+      gm.travelNodes[i].next = gm.stations[0];
     }else{
-      gm.stations[i].next = gm.stations[i + 1];
+      gm.travelNodes[i].next = gm.stations[i + 1];
     }
 
+    gm.travelNodes[i].station = gm.stations[i];
+
     if(i == 0){
-      gm.stations[i].last = gm.stations[gm.stations.length - 1];
+      gm.travelNodes[i].last = gm.stations[gm.stations.length - 1];
     }else{
-      gm.stations[i].last = gm.stations[i - 1];
+      gm.travelNodes[i].last = gm.stations[i - 1];
     }
   }
-  var start = gm.stations[0];
-  gm.trains.push(new Train(start.x, start.y, start))
+  var start = gm.travelNodes[0];
+  gm.trains.push(new Train(start.station.x, start.station.y, start))
 }

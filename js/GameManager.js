@@ -3,6 +3,7 @@ var GameManager = function(){
   this.passengers = [];
   this.trains = [];
   this.stations = [];
+  this.travelNodes = [];
 
 
   this.draw = function(){
@@ -13,7 +14,7 @@ var GameManager = function(){
     this.metro.ctx.fillRect(0, 0, this.metro.width, this.metro.height);
    
     for(var i in this.stations){
-      this.stations[i].drawRoutes(this.metro.ctx);
+      this.travelNodes[i].drawRoutes(this.metro.ctx);
     }
 
     for(var i in this.stations){
