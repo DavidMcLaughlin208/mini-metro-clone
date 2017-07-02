@@ -40,6 +40,8 @@ var createStations = function(gm){
   gm.travelNodes[2].station = gm.stations[2];
   gm.travelNodes[2].last = gm.travelNodes[1]
 
+  gm.routes.black = new Route(gm.travelNodes[0])
+
   var start = gm.travelNodes[0];
   gm.trains.push(new Train(start.station.x, start.station.y, start))
 }
