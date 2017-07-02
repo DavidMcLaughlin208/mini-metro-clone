@@ -8,16 +8,28 @@ var TravelNode = function(){
 
   }
 
-  this.drawRoutes = function(ctx){
-    if(this.next){
+  this.drawRoutes = function(ctx, routes){
+    for (var property in routes) {
+      if (routes.hasOwnProperty(property)) {
+        this.drawSingleRoute(ctx, routes[property].head);
+      }
+    }
+  }
+
+  this.drawSingleRoute = function(ctx, node){
+    if(node.next !== null){
       ctx.strokeStyle = 'black';
       ctx.lineWidth = 20;
 
       ctx.beginPath();
-      ctx.moveTo(this.station.x, this.station.y)
-      ctx.lineTo(this.next.station.x, this.next.station.y);
+      ctx.moveTo(node.station.x, node.station.y)
+      ctx.lineTo(node.next.station.x, node.next.station.y);
       ctx.stroke();
       ctx.closePath();
+
+      this.drawSingleRoute(ctx, node.next)
+    } else {
+      return;
     }
   }
 }

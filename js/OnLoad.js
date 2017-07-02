@@ -17,16 +17,12 @@ $(document).ready(function(){
     for(var i = 0; i < gm.stations.length; i++){
       var station = gm.stations[i];
       if(x <= station.x + 50 && x >= station.x - 50 && y <= station.y + 50 && y >= station.y - 50){
-        console.log("nearvy station")
-        var hot = gm.headOrTail(station, gm.routes.black)
-        console.log(hot)
-        if(hot){
+        gm.connectingNode = gm.headOrTail(station, gm.routes.black)
+        if(gm.connectingNode){
           gm.connectingStation = station;
-          console.log(station);
           break;
         }
       }
-      console.log("mousedown")
     }
   })
 
@@ -41,7 +37,19 @@ $(document).ready(function(){
           var valid = gm.isValidConnection(gm.routes.black.head, station);
           if(valid){
             console.log("Valid connection")
-
+            if(gm.connectingNode.next){
+              var node = new TravelNode();
+              node.next = gm.routes.black.head;
+              node.station = station;
+              gm.routes.black.head.last = node;
+              gm.routes.black.head = node
+            } else {
+              var node = new TravelNode();
+              node.station = station;
+              var tail = gm.routes.black.tail(gm.routes.black.head);
+              tail.next = node;
+              node.last = tail;
+            }
           }
         }
       }

@@ -7,6 +7,7 @@ var GameManager = function(){
   this.routes = {};
 
   this.connectingStation = null;
+  this.connectingNode = null;
   this.mouseX = 0;
   this.mouseY = 0;
 
@@ -22,7 +23,7 @@ var GameManager = function(){
 
    
     for(var i in this.stations){
-      this.travelNodes[i].drawRoutes(this.metro.ctx);
+      this.travelNodes[i].drawRoutes(this.metro.ctx, this.routes);
     }
 
     if(this.connectingStation){
@@ -57,12 +58,11 @@ var GameManager = function(){
   }
 
   this.headOrTail = function(station, route){
-    console.log(station)
-    console.log(route.head)
-    console.log(route.tail(route.head))
-    if(station === route.head.station || station === route.tail(route.head).station){
-      return true
+    if(station === route.head.station){
+      return route.head;
+    } else if (station === route.tail(route.head).station){
+      return route.tail(route.head);
     }
-    return false;
+    return null;
   }
 }
