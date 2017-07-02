@@ -9,13 +9,15 @@ var TravelNode = function(){
   }
 
   this.drawRoutes = function(ctx){
-    ctx.strokeStyle = 'black';
-    ctx.lineWidth = 20;
+    if(this.next){
+      ctx.strokeStyle = 'black';
+      ctx.lineWidth = 20;
 
-    ctx.beginPath();
-    ctx.moveTo(this.station.x, this.station.y)
-    ctx.lineTo(this.next.station.x, this.next.station.y);
-    ctx.stroke();
-    ctx.closePath();
+      ctx.beginPath();
+      ctx.moveTo(this.station.x, this.station.y)
+      ctx.lineTo(this.next.station.x, this.next.station.y);
+      ctx.stroke();
+      ctx.closePath();
+    }
   }
 }

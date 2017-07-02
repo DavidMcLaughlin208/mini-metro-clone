@@ -6,16 +6,21 @@ var Train = function(x, y, travelNode){
   this.route = [];
   this.travelNode = travelNode;
   this.state = "travel";
+  this.forward = true;
 
   this.draw = function(ctx){
-    var target = this.travelNode.next;
+    var target = null;
+    if(this.forward){
+      target = this.travelNode.next;
+    } else {
+      target = this.travelNode.last;
+    } 
     var remainingDistanceX = this.x - target.station.x
     var remainingDistanceY = this.y - target.station.y
     var remainingdistance = Math.sqrt(Math.pow(remainingDistanceX, 2) + Math.pow(remainingDistanceY, 2));
     if(remainingdistance <= 1){
       this.state = "pickup";
     }
-
 
     switch(this.state) {
       case "travel":
@@ -30,7 +35,21 @@ var Train = function(x, y, travelNode){
         this.y -= normalizedY;
         break;
       case "pickup":
-        this.travelNode = target;
+        if(this.forward){
+          if(target.next !== null){
+            this.travelNode = target;
+          } else {
+            this.travelNode = target;
+            this.forward = !this.forward;
+          }
+        } else {
+          if(target.last !== null){
+            this.travelNode = target;
+          } else {
+            this.travelNode = target;
+            this.forward = !this.forward;
+          }
+        }
         this.state = "travel";
         // if(this.target.station.passengers[0]){
 
@@ -39,6 +58,7 @@ var Train = function(x, y, travelNode){
       default:
         console.log("I DONT KNOW WHAT TO DO");
     }
+
 
 
     // Draw

@@ -17,14 +17,13 @@ var GameManager = function(){
       this.travelNodes[i].drawRoutes(this.metro.ctx);
     }
 
-    for(var i in this.stations){
-      this.stations[i].draw(this.metro.ctx);
-    }
-
     for(var i in this.trains){
       this.trains[i].draw(this.metro.ctx);
     }
 
+    for(var i in this.stations){
+      this.stations[i].draw(this.metro.ctx);
+    }
     
   }
 }
