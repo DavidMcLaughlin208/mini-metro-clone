@@ -5,6 +5,14 @@ var GameManager = function(){
   this.stations = [];
   this.travelNodes = [];
   this.routes = {};
+  this.colors = {
+    "BACKGROUND": "#f2f6ff",
+    "BLUE": "#4f83ff",
+    "ORANGE": "#ff8644",
+    "RED": "#ff4444",
+    "PURPLE": "#ff3feb",
+    "TEMPROUTE": "rgba(0, 0, 0, 0.5)"
+  }
 
   this.connectingStation = null;
   this.connectingNode = null;
@@ -15,10 +23,10 @@ var GameManager = function(){
   this.draw = function(){
 
     // Reset canvas and draw background
-    this.metro.ctx.clearRect(0, 0, this.metro.width, this.metro.height);
+    this.metro.ctx.clearRect(-this.metro.width/2, -this.metro.height/2, this.metro.width, this.metro.height);
 
-    this.metro.ctx.fillStyle = '#f2f6ff';
-    this.metro.ctx.fillRect(0, 0, this.metro.width, this.metro.height);
+    this.metro.ctx.fillStyle = this.colors.BACKGROUND;
+    this.metro.ctx.fillRect(-this.metro.width/2, -this.metro.height/2, this.metro.width, this.metro.height);
 
 
    
@@ -30,18 +38,23 @@ var GameManager = function(){
       this.drawTempRoute(this.metro.ctx)
     }
 
+    for(var i in this.stations){
+      this.stations[i].draw(this.metro.ctx);
+      var passengers = this.stations[i].passengers;
+      for(var j in passengers) {
+        passengers[j].draw(this.metro.ctx);
+      }
+    }
+
     for(var i in this.trains){
       this.trains[i].draw(this.metro.ctx);
     }
 
-    for(var i in this.stations){
-      this.stations[i].draw(this.metro.ctx);
-    }
     
   }
 
   this.drawTempRoute = function(ctx){
-    ctx.strokeStyle = 'rgba(0, 0, 0, 0.5';
+    ctx.strokeStyle = this.colors.TEMPROUTE;
     ctx.lineWidth = 20;
 
     ctx.beginPath();

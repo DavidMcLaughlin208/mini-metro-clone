@@ -9,6 +9,7 @@ var Train = function(x, y, travelNode){
   this.forward = true;
 
   this.draw = function(ctx){
+
     var target = null;
     if(this.forward){
       target = this.travelNode.next;
@@ -51,9 +52,6 @@ var Train = function(x, y, travelNode){
           }
         }
         this.state = "travel";
-        // if(this.target.station.passengers[0]){
-
-        // }
         break;
       default:
         console.log("I DONT KNOW WHAT TO DO");

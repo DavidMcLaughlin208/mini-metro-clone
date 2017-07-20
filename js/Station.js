@@ -3,6 +3,7 @@ var Station = function(x, y, color){
   this.y = y;
   this.color = color;
   this.connections = [];
+  this.passengers = [];
 
   this.draw = function(ctx){
     ctx.beginPath();
@@ -10,7 +11,6 @@ var Station = function(x, y, color){
     ctx.fillStyle = this.color;
     ctx.fill();
     ctx.closePath();
-
   }
   
 }

@@ -1,19 +1,14 @@
 $(document).ready(function(){  
   var gm = new GameManager();
-
-  //gm.metro = new Canvas('metro', 900, 600);
-  //gm.metro.ctx.fillStyle = '#f2f6ff';
-  //gm.metro.ctx.fillRect(0, 0, gm.metro.width, gm.metro.height);
-  //var station = new Station(gm.metro.width/2, gm.metro.height/2, '#4f83ff');
-  //station.draw(gm.metro.ctx);
+  gm.metro.ctx.translate(gm.metro.width/2, gm.metro.height/2);
 
   var gameLoop = setInterval(gm.draw.bind(gm), 2)
   createStations(gm)
 
   $("#metro").on("mousedown", function(e){
     var rect = this.getBoundingClientRect();
-    var x = e.clientX - rect.left;
-    var y = e.clientY - rect.top;
+    var x = (e.clientX - rect.left) - gm.metro.width/2;
+    var y = (e.clientY - rect.top) - gm.metro.height/2;
     for(var i = 0; i < gm.stations.length; i++){
       var station = gm.stations[i];
       if(x <= station.x + 50 && x >= station.x - 50 && y <= station.y + 50 && y >= station.y - 50){
@@ -28,8 +23,8 @@ $(document).ready(function(){
 
   $("#metro").on("mouseup", function(e){
     var rect = this.getBoundingClientRect();
-    var x = e.clientX - rect.left;
-    var y = e.clientY - rect.top;
+    var x = (e.clientX - rect.left) - gm.metro.width/2;
+    var y = (e.clientY - rect.top) - gm.metro.height/2;
     for(var i = 0; i < gm.stations.length; i++){
       var station = gm.stations[i];
       if(x <= station.x + 50 && x >= station.x - 50 && y <= station.y + 50 && y >= station.y - 50){
@@ -65,7 +60,7 @@ $(document).ready(function(){
 
   $("#metro").on("mousemove", function(e){
     var rect = this.getBoundingClientRect();
-    gm.mouseX = e.clientX - rect.left;
-    gm.mouseY = e.clientY - rect.top;
+    gm.mouseX = (e.clientX - rect.left) - gm.metro.width/2;
+    gm.mouseY = (e.clientY - rect.top) - gm.metro.height/2;
   })
 })
