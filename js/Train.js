@@ -1,13 +1,14 @@
 var Train = function(x, y, travelNode){
   this.x = x;
   this.y = y;
-  this.width = 30;
-  this.height = 60;
+  this.width = 60;
+  this.height = 30;
   this.route = [];
   this.travelNode = travelNode;
   this.state = "travel";
   this.forward = true;
   this.passengers = [];
+  this.rotation = 90;
 
   this.draw = function(ctx){
 
@@ -33,8 +34,28 @@ var Train = function(x, y, travelNode){
         var normalizeFactor = Math.max(Math.max(Math.abs(remainingDistanceX), 1), Math.max(Math.abs(remainingDistanceY), 1));
         var normalizedX = (remainingDistanceX/normalizeFactor) * 0.2;
         var normalizedY = (remainingDistanceY/normalizeFactor) * 0.2;
+        var lastX = this.x;
+        var lastY = this.y;
+
         this.x -= normalizedX;
         this.y -= normalizedY;
+
+        var xDirection = lastX - this.x;
+        var slope = (this.y - lastY) / (this.x - lastX);
+        if(this.x >= 0 && this.y <= 0){
+          // 1st Quadrant
+          this.rotation = Math.atan(slope) * (180/Math.PI);
+        } else if(this.x <= 0 && this.y <= 0){
+          // 2st Quadrant
+          this.rotation = Math.atan(slope) * (180/Math.PI);
+        } else if(this.x <= 0 && this.y >= 0){
+          // 3st Quadrant
+          this.rotation = Math.atan(slope) * (180/Math.PI);
+        } else if(this.x >= 0 && this.y >= 0){
+          // 4st Quadrant
+          this.rotation = Math.atan(slope) * (180/Math.PI);
+        }
+
         break;
       case "pickup":
         if(this.forward){
@@ -58,10 +79,9 @@ var Train = function(x, y, travelNode){
         console.log("I DONT KNOW WHAT TO DO");
     }
 
-
-
     // Draw
     ctx.translate(this.x, this.y);
+    ctx.rotate(this.rotation*Math.PI/180);
     ctx.beginPath();
     
     ctx.lineWidth = 10;
@@ -73,6 +93,7 @@ var Train = function(x, y, travelNode){
     ctx.fill();
     
     ctx.closePath();
+    ctx.rotate(-this.rotation*Math.PI/180);
     ctx.translate(-this.x, -this.y);
 
   }
