@@ -42,12 +42,15 @@ var GameManager = function(){
       this.stations[i].draw(this.metro.ctx);
       var passengers = this.stations[i].passengers;
       for(var j in passengers) {
-        passengers[j].draw(this.metro.ctx);
+        passengers[j].draw(this.metro.ctx, j);
       }
     }
 
     for(var i in this.trains){
       this.trains[i].draw(this.metro.ctx);
+      for(var j in this.trains[i].passengers){
+        this.trains[i].passengers[j].draw(this.metro.ctx, j);
+      }
     }
 
     

@@ -44,6 +44,10 @@ var createStations = function(gm){
 
 
   gm.stations[2].passengers.push(new Passenger(gm.stations[2], gm.colors.BLUE));
+  gm.stations[2].passengers.push(new Passenger(gm.stations[2], gm.colors.PURPLE));
+  gm.stations[2].passengers.push(new Passenger(gm.stations[2], gm.colors.ORANGE));
+  gm.stations[2].passengers.push(new Passenger(gm.stations[2], gm.colors.ORANGE));
+  gm.stations[2].passengers.push(new Passenger(gm.stations[2], gm.colors.ORANGE));
 
   var start = gm.travelNodes[0];
   gm.trains.push(new Train(start.station.x, start.station.y, start))

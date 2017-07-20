@@ -7,6 +7,7 @@ var Train = function(x, y, travelNode){
   this.travelNode = travelNode;
   this.state = "travel";
   this.forward = true;
+  this.passengers = [];
 
   this.draw = function(ctx){
 
