@@ -23,33 +23,50 @@ var Passenger = function(station, color){
     }
   }
 
-  this.boardTrain = function(queue, route, itinerary, addToItinerary){
-    itinerary = (itinerary === null) ? [] : itinerary;
-    if(addToItinerary){
-      itinerary.push({route: route, station: queue})
-    }
+  this.getItinerary = function(){
+    var checkedNodes = {};
+    var badNodes = [];
+    var cameFrom = {};
+    var queue = this.station.connections;
     for(var i in queue){
-      var localQueue = [];
-      var stationNodes = queue[i].station.travelNodes;
-      stationNodes = stationNodes.filter(function(travelNode){
-        travelNode.checked === false;
-      })
-      for(var j in stationNodes){
-        if(stationNodes[j].route === route){
-          var newQueue = [];
-          if(stationNodes[j].next.checked === false){newQueue.push(stationNodes[j].next);}
-          if(stationNodes[j].last.checked === false){newQueue.push(stationNodes[j].last);}
-          this.boardTrain(newQueue, route, itinerary);
-        }
+      checkedNodes[queue[i]] = 0;
+    }
+    var finalNode = null;
+    while(queue.length > 0){
+      var node = queue.shift();
+      badNodes.push(node);
+      if(node.station.color === this.color){
+        this.reconstructPath(cameFrom, node);
       }
-      for(var j in stationNodes){
-        if(stationNodes[j].route !== route){
-          var newQueue = [];
-          if(stationNodes[j].next.checked === false){newQueue.push(stationNodes[j].next);}
-          if(stationNodes[j].last.checked === false){newQueue.push(stationNodes[j].last);}
-          this.boardTrain(newQueue, stationNodes[j].route, itinerary);
+      var neighbors = node.station.connections;
+      if(node.next){neighbors.push(node.next)}
+      if(node.next){neighbors.push(node.last)}
+
+      for(var j in neighbors){
+        var neighbor = neighbors[j];
+        if(queue.indexOf(neighbor) !== -1){
+          queue.push(neighbor);
         }
+
+        var score = checkedNodes[node] + 1;
+        if(checkedNodes[neighbor] <= score){
+          continue;
+        }
+
+        cameFrom[neighbor] = node;
+        checkedNodes[neighbor] = score;
       }
+    }
+  }
+
+  this.reconstructPath = function(cameFrom, endPoint){
+    this.itinerary = [endPoint];
+    var current = endPoint;
+    while(Object.keys(cameFrom).indexOf(current) !== -1){
+      if(current.route !== cameFrom[current].route){
+        this.itinerary.unshift(cameFrom[current]);
+      }
+      current = cameFrom[current];
     }
   }
 
