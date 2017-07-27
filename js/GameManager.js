@@ -29,9 +29,15 @@ var GameManager = function(){
     this.metro.ctx.fillRect(-this.metro.width/2, -this.metro.height/2, this.metro.width, this.metro.height);
 
 
-   
-    for(var i in this.stations){
-      this.travelNodes[i].drawRoutes(this.metro.ctx, this.routes);
+
+    // for(var i in this.travelNodes){
+    //   this.travelNodes[i].drawRoutes(this.metro.ctx, this.routes);
+    // }
+
+    for (var property in this.routes) {
+      if (this.routes.hasOwnProperty(property)) {
+        this.routes[property].draw(this.metro.ctx, this.routes[property].head);
+      }
     }
 
     if(this.connectingStation){
@@ -53,7 +59,7 @@ var GameManager = function(){
       }
     }
 
-    
+
   }
 
   this.drawTempRoute = function(ctx){

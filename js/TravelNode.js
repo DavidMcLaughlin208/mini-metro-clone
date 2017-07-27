@@ -2,7 +2,6 @@ var TravelNode = function(){
   this.station = null;
   this.next = null;
   this.last = null;
-  this.checked = false;
   this.route = null;
 
   this.draw = function(ctx){
@@ -11,7 +10,7 @@ var TravelNode = function(){
 
   this.setStation = function(station){
     this.station = station;
-    if(station.connections.indexOf(this) !== -1){
+    if(station.connections.indexOf(this) === -1){
       station.connections.push(this);
     }
   }

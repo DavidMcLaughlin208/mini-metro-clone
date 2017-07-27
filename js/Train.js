@@ -16,9 +16,9 @@ var Train = function(x, y, travelNode){
       this.target = this.travelNode.next;
     } else {
       this.target = this.travelNode.last;
-    } 
-    var remainingDistanceX = this.x - target.station.x
-    var remainingDistanceY = this.y - target.station.y
+    }
+    var remainingDistanceX = this.x - this.target.station.x
+    var remainingDistanceY = this.y - this.target.station.y
     var remainingdistance = Math.sqrt(Math.pow(remainingDistanceX, 2) + Math.pow(remainingDistanceY, 2));
     if(remainingdistance <= 1){
       this.state = "pickup";
@@ -26,8 +26,8 @@ var Train = function(x, y, travelNode){
 
     switch(this.state) {
       case "travel":
-        var distanceX = Math.pow(this.travelNode.x - target.x, 2);
-        var distanceY = Math.pow(this.travelNode.y - target.y, 2);
+        var distanceX = Math.pow(this.travelNode.x - this.target.x, 2);
+        var distanceY = Math.pow(this.travelNode.y - this.target.y, 2);
         var totalDistance = Math.sqrt(distanceX + distanceY);
 
         var normalizeFactor = Math.max(Math.max(Math.abs(remainingDistanceX), 1), Math.max(Math.abs(remainingDistanceY), 1));
@@ -45,37 +45,31 @@ var Train = function(x, y, travelNode){
 
         break;
       case "pickup":
-        var passengers = this.target.station.passengers;
-        for(var i in passengers){
-          var board = passengers[i].boardTrain(this.target, train);
-        }
-
         if(this.forward){
-          if(target.next !== null){
-            this.travelNode = target;
+          if(this.target.next !== null){
+            this.travelNode = this.target;
           } else {
-            this.travelNode = target;
+            this.travelNode = this.target;
             this.forward = !this.forward;
           }
         } else {
-          if(target.last !== null){
-            this.travelNode = target;
+          if(this.target.last !== null){
+            this.travelNode = this.target;
           } else {
-            this.travelNode = target;
+            this.travelNode = this.target;
             this.forward = !this.forward;
           }
         }
         this.state = "travel";
         break;
       default:
-        console.log("I DONT KNOW WHAT TO DO");
     }
 
     // Draw
     ctx.translate(this.x, this.y);
     ctx.rotate(this.rotation*Math.PI/180);
     ctx.beginPath();
-    
+
     ctx.lineWidth = 10;
     ctx.strokeStyle = 'black';
     ctx.rect(-this.width/2, -this.height/2, this.width, this.height);
@@ -83,7 +77,7 @@ var Train = function(x, y, travelNode){
 
     ctx.fillStyle = 'white';
     ctx.fill();
-    
+
     ctx.closePath();
     ctx.rotate(-this.rotation*Math.PI/180);
     ctx.translate(-this.x, -this.y);

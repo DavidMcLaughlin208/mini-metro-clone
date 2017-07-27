@@ -10,7 +10,7 @@ var createStations = function(gm){
   gm.stations.push(new Station(-100, 100, '#ff4444'))
   gm.stations.push(new Station(-300, 100, '#ff3feb'))
 
-  for(var i = 0; i < gm.stations.length; i++){
+  for(var i = 0; i < 4; i++){
     gm.travelNodes.push(new TravelNode());
   }
 
@@ -30,8 +30,8 @@ var createStations = function(gm){
   //   }
   // }
 
-  gm.travelNodes[0].next = gm.travelNodes[1];
   gm.travelNodes[0].setStation(gm.stations[0]);
+  gm.travelNodes[0].next = gm.travelNodes[1];
 
   gm.travelNodes[1].setStation(gm.stations[1]);
   gm.travelNodes[1].last = gm.travelNodes[0];
@@ -39,16 +39,21 @@ var createStations = function(gm){
 
   gm.travelNodes[2].setStation(gm.stations[2]);
   gm.travelNodes[2].last = gm.travelNodes[1];
+  gm.travelNodes[2].next = gm.travelNodes[3];
+
+  gm.travelNodes[3].setStation(gm.stations[3]);
+  gm.travelNodes[3].last = gm.travelNodes[2];
+
 
   gm.routes.black = new Route(gm.travelNodes[0]);
 
-
-  gm.stations[2].passengers.push(new Passenger(gm.stations[2], gm.colors.BLUE));
-  gm.stations[2].passengers.push(new Passenger(gm.stations[2], gm.colors.PURPLE));
-  gm.stations[2].passengers.push(new Passenger(gm.stations[2], gm.colors.ORANGE));
-  gm.stations[2].passengers.push(new Passenger(gm.stations[2], gm.colors.ORANGE));
-  gm.stations[2].passengers.push(new Passenger(gm.stations[2], gm.colors.ORANGE));
-
   var start = gm.travelNodes[0];
   gm.trains.push(new Train(start.station.x, start.station.y, start))
+
+  gm.stations[2].passengers.push(new Passenger(gm.stations[3], gm.colors.BLUE));
+  // gm.stations[2].passengers.push(new Passenger(gm.stations[2], gm.colors.PURPLE));
+  // gm.stations[2].passengers.push(new Passenger(gm.stations[2], gm.colors.ORANGE));
+  // gm.stations[2].passengers.push(new Passenger(gm.stations[2], gm.colors.ORANGE));
+  // gm.stations[2].passengers.push(new Passenger(gm.stations[2], gm.colors.ORANGE));
+
 }

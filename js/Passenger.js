@@ -4,7 +4,6 @@ var Passenger = function(station, color){
   this.train = null;
   this.state = "station";
   this.size = 7;
-  this.itinerary = [];
 
   this.draw = function(ctx, index){
     switch(this.state) {
@@ -31,44 +30,67 @@ var Passenger = function(station, color){
     for(var i in queue){
       checkedNodes[queue[i]] = 0;
     }
-    var finalNode = null;
     while(queue.length > 0){
+      console.log(checkedNodes);
+      console.log(queue)
       var node = queue.shift();
       badNodes.push(node);
       if(node.station.color === this.color){
-        this.reconstructPath(cameFrom, node);
+        console.log("Found end: constructing path")
+        return this.reconstructPath(cameFrom, node);
       }
       var neighbors = node.station.connections;
       if(node.next){neighbors.push(node.next)}
-      if(node.next){neighbors.push(node.last)}
+      if(node.last){neighbors.push(node.last)}
+      console.log("Neighbors: ")
+      console.log(neighbors)
 
       for(var j in neighbors){
         var neighbor = neighbors[j];
-        if(queue.indexOf(neighbor) !== -1){
+        if(queue.indexOf(neighbor) === -1 && badNodes.indexOf(neighbor) === -1){
+          console.log("adding to queue");
           queue.push(neighbor);
         }
 
         var score = checkedNodes[node] + 1;
-        if(checkedNodes[neighbor] <= score){
+        console.log("Tentative Score: " + score);
+        console.log(checkedNodes[neighbor])
+        console.log(checkedNodes)
+        if(checkedNodes[neighbor] && checkedNodes[neighbor] <= score){
+          console.log("Route to this node already has a better path")
           continue;
         }
 
+        console.log("Marking path and score")
         cameFrom[neighbor] = node;
+        console.log(cameFrom)
         checkedNodes[neighbor] = score;
       }
     }
+    return [];
   }
 
   this.reconstructPath = function(cameFrom, endPoint){
-    this.itinerary = [endPoint];
+    var itinerary = [endPoint];
     var current = endPoint;
+    console.log(cameFrom)
+    console.log(Object.keys(cameFrom).indexOf(current))
     while(Object.keys(cameFrom).indexOf(current) !== -1){
+      console.log("Current Route:")
+      console.log(current.route)
+      console.log("Next Route:")
+      console.log(cameFrom[current].route)
       if(current.route !== cameFrom[current].route){
-        this.itinerary.unshift(cameFrom[current]);
+        itinerary.unshift(cameFrom[current]);
       }
       current = cameFrom[current];
     }
+    console.log("itinerary: ")
+    console.log(itinerary)
+    return itinerary;
   }
+
+  this.itinerary = this.getItinerary();
 
   this.calcX = function(index){
     return this.station.x - this.station.size + index * this.size * 2;

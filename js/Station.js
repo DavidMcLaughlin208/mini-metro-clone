@@ -3,7 +3,7 @@ var Station = function(x, y, color){
   this.y = y;
   this.color = color;
   this.size = 30;
-  this.travelNodes = [];
+  this.connections = [];
   this.passengers = [];
 
   this.draw = function(ctx){
@@ -13,5 +13,5 @@ var Station = function(x, y, color){
     ctx.fill();
     ctx.closePath();
   }
-  
+
 }
