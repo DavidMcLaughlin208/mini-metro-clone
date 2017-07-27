@@ -9,14 +9,13 @@ var Train = function(x, y, travelNode){
   this.forward = true;
   this.passengers = [];
   this.rotation = 90;
+  this.target = null;
 
   this.draw = function(ctx){
-
-    var target = null;
     if(this.forward){
-      target = this.travelNode.next;
+      this.target = this.travelNode.next;
     } else {
-      target = this.travelNode.last;
+      this.target = this.travelNode.last;
     } 
     var remainingDistanceX = this.x - target.station.x
     var remainingDistanceY = this.y - target.station.y
@@ -32,8 +31,8 @@ var Train = function(x, y, travelNode){
         var totalDistance = Math.sqrt(distanceX + distanceY);
 
         var normalizeFactor = Math.max(Math.max(Math.abs(remainingDistanceX), 1), Math.max(Math.abs(remainingDistanceY), 1));
-        var normalizedX = (remainingDistanceX/normalizeFactor) * 0.2;
-        var normalizedY = (remainingDistanceY/normalizeFactor) * 0.2;
+        var normalizedX = (remainingDistanceX/normalizeFactor) * 0.4;
+        var normalizedY = (remainingDistanceY/normalizeFactor) * 0.4;
         var lastX = this.x;
         var lastY = this.y;
 
@@ -42,22 +41,15 @@ var Train = function(x, y, travelNode){
 
         var xDirection = lastX - this.x;
         var slope = (this.y - lastY) / (this.x - lastX);
-        if(this.x >= 0 && this.y <= 0){
-          // 1st Quadrant
-          this.rotation = Math.atan(slope) * (180/Math.PI);
-        } else if(this.x <= 0 && this.y <= 0){
-          // 2st Quadrant
-          this.rotation = Math.atan(slope) * (180/Math.PI);
-        } else if(this.x <= 0 && this.y >= 0){
-          // 3st Quadrant
-          this.rotation = Math.atan(slope) * (180/Math.PI);
-        } else if(this.x >= 0 && this.y >= 0){
-          // 4st Quadrant
-          this.rotation = Math.atan(slope) * (180/Math.PI);
-        }
+        this.rotation = Math.atan(slope) * (180/Math.PI);
 
         break;
       case "pickup":
+        var passengers = this.target.station.passengers;
+        for(var i in passengers){
+          var board = passengers[i].boardTrain(this.target, train);
+        }
+
         if(this.forward){
           if(target.next !== null){
             this.travelNode = target;

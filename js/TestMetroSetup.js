@@ -31,13 +31,13 @@ var createStations = function(gm){
   // }
 
   gm.travelNodes[0].next = gm.travelNodes[1];
-  gm.travelNodes[0].station = gm.stations[0];
+  gm.travelNodes[0].setStation(gm.stations[0]);
 
-  gm.travelNodes[1].station = gm.stations[1];
+  gm.travelNodes[1].setStation(gm.stations[1]);
   gm.travelNodes[1].last = gm.travelNodes[0];
   gm.travelNodes[1].next = gm.travelNodes[2];
 
-  gm.travelNodes[2].station = gm.stations[2];
+  gm.travelNodes[2].setStation(gm.stations[2]);
   gm.travelNodes[2].last = gm.travelNodes[1];
 
   gm.routes.black = new Route(gm.travelNodes[0]);

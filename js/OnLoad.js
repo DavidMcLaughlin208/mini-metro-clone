@@ -35,12 +35,12 @@ $(document).ready(function(){
             if(gm.connectingNode.next){
               var node = new TravelNode();
               node.next = gm.routes.black.head;
-              node.station = station;
+              node.setStation(station);
               gm.routes.black.head.last = node;
               gm.routes.black.head = node
             } else {
               var node = new TravelNode();
-              node.station = station;
+              node.setStation(station);
               var tail = gm.routes.black.tail(gm.routes.black.head);
               tail.next = node;
               node.last = tail;
