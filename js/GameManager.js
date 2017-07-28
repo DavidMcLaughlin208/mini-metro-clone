@@ -28,12 +28,6 @@ var GameManager = function(){
     this.metro.ctx.fillStyle = this.colors.BACKGROUND;
     this.metro.ctx.fillRect(-this.metro.width/2, -this.metro.height/2, this.metro.width, this.metro.height);
 
-
-
-    // for(var i in this.travelNodes){
-    //   this.travelNodes[i].drawRoutes(this.metro.ctx, this.routes);
-    // }
-
     for (var property in this.routes) {
       if (this.routes.hasOwnProperty(property)) {
         this.routes[property].draw(this.metro.ctx, this.routes[property].head);
@@ -58,7 +52,6 @@ var GameManager = function(){
         this.trains[i].passengers[j].draw(this.metro.ctx, j);
       }
     }
-
 
   }
 
