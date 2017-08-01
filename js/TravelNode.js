@@ -1,8 +1,9 @@
-var TravelNode = function(){
+var TravelNode = function(id, route){
+  this.id = id;
+  this.route = route;
   this.station = null;
   this.next = null;
   this.last = null;
-  this.route = null;
 
   this.draw = function(ctx){
 
@@ -13,5 +14,9 @@ var TravelNode = function(){
     if(station.connections.indexOf(this) === -1){
       station.connections.push(this);
     }
+  }
+
+  this.getId = function(){
+    return this.id.toString();
   }
 }

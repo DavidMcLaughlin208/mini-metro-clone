@@ -1,5 +1,6 @@
-var Route = function(head){
-  this.head = head;
+var Route = function(color){
+  this.head = null;
+  this.color = color;
   this.tail = function(node){
     if(node.next === null){
       return node;
@@ -9,7 +10,7 @@ var Route = function(head){
   }
 
   this.draw = function(ctx, node){
-    if(node.next !== null){
+    if(node && node.next !== null){
       ctx.strokeStyle = 'black';
       ctx.lineWidth = 20;
 

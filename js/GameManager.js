@@ -18,6 +18,7 @@ var GameManager = function(){
   this.connectingNode = null;
   this.mouseX = 0;
   this.mouseY = 0;
+  this.travelNodeIdCounter = 0;
 
 
   this.draw = function(){
@@ -79,5 +80,10 @@ var GameManager = function(){
       return route.tail(route.head);
     }
     return null;
+  }
+
+  this.getTravelNodeId = function(){
+    this.travelNodeIdCounter += 1;
+    return this.travelNodeIdCounter;
   }
 }

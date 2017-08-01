@@ -10,8 +10,15 @@ var createStations = function(gm){
   gm.stations.push(new Station(-100, 100, '#ff4444'))
   gm.stations.push(new Station(-300, 100, '#ff3feb'))
 
-  for(var i = 0; i < 4; i++){
-    gm.travelNodes.push(new TravelNode());
+  gm.routes.black = new Route("Black");
+  gm.routes.red = new Route("Red");
+
+  for(var i = 0; i < 3; i++){
+    gm.travelNodes.push(new TravelNode(gm.getTravelNodeId(), gm.routes.black));
+  }
+
+  for(var i = 0; i < 2; i++){
+    gm.travelNodes.push(new TravelNode(gm.getTravelNodeId(), gm.routes.red));
   }
 
   // for(var i = 0; i < gm.stations.length; i++){
@@ -32,6 +39,7 @@ var createStations = function(gm){
 
   gm.travelNodes[0].setStation(gm.stations[0]);
   gm.travelNodes[0].next = gm.travelNodes[1];
+  gm.routes.black.head = gm.travelNodes[0]
 
   gm.travelNodes[1].setStation(gm.stations[1]);
   gm.travelNodes[1].last = gm.travelNodes[0];
@@ -39,13 +47,13 @@ var createStations = function(gm){
 
   gm.travelNodes[2].setStation(gm.stations[2]);
   gm.travelNodes[2].last = gm.travelNodes[1];
-  gm.travelNodes[2].next = gm.travelNodes[3];
 
-  gm.travelNodes[3].setStation(gm.stations[3]);
-  gm.travelNodes[3].last = gm.travelNodes[2];
+  gm.travelNodes[3].setStation(gm.stations[2]);
+  gm.travelNodes[3].next = gm.travelNodes[4];
+  gm.routes.red.head = gm.travelNodes[3]
 
-
-  gm.routes.black = new Route(gm.travelNodes[0]);
+  gm.travelNodes[4].setStation(gm.stations[3]);
+  gm.travelNodes[4].last = gm.travelNodes[3];
 
   var start = gm.travelNodes[0];
   gm.trains.push(new Train(start.station.x, start.station.y, start))
