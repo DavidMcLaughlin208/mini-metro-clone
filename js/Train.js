@@ -87,11 +87,11 @@ var Train = function(x, y, travelNode, route){
     ctx.beginPath();
 
     ctx.lineWidth = 10;
-    ctx.strokeStyle = 'black';
+    ctx.strokeStyle = this.route.color;
     ctx.rect(-this.width/2, -this.height/2, this.width, this.height);
     ctx.stroke();
 
-    ctx.fillStyle = 'white';
+    ctx.fillStyle = this.route.color;
     ctx.fill();
 
     ctx.closePath();

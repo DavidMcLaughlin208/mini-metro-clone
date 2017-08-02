@@ -1,4 +1,4 @@
-$(document).ready(function(){  
+$(document).ready(function(){
   var gm = new GameManager();
   gm.metro.ctx.translate(gm.metro.width/2, gm.metro.height/2);
 
@@ -12,7 +12,7 @@ $(document).ready(function(){
     for(var i = 0; i < gm.stations.length; i++){
       var station = gm.stations[i];
       if(x <= station.x + 50 && x >= station.x - 50 && y <= station.y + 50 && y >= station.y - 50){
-        gm.connectingNode = gm.headOrTail(station, gm.routes.black)
+        gm.connectingNode = gm.headOrTail(station, gm.routes.red)
         if(gm.connectingNode){
           gm.connectingStation = station;
           break;
@@ -29,19 +29,19 @@ $(document).ready(function(){
       var station = gm.stations[i];
       if(x <= station.x + 50 && x >= station.x - 50 && y <= station.y + 50 && y >= station.y - 50){
         if(gm.connectingStation !== this){
-          var valid = gm.isValidConnection(gm.routes.black.head, station);
+          var valid = gm.isValidConnection(gm.routes.red.head, station);
           if(valid){
             console.log("Valid connection")
             if(gm.connectingNode.next){
               var node = new TravelNode();
-              node.next = gm.routes.black.head;
+              node.next = gm.routes.red.head;
               node.setStation(station);
-              gm.routes.black.head.last = node;
-              gm.routes.black.head = node
+              gm.routes.red.head.last = node;
+              gm.routes.red.head = node
             } else {
               var node = new TravelNode();
               node.setStation(station);
-              var tail = gm.routes.black.tail(gm.routes.black.head);
+              var tail = gm.routes.red.tail(gm.routes.black.head);
               tail.next = node;
               node.last = tail;
             }

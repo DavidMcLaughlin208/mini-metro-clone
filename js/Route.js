@@ -11,7 +11,7 @@ var Route = function(color){
 
   this.draw = function(ctx, node){
     if(node && node.next !== null){
-      ctx.strokeStyle = 'black';
+      ctx.strokeStyle = this.color;
       ctx.lineWidth = 20;
 
       ctx.beginPath();

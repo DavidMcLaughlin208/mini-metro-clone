@@ -4,7 +4,12 @@ var GameManager = function(){
   this.trains = [];
   this.stations = [];
   this.travelNodes = [];
-  this.routes = {};
+  this.routes = {
+    "red": new Route("#ff4444"),
+    "blue": new Route("#4f83ff"),
+    "orange": new Route("#ff8644"),
+    "purple": new Route("#ff3feb")
+  };
   this.colors = {
     "BACKGROUND": "#f2f6ff",
     "BLUE": "#4f83ff",

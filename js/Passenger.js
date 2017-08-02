@@ -1,6 +1,6 @@
-var Passenger = function(station, color){
+var Passenger = function(station, shape){
   this.station = station;
-  this.color = color;
+  this.shape = shape;
   this.train = null;
   this.state = "station";
   this.size = 7;
@@ -10,14 +10,14 @@ var Passenger = function(station, color){
     case "station":
       ctx.beginPath();
       ctx.arc(this.calcX(index), this.calcY(index), this.size, 0, 2 * Math.PI, false);
-      ctx.fillStyle = this.color;
+      ctx.fillStyle = "black";
       ctx.fill();
       ctx.closePath();
       break;
     case "train":
       ctx.beginPath();
       ctx.arc(this.train.x, this.train.y, this.size, 0, 2 * Math.PI, false);
-      ctx.fillStyle = this.color;
+      ctx.fillStyle = "black";
       ctx.fill();
       ctx.closePath();
       break
@@ -37,7 +37,7 @@ var Passenger = function(station, color){
     while(queue.length > 0){
       var node = queue.shift();
       badNodes.push(node);
-      if(node.station.color === this.color){
+      if(node.station.shape === this.shape){
         return this.reconstructPath(cameFrom, node);
       }
       var neighbors = node.station.connections;
@@ -90,7 +90,6 @@ var Passenger = function(station, color){
     this.train = this;
     this.station = null;
     train.passengers.unshift(this);
-    console.log(this.itinerary)
   }
 
   this.disembark = function(train, station, index){
@@ -100,7 +99,6 @@ var Passenger = function(station, color){
     this.station = station;
     this.train = null;
     station.passengers.unshift(this);
-    console.log(this.itinerary)
   }
 
   this.calcX = function(index){
