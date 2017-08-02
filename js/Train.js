@@ -1,9 +1,9 @@
-var Train = function(x, y, travelNode){
+var Train = function(x, y, travelNode, route){
   this.x = x;
   this.y = y;
   this.width = 60;
   this.height = 30;
-  this.route = [];
+  this.route = route;
   this.travelNode = travelNode;
   this.state = "travel";
   this.forward = true;
@@ -21,7 +21,7 @@ var Train = function(x, y, travelNode){
     var remainingDistanceY = this.y - this.target.station.y
     var remainingdistance = Math.sqrt(Math.pow(remainingDistanceX, 2) + Math.pow(remainingDistanceY, 2));
     if(remainingdistance <= 1){
-      this.state = "pickup";
+      this.state = "dock";
     }
 
     switch(this.state) {
@@ -44,7 +44,23 @@ var Train = function(x, y, travelNode){
         this.rotation = Math.atan(slope) * (180/Math.PI);
 
         break;
-      case "pickup":
+      case "dock":
+        console.log("Docking");
+        for(var i = this.passengers.length - 1; i >= 0; i--){
+          var passenger = this.passengers[i];
+          if(passenger.itinerary[0] === this.target){
+            console.log("disembarking")
+            passenger.disembark(this, this.target.station, i);
+          }
+        }
+        var stationPassengers = this.target.station.passengers;
+        for(var i = stationPassengers.length - 1; i >= 0; i--) {
+          var passenger = stationPassengers[i];
+          if(passenger.itinerary[0] === this.route) {
+            console.log("embarking")
+            passenger.embark(this, this.target.station, i);
+          }
+        }
         if(this.forward){
           if(this.target.next !== null){
             this.travelNode = this.target;

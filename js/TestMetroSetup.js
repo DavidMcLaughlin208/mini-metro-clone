@@ -56,9 +56,11 @@ var createStations = function(gm){
   gm.travelNodes[4].last = gm.travelNodes[3];
 
   var start = gm.travelNodes[0];
-  gm.trains.push(new Train(start.station.x, start.station.y, start))
+  gm.trains.push(new Train(start.station.x, start.station.y, start, gm.routes.black))
+  start = gm.travelNodes[3];
+  gm.trains.push(new Train(start.station.x, start.station.y, start, gm.routes.red))
 
-  gm.stations[2].passengers.push(new Passenger(gm.stations[3], gm.colors.BLUE));
+  gm.stations[2].passengers.unshift(new Passenger(gm.stations[3], gm.colors.BLUE));
   // gm.stations[2].passengers.push(new Passenger(gm.stations[2], gm.colors.PURPLE));
   // gm.stations[2].passengers.push(new Passenger(gm.stations[2], gm.colors.ORANGE));
   // gm.stations[2].passengers.push(new Passenger(gm.stations[2], gm.colors.ORANGE));
