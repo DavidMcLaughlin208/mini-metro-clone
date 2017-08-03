@@ -5,17 +5,17 @@ var createStations = function(gm){
   gm.stations.push(new Station(100, -100, "teardrop"))
   gm.stations.push(new Station(300, -100, "diamond"))
 
-  gm.stations.push(new Station(300, 100, "square"))
+  gm.stations.push(new Station(300, 100, "circle"))
   gm.stations.push(new Station(100, 100, "square"))
-  gm.stations.push(new Station(-100, 100, "square"))
-  gm.stations.push(new Station(-300, 100, "square"))
+  gm.stations.push(new Station(-100, 100, "plus"))
+  gm.stations.push(new Station(-300, 100, "circle"))
 
   for(var i = 0; i < 3; i++){
-    gm.travelNodes.push(new TravelNode(gm.getTravelNodeId(), gm.routes.black));
+    gm.travelNodes.push(new TravelNode(gm.getTravelNodeId(), gm.routes.red));
   }
 
   for(var i = 0; i < 2; i++){
-    gm.travelNodes.push(new TravelNode(gm.getTravelNodeId(), gm.routes.red));
+    gm.travelNodes.push(new TravelNode(gm.getTravelNodeId(), gm.routes.blue));
   }
 
   // for(var i = 0; i < gm.stations.length; i++){
@@ -57,6 +57,7 @@ var createStations = function(gm){
   start = gm.travelNodes[3];
   gm.trains.push(new Train(start.station.x, start.station.y, start, gm.routes.blue))
 
+  gm.stations[2].passengers.unshift(new Passenger(gm.stations[3], "triangle"));
   gm.stations[2].passengers.unshift(new Passenger(gm.stations[3], "square"));
   // gm.stations[2].passengers.push(new Passenger(gm.stations[2], gm.colors.PURPLE));
   // gm.stations[2].passengers.push(new Passenger(gm.stations[2], gm.colors.ORANGE));

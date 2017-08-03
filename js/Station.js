@@ -7,45 +7,63 @@ var Station = function(x, y, shape){
   this.passengers = [];
 
   this.draw = function(ctx){
+    ctx.fillStyle = "white";
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 8;
     switch(this.shape) {
       case "square":
         ctx.translate(this.x, this.y);
-        ctx.fillStyle = "white";
-        ctx.fillRect(-this.size/2, -this.size/2, this.size, this.size);
-        ctx.strokeStyle = "black";
-        ctx.lineWidth = 8;
         ctx.beginPath();
         ctx.rect(-this.size/2, -this.size/2, this.size, this.size);
+        ctx.fill();
         ctx.stroke();
+        ctx.closePath();
+        ctx.translate(-this.x, -this.y);
+        break;
+      case "circle":
+        ctx.translate(this.x, this.y);
+        ctx.beginPath();
+        ctx.arc(0, 0, this.size/1.7, 0, 2 * Math.PI, false);
+        ctx.fill();
+        ctx.stroke();
+        ctx.closePath();
         ctx.translate(-this.x, -this.y);
         break;
       case "triangle":
-        ctx.lineWidth = 8;
-        ctx.fillStyle = "white";
-        ctx.strokeStyle = "black";
+        ctx.translate(this.x, this.y);
         ctx.beginPath();
-        ctx.moveTo(this.x, this.y - this.size/2);
-        ctx.lineTo(this.x + this.size/1.7, this.y + this.size/2);
-        ctx.lineTo(this.x - this.size/1.7, this.y + this.size/2);
-        ctx.lineTo(this.x, this.y - this.size/2);
-        ctx.lineTo(this.x + this.size/1.7, this.y + this.size/2);
+        ctx.moveTo(0, -this.size/2);
+        ctx.lineTo(this.size/1.7, this.size/2);
+        ctx.lineTo(-this.size/1.7, this.size/2);
+        ctx.lineTo(0, -this.size/2);
+        ctx.lineTo(this.size/1.7, this.size/2);
         ctx.fill();
         ctx.stroke();
+        ctx.closePath();
+        ctx.translate(-this.x, -this.y);
         break;
       case "diamond":
         ctx.translate(this.x, this.y);
         ctx.rotate(45*Math.PI/180);
-        ctx.fillStyle = "white";
-        ctx.fillRect(-this.size/2, -this.size/2, this.size, this.size);
-        ctx.strokeStyle = "black";
-        ctx.lineWidth = 8;
         ctx.beginPath();
         ctx.rect(-this.size/2, -this.size/2, this.size, this.size);
+        ctx.fill();
         ctx.stroke();
+        ctx.closePath();
         ctx.rotate(-45*Math.PI/180);
         ctx.translate(-this.x, -this.y);
         break;
       case "plus":
+        ctx.translate(this.x, this.y);
+        ctx.lineWidth = 16;
+        ctx.beginPath()
+        ctx.rect(-this.size/6, -this.size/2, this.size/3, this.size);
+        ctx.stroke();
+        ctx.rect(-this.size/2, -this.size/6, this.size, this.size/3);
+        ctx.stroke();
+        ctx.fill();
+        ctx.closePath();
+        ctx.translate(-this.x, -this.y);
         break;
       case "teardrop":
         ctx.translate(this.x, this.y);
@@ -55,8 +73,6 @@ var Station = function(x, y, shape){
         ctx.moveTo(-this.size/1.7, 0);
         ctx.lineTo(0, this.size/1.7);
         ctx.lineTo(this.size/1.7, 0);
-        ctx.fillStyle = "white";
-        ctx.strokeStyle = "black";
         ctx.fill();
         ctx.stroke();
         ctx.rotate(-Math.PI);
@@ -65,11 +81,6 @@ var Station = function(x, y, shape){
       default:
         break;
     }
-    // ctx.beginPath();
-    // ctx.arc(this.x, this.y, this.size, 0, 2 * Math.PI, false);
-    // ctx.fillStyle = this.color;
-    // ctx.fill();
-    // ctx.closePath();
   }
 
 }

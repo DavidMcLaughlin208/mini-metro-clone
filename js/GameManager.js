@@ -54,8 +54,9 @@ var GameManager = function(){
 
     for(var i in this.trains){
       this.trains[i].draw(this.metro.ctx);
-      for(var j in this.trains[i].passengers){
-        this.trains[i].passengers[j].draw(this.metro.ctx, j);
+      var passengers = this.trains[i].passengers;
+      for(var j in passengers){
+        passengers[j].draw(this.metro.ctx, j);
       }
     }
 

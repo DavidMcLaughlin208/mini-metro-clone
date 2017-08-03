@@ -45,7 +45,6 @@ var Train = function(x, y, travelNode, route){
 
         break;
       case "dock":
-        console.log("Docking");
         for(var i = this.passengers.length - 1; i >= 0; i--){
           var passenger = this.passengers[i];
           if(passenger.itinerary[0] === this.target){
