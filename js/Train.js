@@ -41,7 +41,11 @@ var Train = function(x, y, travelNode, route){
 
         var xDirection = lastX - this.x;
         var slope = (this.y - lastY) / (this.x - lastX);
-        this.rotation = Math.atan(slope) * (180/Math.PI);
+        this.rotation = Math.atan(slope);
+        if(xDirection < 0){
+          this.rotation *= -1;
+        }
+        this.rotation *= 180/Math.PI;
 
         break;
       case "dock":
@@ -50,6 +54,7 @@ var Train = function(x, y, travelNode, route){
           if(passenger.itinerary[0] === this.target){
             console.log("disembarking")
             passenger.disembark(this, this.target.station, i);
+            console.log(this.target.station.passengers)
           }
         }
         var stationPassengers = this.target.station.passengers;

@@ -59,9 +59,9 @@ var createStations = function(gm){
 
   gm.stations[2].passengers.unshift(new Passenger(gm.stations[3], "triangle"));
   gm.stations[2].passengers.unshift(new Passenger(gm.stations[3], "square"));
-  // gm.stations[2].passengers.push(new Passenger(gm.stations[2], gm.colors.PURPLE));
-  // gm.stations[2].passengers.push(new Passenger(gm.stations[2], gm.colors.ORANGE));
-  // gm.stations[2].passengers.push(new Passenger(gm.stations[2], gm.colors.ORANGE));
-  // gm.stations[2].passengers.push(new Passenger(gm.stations[2], gm.colors.ORANGE));
+  gm.stations[2].passengers.unshift(new Passenger(gm.stations[3], "plus"));
+  gm.stations[2].passengers.unshift(new Passenger(gm.stations[3], "square"));
+  gm.stations[2].passengers.unshift(new Passenger(gm.stations[3], "square"));
+
 
 }

@@ -1,23 +1,25 @@
 var Passenger = function(station, shape){
-  console.log(shape)
   this.station = station;
   this.shape = shape;
   this.train = null;
   this.state = "station";
-  this.size = 10;
+  this.size = 12;
   this.x = station.x;
   this.y = station.y;
 
   this.draw = function(ctx, index){
-    ctx.fillStyle = "rgba(0, 0, 0, 0.6)"
+    ctx.fillStyle = "rgba(0, 0, 0, 0.8)"
     switch(this.state) {
     case "station":
       this.x = this.calcStationX(index);
       this.y = this.calcStationY(index);
       break;
     case "train":
-      ctx.translate(this.train.x, this.train.y + this.train.height/2);
+      ctx.translate(this.train.x + this.train.width/2, this.train.y);
       ctx.rotate(this.train.rotation*Math.PI/180);
+      // ctx.beginPath()
+      // ctx.arc(0,0, this.size, 2 * Math.PI, false)
+      // ctx.fill()
       this.x = this.calcTrainX(ctx, index);
       this.y = this.calcTrainY(ctx, index);
       break
@@ -66,11 +68,9 @@ var Passenger = function(station, shape){
         break;
       case "plus":
         ctx.translate(this.x, this.y);
-        ctx.lineWidth = 16;
         ctx.beginPath()
-        ctx.rect(-this.size/6, -this.size/2, this.size/3, this.size);
-        ctx.stroke();
-        ctx.rect(-this.size/2, -this.size/6, this.size, this.size/3);
+        ctx.rect(-this.size/5, -this.size/2, this.size/2.5, this.size);
+        ctx.rect(-this.size/2, -this.size/5, this.size, this.size/2.5);
         ctx.fill();
         ctx.closePath();
         ctx.translate(-this.x, -this.y);
@@ -90,7 +90,7 @@ var Passenger = function(station, shape){
       default:
     }
     if(this.state === "train") {
-      ctx.translate(-this.train.x, -this.train.y - this.train.height/2);
+      ctx.translate(-this.train.x - this.train.width/2, -this.train.y);
       ctx.rotate(-this.train.rotation*Math.PI/180);
     }
   }
@@ -99,13 +99,14 @@ var Passenger = function(station, shape){
     var checkedNodes = {};
     var badNodes = [];
     var cameFrom = {};
-    var queue = this.station.connections;
+    var queue = [];
+    for(var node of this.station.connections){
+      queue.push(node);
+    }
     for(var i in queue){
       checkedNodes[queue[i].getId()] = 0;
     }
     while(queue.length > 0){
-      console.log("Queue")
-      console.log(queue)
       var node = queue.shift();
       badNodes.push(node);
       if(node.station.shape === this.shape){
@@ -185,14 +186,14 @@ var Passenger = function(station, shape){
     // }
     return this.station.y - this.station.size - this.size;
   }
-  this.calcTrainX = function(ctx, index){
-    if(index % 2 === 1){
-      return this.train.width/4;
+  this.calcTrainY = function(ctx, index){
+    if(index % 2 === 0){
+      return this.train.height/4 + this.train.height/16;
     } else {
-      return this.train.width*3/4;
+      return -this.train.height/4 - this.train.height/16;
     }
   }
-  this.calcTrainY = function(ctx, index){
-    return Math.floor(index/2) * this.train.height/4;
+  this.calcTrainX = function(ctx, index){
+    return -(Math.ceil(index/2) * this.train.width/4 + this.train.width/5);
   }
 }
