@@ -90,8 +90,8 @@ var Passenger = function(station, shape){
       default:
     }
     if(this.state === "train") {
-      ctx.translate(-this.train.x - this.train.width/2, -this.train.y);
       ctx.rotate(-this.train.rotation*Math.PI/180);
+      ctx.translate(-this.train.x - this.train.width/2, -this.train.y);
     }
   }
 

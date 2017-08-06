@@ -39,7 +39,7 @@ var GameManager = function(){
         var route = this.routes[property];
         route.draw(this.metro.ctx, route.head);
         route.drawHandle(route.head, route.headHandle, this.metro.ctx);
-        route.drawHandle(route.tail(), route.tailHandle, this.metro.ctx);
+        route.drawHandle(route.tail(route.head), route.tailHandle, this.metro.ctx);
       }
     }
 

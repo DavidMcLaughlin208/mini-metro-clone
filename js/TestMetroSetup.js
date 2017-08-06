@@ -1,9 +1,9 @@
 var createStations = function(gm){
   gm.stations = [];
-  gm.stations.push(new Station(-300, -100, "square"))
-  gm.stations.push(new Station(-100, -100, "triangle"))
-  gm.stations.push(new Station(100, -100, "teardrop"))
-  gm.stations.push(new Station(300, -100, "diamond"))
+  gm.stations.push(new Station(-350, -120, "square"))
+  gm.stations.push(new Station(-100, -150, "triangle"))
+  gm.stations.push(new Station(130, -130, "teardrop"))
+  gm.stations.push(new Station(320, -140, "diamond"))
 
   gm.stations.push(new Station(300, 100, "circle"))
   gm.stations.push(new Station(100, 100, "square"))
