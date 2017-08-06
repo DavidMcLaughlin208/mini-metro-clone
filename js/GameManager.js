@@ -36,7 +36,10 @@ var GameManager = function(){
 
     for (var property in this.routes) {
       if (this.routes.hasOwnProperty(property)) {
-        this.routes[property].draw(this.metro.ctx, this.routes[property].head);
+        var route = this.routes[property];
+        route.draw(this.metro.ctx, route.head);
+        route.drawHandle(route.head, route.headHandle, this.metro.ctx);
+        route.drawHandle(route.tail(), route.tailHandle, this.metro.ctx);
       }
     }
 
