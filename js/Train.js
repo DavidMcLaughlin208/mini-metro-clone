@@ -40,7 +40,7 @@ var Train = function(x, y, travelNode, route){
         this.y -= normalizedY;
 
         var slope = (this.y - lastY) / (this.x - lastX);
-        this.rotation = Math.atan(slope) * 180/Math.PI;
+        this.rotation = Math.atan(slope);
 
         break;
       case "dock":
@@ -82,7 +82,7 @@ var Train = function(x, y, travelNode, route){
 
     // Draw
     ctx.translate(this.x, this.y);
-    ctx.rotate(this.rotation*Math.PI/180);
+    ctx.rotate(this.rotation);
     ctx.beginPath();
 
     ctx.lineWidth = 10;
@@ -94,7 +94,7 @@ var Train = function(x, y, travelNode, route){
     ctx.fill();
 
     ctx.closePath();
-    ctx.rotate(-this.rotation*Math.PI/180);
+    ctx.rotate(-this.rotation);
     ctx.translate(-this.x, -this.y);
 
   }

@@ -37,9 +37,8 @@ var Route = function(color){
       } else if(node.last){
         otherNode = node.last;
       }
-      var distanceX = Math.pow(node.station.x - otherNode.station.x, 2);
-      var distanceY = Math.pow(node.station.y - otherNode.station.y, 2);
-      var totalDistance = Math.sqrt(distanceX + distanceY);
+      var distanceX = Math.abs(node.station.x - otherNode.station.x);
+      var distanceY = Math.abs(node.station.y - otherNode.station.y);
 
       var normalizeFactor = Math.max(Math.max(Math.abs(distanceX), 1), Math.max(Math.abs(distanceY), 1));
       var normalizedX = (distanceX/normalizeFactor) * node.station.size * 1.5;
@@ -51,9 +50,10 @@ var Route = function(color){
         normalizedY *= -1;
       }
 
-      var slope = (node.station.y - otherNode.station.y) / (node.station.x - otherNode.station.x);
-      var rotation = Math.atan(slope) * 180/Math.PI;
-      handle.draw(node.station.x + normalizedX, node.station.y - normalizedY, rotation, node.station, ctx)
+      var slope = (otherNode.station.y - node.station.y) / (otherNode.station.x - node.station.x);
+      var rotation = Math.atan(slope);
+      ctx.strokeStyle = this.color;
+      handle.draw(node.station.x + normalizedX, node.station.y - normalizedY, rotation, node.station, ctx);
     }
   }
 }
