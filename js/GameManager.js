@@ -19,8 +19,11 @@ var GameManager = function(){
     "TEMPROUTE": "rgba(0, 0, 0, 0.5)"
   }
 
+  this.clickBox = 40;
+
   this.connectingStation = null;
   this.connectingNode = null;
+  this.connectingRoute = null;
   this.mouseX = 0;
   this.mouseY = 0;
   this.travelNodeIdCounter = 0;
@@ -101,4 +104,16 @@ var GameManager = function(){
     this.travelNodeIdCounter += 1;
     return this.travelNodeIdCounter;
   }
+
+  this.getAllRouteHandles = function(){
+    var routeHandles = [];
+    for(var property in this.routes){
+      if(this.routes.hasOwnProperty(property)){
+        routeHandles.push(this.routes[property].headHandle);
+        routeHandles.push(this.routes[property].tailHandle);
+      }
+    }
+    return routeHandles;
+  }
+  this.allRouteHandles = this.getAllRouteHandles();
 }

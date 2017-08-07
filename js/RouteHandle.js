@@ -1,11 +1,22 @@
-var RouteHandle = function(route){
+var RouteHandle = function(route, location){
   this.x = null;
   this.y = null;
   this.route = route;
   this.width = 15;
   this.height = 4;
+  this.location = location;
+
+  this.getNode = function(){
+    if(this.location === "head"){
+      return this.route.head
+    }else if(this.location === "tail"){
+      return this.route.tail();
+    }
+  }
 
   this.draw = function(x, y, rotation, station, ctx){
+    this.x = x;
+    this.y = y;
     ctx.beginPath();
     ctx.moveTo(station.x, station.y);
     ctx.lineTo(x, y);

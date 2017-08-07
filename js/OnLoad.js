@@ -9,12 +9,15 @@ $(document).ready(function(){
     var rect = this.getBoundingClientRect();
     var x = (e.clientX - rect.left) - gm.metro.width/2;
     var y = (e.clientY - rect.top) - gm.metro.height/2;
-    for(var i = 0; i < gm.stations.length; i++){
-      var station = gm.stations[i];
-      if(x <= station.x + 50 && x >= station.x - 50 && y <= station.y + 50 && y >= station.y - 50){
-        gm.connectingNode = gm.headOrTail(station, gm.routes.red)
+    for(var i = 0; i < gm.allRouteHandles.length; i++){
+      var handle = gm.allRouteHandles[i];
+      if(x <= handle.x + gm.clickBox && x >= handle.x - gm.clickBox && y <= handle.y + gm.clickBox && y >= handle.y - gm.clickBox){
+        gm.connectingNode = handle.getNode();
+        console.log(gm.connectingNode)
         if(gm.connectingNode){
-          gm.connectingStation = station;
+          console.log("Setting connectors")
+          gm.connectingStation = handle.getNode().station;
+          gm.connectingRoute = handle.route;
           break;
         }
       }
@@ -25,31 +28,33 @@ $(document).ready(function(){
     var rect = this.getBoundingClientRect();
     var x = (e.clientX - rect.left) - gm.metro.width/2;
     var y = (e.clientY - rect.top) - gm.metro.height/2;
-    for(var i = 0; i < gm.stations.length; i++){
-      var station = gm.stations[i];
-      if(x <= station.x + 50 && x >= station.x - 50 && y <= station.y + 50 && y >= station.y - 50){
-        if(gm.connectingStation !== this){
-          var valid = gm.isValidConnection(gm.routes.red.head, station);
-          if(valid){
-            console.log("Valid connection")
-            if(gm.connectingNode.next){
-              var node = new TravelNode();
-              node.next = gm.routes.red.head;
-              node.setStation(station);
-              gm.routes.red.head.last = node;
-              gm.routes.red.head = node
-            } else {
-              var node = new TravelNode();
-              node.setStation(station);
-              var tail = gm.routes.red.tail(gm.routes.black.head);
-              tail.next = node;
-              node.last = tail;
+    if(gm.connectingStation && gm.connectingRoute){
+      for(var i = 0; i < gm.stations.length; i++){
+        var station = gm.stations[i];
+        if(x <= station.x + 50 && x >= station.x - 50 && y <= station.y + 50 && y >= station.y - 50){
+          if(gm.connectingStation !== this){
+            var valid = gm.isValidConnection(gm.connectingRoute.head, station);
+            if(valid){
+              console.log("Valid connection")
+              var node = new TravelNode(gm.getTravelNodeId(), gm.connectingRoute);
+              if(gm.connectingNode.next){
+                node.next = gm.connectingRoute.head;
+                node.setStation(station);
+                gm.connectingRoute.head.last = node;
+                gm.connectingRoute.head = node
+              } else {
+                node.setStation(station);
+                var tail = gm.connectingRoute.tail(gm.connectingRoute.tail());
+                tail.next = node;
+                node.last = tail;
+              }
             }
           }
         }
       }
+      gm.connectingStation = null;
+      gm.connectingRoute = null;
     }
-    gm.connectingStation = null;
     console.log("mouseup")
   })
 

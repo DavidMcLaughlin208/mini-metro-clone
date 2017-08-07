@@ -1,16 +1,17 @@
 var Route = function(color){
   this.head = null;
-  this.headHandle = new RouteHandle(this);
-  this.tailHandle = new RouteHandle(this);
   this.color = color;
   this.tail = function(node){
-    if(node === null){return;}
+    if(node === null || node === undefined){return;}
     if(node.next === null){
       return node;
     } else {
       return this.tail(node.next)
     }
   }
+
+  this.headHandle = new RouteHandle(this, "head");
+  this.tailHandle = new RouteHandle(this, "tail");
 
   this.draw = function(ctx, node){
     if(node && node.next !== null){
@@ -53,6 +54,16 @@ var Route = function(color){
       var slope = (otherNode.station.y - node.station.y) / (otherNode.station.x - node.station.x);
       var rotation = Math.atan(slope);
       ctx.strokeStyle = this.color;
+      // if(handle.route.color === "#ff4444" && handle.route.headHandle === handle){
+      //   console.log(normalizeFactor)
+      //
+      //   // console.log("x ", distanceX);
+      //   // console.log("y ",distanceY);
+      //
+      //   // var distanceX = Math.pow(normalizedX, 2)
+      //   // var distanceY = Math.pow(normalizedY, 2);
+      //   // console.log(Math.sqrt(distanceY + distanceX));
+      // }
       handle.draw(node.station.x + normalizedX, node.station.y - normalizedY, rotation, node.station, ctx);
     }
   }
