@@ -24,6 +24,7 @@ var GameManager = function(){
   this.connectingStation = null;
   this.connectingNode = null;
   this.connectingRoute = null;
+  this.connectingHandle = null;
   this.mouseX = 0;
   this.mouseY = 0;
   this.travelNodeIdCounter = 0;
@@ -47,8 +48,8 @@ var GameManager = function(){
     for (var property in this.routes) {
       if (this.routes.hasOwnProperty(property)) {
         var route = this.routes[property];
-        route.drawHandle(route.head, route.headHandle, this.metro.ctx);
-        route.drawHandle(route.tail(route.head), route.tailHandle, this.metro.ctx);
+        route.drawHandle(route.head, route.headHandle, this.metro.ctx, this, route.headHandle !== this.connectingHandle);
+        route.drawHandle(route.tail(route.head), route.tailHandle, this.metro.ctx, this, route.tailHandle !== this.connectingHandle);
       }
     }
 
@@ -75,7 +76,7 @@ var GameManager = function(){
   }
 
   this.drawTempRoute = function(ctx){
-    ctx.strokeStyle = this.colors.TEMPROUTE;
+    ctx.strokeStyle = this.connectingRoute.color;
     ctx.lineWidth = 20;
 
     ctx.beginPath();

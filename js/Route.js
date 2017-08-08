@@ -1,6 +1,6 @@
 var Route = function(color){
-  this.head = null;
   this.color = color;
+  this.head = null;
   this.tail = function(node){
     if(node === null || node === undefined){return;}
     if(node.next === null){
@@ -30,41 +30,51 @@ var Route = function(color){
     }
   }
 
-  this.drawHandle = function(node, handle, ctx){
+  this.drawHandle = function(node, handle, ctx, gm, drawNode){
     if(handle && node){
-      var othernode;
-      if(node.next){
-        otherNode = node.next;
-      } else if(node.last){
-        otherNode = node.last;
+      var targetX;
+      var targetY;
+      var distanceX;
+      var distanceY;
+      if(drawNode){
+        var othernode;
+        if(node.next){
+          otherNode = node.next;
+        } else if(node.last){
+          otherNode = node.last;
+        }
+        targetX = otherNode.station.x;
+        targetY = otherNode.station.y;
+      } else {
+        targetX = gm.mouseX;
+        targetY = gm.mouseY;
       }
-      var distanceX = Math.abs(node.station.x - otherNode.station.x);
-      var distanceY = Math.abs(node.station.y - otherNode.station.y);
+      distanceX = Math.abs(node.station.x - targetX);
+      distanceY = Math.abs(node.station.y - targetY);
 
       var normalizeFactor = Math.max(Math.max(Math.abs(distanceX), 1), Math.max(Math.abs(distanceY), 1));
       var normalizedX = (distanceX/normalizeFactor) * node.station.size * 1.5;
       var normalizedY = (distanceY/normalizeFactor) * node.station.size * 1.5;
-      if(node.station.x < otherNode.station.x){
+      if(node.station.x < targetX){
         normalizedX *= -1;
       }
-      if(node.station.y > otherNode.station.y){
+      if(node.station.y > targetY){
         normalizedY *= -1;
       }
-
-      var slope = (otherNode.station.y - node.station.y) / (otherNode.station.x - node.station.x);
-      var rotation = Math.atan(slope);
+      var x;
+      var y;
+      if(drawNode){
+        x = node.station.x + normalizedX;
+        y = node.station.y - normalizedY;
+      } else {
+        x = gm.mouseX;
+        y = gm.mouseY;
+      }
       ctx.strokeStyle = this.color;
-      // if(handle.route.color === "#ff4444" && handle.route.headHandle === handle){
-      //   console.log(normalizeFactor)
-      //
-      //   // console.log("x ", distanceX);
-      //   // console.log("y ",distanceY);
-      //
-      //   // var distanceX = Math.pow(normalizedX, 2)
-      //   // var distanceY = Math.pow(normalizedY, 2);
-      //   // console.log(Math.sqrt(distanceY + distanceX));
-      // }
-      handle.draw(node.station.x + normalizedX, node.station.y - normalizedY, rotation, node.station, ctx);
+
+      var slope = (targetY - node.station.y) / (targetX - node.station.x);
+      var rotation = Math.atan(slope);
+      handle.draw(x, y, rotation, node.station, ctx, drawNode);
     }
   }
 }

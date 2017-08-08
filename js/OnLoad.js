@@ -18,6 +18,7 @@ $(document).ready(function(){
           console.log("Setting connectors")
           gm.connectingStation = handle.getNode().station;
           gm.connectingRoute = handle.route;
+          gm.connectingHandle = handle;
           break;
         }
       }
@@ -44,7 +45,7 @@ $(document).ready(function(){
                 gm.connectingRoute.head = node
               } else {
                 node.setStation(station);
-                var tail = gm.connectingRoute.tail(gm.connectingRoute.tail());
+                var tail = gm.connectingRoute.tail(gm.connectingRoute.head);
                 tail.next = node;
                 node.last = tail;
               }
@@ -54,6 +55,7 @@ $(document).ready(function(){
       }
       gm.connectingStation = null;
       gm.connectingRoute = null;
+      gm.connectingHandle = null;
     }
     console.log("mouseup")
   })
