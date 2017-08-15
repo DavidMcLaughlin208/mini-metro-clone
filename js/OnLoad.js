@@ -9,6 +9,8 @@ $(document).ready(function(){
     var rect = this.getBoundingClientRect();
     var x = (e.clientX - rect.left) - gm.metro.width/2;
     var y = (e.clientY - rect.top) - gm.metro.height/2;
+    console.log("x: ", x);
+    console.log("y: ", y);
     for(var i = 0; i < gm.allRouteHandles.length; i++){
       var handle = gm.allRouteHandles[i];
       if(x <= handle.x + gm.clickBox && x >= handle.x - gm.clickBox && y <= handle.y + gm.clickBox && y >= handle.y - gm.clickBox){
@@ -19,7 +21,28 @@ $(document).ready(function(){
           gm.connectingStation = handle.getNode().station;
           gm.connectingRoute = handle.route;
           gm.connectingHandle = handle;
-          break;
+          return;
+        }
+      }
+      for(var i = 0; i < gm.stations.length; i++){
+        var station = gm.stations[i];
+        if(x <= station.x + gm.clickBox && x >= station.x - gm.clickBox && y <= station.y + gm.clickBox && y >= station.y - gm.clickBox){
+          var route = null;
+          for (var property in gm.routes) {
+            if (gm.routes.hasOwnProperty(property) && gm.routes[property].head === null) {
+              route = gm.routes[property];
+              break;
+            }
+          }
+          if(route){
+            route.head = new TravelNode(gm.getTravelNodeId(), route);
+            route.head.setStation(station);
+            gm.connectingNode = route.head;
+            gm.connectingRoute = route;
+            gm.connectingStation = station;
+            gm.connectingHandle = route.tailHandle;
+            return;
+          }
         }
       }
     }
@@ -32,7 +55,7 @@ $(document).ready(function(){
     if(gm.connectingStation && gm.connectingRoute){
       for(var i = 0; i < gm.stations.length; i++){
         var station = gm.stations[i];
-        if(x <= station.x + 50 && x >= station.x - 50 && y <= station.y + 50 && y >= station.y - 50){
+        if(x <= station.x + gm.clickBox && x >= station.x - gm.clickBox && y <= station.y + gm.clickBox && y >= station.y - gm.clickBox){
           if(gm.connectingStation !== this){
             var valid = gm.isValidConnection(gm.connectingRoute.head, station);
             if(valid){
@@ -53,6 +76,12 @@ $(document).ready(function(){
           }
         }
       }
+      var route = gm.connectingRoute;
+      if(route.tail(route.head) === route.head){
+        console.log("Not a valid route")
+        route.deleteAllNodes();
+      }
+      gm.connectingNode = null;
       gm.connectingStation = null;
       gm.connectingRoute = null;
       gm.connectingHandle = null;
@@ -61,7 +90,10 @@ $(document).ready(function(){
   })
 
   $("#metro").on("mouseleave", function(e){
+    gm.connectingNode = null;
     gm.connectingStation = null;
+    gm.connectingRoute = null;
+    gm.connectingHandle = null;
     console.log("mouseleave")
   })
 

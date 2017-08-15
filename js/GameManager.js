@@ -38,13 +38,14 @@ var GameManager = function(){
     this.metro.ctx.fillStyle = this.colors.BACKGROUND;
     this.metro.ctx.fillRect(-this.metro.width/2, -this.metro.height/2, this.metro.width, this.metro.height);
 
+    // Draw routes
     for (var property in this.routes) {
       if (this.routes.hasOwnProperty(property)) {
         var route = this.routes[property];
         route.draw(this.metro.ctx, route.head);
       }
     }
-
+    // Draw route handles
     for (var property in this.routes) {
       if (this.routes.hasOwnProperty(property)) {
         var route = this.routes[property];
@@ -52,11 +53,11 @@ var GameManager = function(){
         route.drawHandle(route.tail(route.head), route.tailHandle, this.metro.ctx, this, route.tailHandle !== this.connectingHandle);
       }
     }
-
+    // Draw route being drawn
     if(this.connectingStation){
       this.drawTempRoute(this.metro.ctx)
     }
-
+    // Draw stations and passengers at stations
     for(var i in this.stations){
       this.stations[i].draw(this.metro.ctx);
       var passengers = this.stations[i].passengers;
@@ -64,7 +65,7 @@ var GameManager = function(){
         passengers[j].draw(this.metro.ctx, j);
       }
     }
-
+    // Draw trains and passengers on trains
     for(var i in this.trains){
       this.trains[i].draw(this.metro.ctx);
       var passengers = this.trains[i].passengers;

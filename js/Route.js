@@ -10,6 +10,21 @@ var Route = function(color){
     }
   }
 
+  this.deleteAllNodes = function(){
+    var headNode = this.head;
+    this.head = null;
+    this.deleteNext(this.head);
+  }
+
+  this.deleteNext = function(node){
+    if(node === null || node === undefined){return}
+    if(node.next){
+      var nextNode = node.next;
+      node.delete();
+      this.deleteNext(nextNode);
+    }
+  }
+
   this.headHandle = new RouteHandle(this, "head");
   this.tailHandle = new RouteHandle(this, "tail");
 
@@ -42,6 +57,8 @@ var Route = function(color){
           otherNode = node.next;
         } else if(node.last){
           otherNode = node.last;
+        } else {
+          return;
         }
         targetX = otherNode.station.x;
         targetY = otherNode.station.y;
