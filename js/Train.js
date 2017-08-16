@@ -1,15 +1,29 @@
-var Train = function(x, y, travelNode, route){
-  this.x = x;
-  this.y = y;
+var Train = function(){
+  this.x = null;
+  this.y = null;
   this.width = 60;
   this.height = 30;
-  this.route = route;
-  this.travelNode = travelNode;
+  this.route = null;
+  this.travelNode = null;
   this.state = "travel";
   this.forward = true;
   this.passengers = [];
   this.rotation = 90;
   this.target = null;
+
+  this.setTrainParams = function(x, y, route, travelNode){
+    this.x = x;
+    this.y = y;
+    this.route = route;
+    this.travelNode = travelNode;
+  }
+
+  this.clearTrainParams = function(){
+    this.x = null;
+    this.y = null;
+    this.route = null;
+    this.travelNode = null;
+  }
 
   this.draw = function(ctx){
     if(this.forward){

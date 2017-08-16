@@ -9,13 +9,10 @@ $(document).ready(function(){
     var rect = this.getBoundingClientRect();
     var x = (e.clientX - rect.left) - gm.metro.width/2;
     var y = (e.clientY - rect.top) - gm.metro.height/2;
-    console.log("x: ", x);
-    console.log("y: ", y);
     for(var i = 0; i < gm.allRouteHandles.length; i++){
       var handle = gm.allRouteHandles[i];
       if(x <= handle.x + gm.clickBox && x >= handle.x - gm.clickBox && y <= handle.y + gm.clickBox && y >= handle.y - gm.clickBox){
         gm.connectingNode = handle.getNode();
-        console.log(gm.connectingNode)
         if(gm.connectingNode){
           console.log("Setting connectors")
           gm.connectingStation = handle.getNode().station;
@@ -24,25 +21,25 @@ $(document).ready(function(){
           return;
         }
       }
-      for(var i = 0; i < gm.stations.length; i++){
-        var station = gm.stations[i];
-        if(x <= station.x + gm.clickBox && x >= station.x - gm.clickBox && y <= station.y + gm.clickBox && y >= station.y - gm.clickBox){
-          var route = null;
-          for (var property in gm.routes) {
-            if (gm.routes.hasOwnProperty(property) && gm.routes[property].head === null) {
-              route = gm.routes[property];
-              break;
-            }
+    }
+    for(var i = 0; i < gm.stations.length; i++){
+      var station = gm.stations[i];
+      if(x <= station.x + gm.clickBox && x >= station.x - gm.clickBox && y <= station.y + gm.clickBox && y >= station.y - gm.clickBox){
+        var route = null;
+        for (var property in gm.routes) {
+          if (gm.routes.hasOwnProperty(property) && gm.routes[property].head === null) {
+            route = gm.routes[property];
+            break;
           }
-          if(route){
-            route.head = new TravelNode(gm.getTravelNodeId(), route);
-            route.head.setStation(station);
-            gm.connectingNode = route.head;
-            gm.connectingRoute = route;
-            gm.connectingStation = station;
-            gm.connectingHandle = route.tailHandle;
-            return;
-          }
+        }
+        if(route){
+          route.head = new TravelNode(gm.getTravelNodeId(), route);
+          route.head.setStation(station);
+          gm.connectingNode = route.head;
+          gm.connectingRoute = route;
+          gm.connectingStation = station;
+          gm.connectingHandle = route.tailHandle;
+          return;
         }
       }
     }
@@ -52,7 +49,7 @@ $(document).ready(function(){
     var rect = this.getBoundingClientRect();
     var x = (e.clientX - rect.left) - gm.metro.width/2;
     var y = (e.clientY - rect.top) - gm.metro.height/2;
-    if(gm.connectingStation && gm.connectingRoute){
+    if(gm.connectingStation && gm.connectingRoute && gm.connectingNode){
       for(var i = 0; i < gm.stations.length; i++){
         var station = gm.stations[i];
         if(x <= station.x + gm.clickBox && x >= station.x - gm.clickBox && y <= station.y + gm.clickBox && y >= station.y - gm.clickBox){

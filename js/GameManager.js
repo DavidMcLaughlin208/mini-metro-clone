@@ -1,7 +1,7 @@
 var GameManager = function(){
   this.metro = new Canvas('metro', 900, 600);
   this.passengers = [];
-  this.trains = [];
+  this.trains = [new Train(), new Train(), new Train()];
   this.stations = [];
   this.travelNodes = [];
   this.routes = {
