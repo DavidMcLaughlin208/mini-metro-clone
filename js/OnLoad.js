@@ -50,6 +50,11 @@ $(document).ready(function(){
     var x = (e.clientX - rect.left) - gm.metro.width/2;
     var y = (e.clientY - rect.top) - gm.metro.height/2;
     if(gm.connectingStation && gm.connectingRoute && gm.connectingNode){
+      var newRoute = false;
+      var route = gm.connectingRoute;
+      if(route.tail(route.head) === route.head){
+        newRoute = true;
+      }
       for(var i = 0; i < gm.stations.length; i++){
         var station = gm.stations[i];
         if(x <= station.x + gm.clickBox && x >= station.x - gm.clickBox && y <= station.y + gm.clickBox && y >= station.y - gm.clickBox){
@@ -69,6 +74,18 @@ $(document).ready(function(){
                 tail.next = node;
                 node.last = tail;
               }
+              if(newRoute){
+                console.log("NewRoute")
+                for(var i = 0; i < gm.trains.length; i++){
+                  var train = gm.trains[i];
+                  if(train.route === null){
+                    train.setParams(gm.connectingRoute.head.station.x, gm.connectingRoute.head.station.y, gm.connectingRoute, gm.connectingRoute.head);
+                    console.log(train)
+                    break;
+                  }
+                }
+              }
+              gm.allPassengersUpdateItinerary();
             }
           }
         }
@@ -89,6 +106,7 @@ $(document).ready(function(){
   $("#metro").on("mouseleave", function(e){
     gm.connectingNode = null;
     gm.connectingStation = null;
+    if(gm.connectingRoute){gm.connectingRoute.deleteAllNodes();}
     gm.connectingRoute = null;
     gm.connectingHandle = null;
     console.log("mouseleave")

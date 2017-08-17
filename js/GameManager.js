@@ -1,6 +1,7 @@
 var GameManager = function(){
   this.metro = new Canvas('metro', 900, 600);
   this.passengers = [];
+  this.passengersDelivered = 0;
   this.trains = [new Train(), new Train(), new Train()];
   this.stations = [];
   this.travelNodes = [];
@@ -49,8 +50,12 @@ var GameManager = function(){
     for (var property in this.routes) {
       if (this.routes.hasOwnProperty(property)) {
         var route = this.routes[property];
-        route.drawHandle(route.head, route.headHandle, this.metro.ctx, this, route.headHandle !== this.connectingHandle);
-        route.drawHandle(route.tail(route.head), route.tailHandle, this.metro.ctx, this, route.tailHandle !== this.connectingHandle);
+        route.drawHandle(route.head, route.headHandle,
+                         this.metro.ctx, this,
+                         route.headHandle !== this.connectingHandle);
+        route.drawHandle(route.tail(route.head), route.tailHandle,
+                         this.metro.ctx, this,
+                         route.tailHandle !== this.connectingHandle);
       }
     }
     // Draw route being drawn
@@ -67,7 +72,7 @@ var GameManager = function(){
     }
     // Draw trains and passengers on trains
     for(var i in this.trains){
-      this.trains[i].draw(this.metro.ctx);
+      this.passengersDelivered += this.trains[i].draw(this.metro.ctx);
       var passengers = this.trains[i].passengers;
       for(var j in passengers){
         passengers[j].draw(this.metro.ctx, j);
@@ -118,4 +123,27 @@ var GameManager = function(){
     return routeHandles;
   }
   this.allRouteHandles = this.getAllRouteHandles();
+
+  this.allPassengersUpdateItinerary = function(){
+    for(var i = 0; i < this.stations.length; i++){
+      var station = this.stations[i];
+      for(var j = 0; j < station.passengers.length; j++){
+        var passenger = station.passengers[i];
+        passenger.getAndSetItinerary();
+        console.log(passenger.itinerary);
+      }
+    }
+    for(var i = 0; i < this.trains.length; i++){
+      var train = this.trains[i];
+      for(var j = 0; j < train.passengers.length; j++){
+        var passenger = train.passengers[i];
+        passenger.getAndSetItinerary(train.target.station);
+        if(passenger.itinerary[0] === train.route){
+          passenger.itinerary.shift();
+        } else {
+          passenger.itinerary.unshift(train.target.station);
+        }
+      }
+    }
+  }
 }

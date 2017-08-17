@@ -8,6 +8,7 @@ var Passenger = function(station, shape){
   this.y = station.y;
 
   this.draw = function(ctx, index){
+    if(this.station === null && this.train == null){console.log("not drawing passenger");return};
     ctx.fillStyle = "rgba(0, 0, 0, 0.8)"
     switch(this.state) {
     case "station":
@@ -17,9 +18,6 @@ var Passenger = function(station, shape){
     case "train":
       ctx.translate(this.train.x + this.train.width/2, this.train.y);
       ctx.rotate(this.train.rotation*Math.PI/180);
-      // ctx.beginPath()
-      // ctx.arc(0,0, this.size, 2 * Math.PI, false)
-      // ctx.fill()
       this.x = this.calcTrainX(ctx, index);
       this.y = this.calcTrainY(ctx, index);
       break
@@ -95,12 +93,13 @@ var Passenger = function(station, shape){
     }
   }
 
-  this.getItinerary = function(){
+  this.getItinerary = function(station){
     var checkedNodes = {};
     var badNodes = [];
     var cameFrom = {};
     var queue = [];
-    for(var node of this.station.connections){
+    var connections = station ? station.connections : this.station.connections;
+    for(var node of connections){
       queue.push(node);
     }
     for(var i in queue){
@@ -156,6 +155,10 @@ var Passenger = function(station, shape){
 
   this.itinerary = this.getItinerary();
 
+  this.getAndSetItinerary = function(station){
+    this.itinerary = this.getItinerary(station);
+  }
+
   this.embark = function(train, station, index) {
     this.state = "train";
     this.itinerary.shift();
@@ -168,9 +171,13 @@ var Passenger = function(station, shape){
   this.disembark = function(train, station, index){
     this.state = "station";
     this.itinerary.shift();
-    train.passengers.splice(index, 0);
-    this.station = station;
+    train.passengers.splice(index, 1);
     this.train = null;
+    if(station.shape === this.shape){
+      console.log("Arrived at destination");
+      return 1;
+    }
+    this.station = station;
     station.passengers.unshift(this);
   }
 

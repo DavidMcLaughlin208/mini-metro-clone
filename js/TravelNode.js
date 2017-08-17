@@ -21,14 +21,13 @@ var TravelNode = function(id, route){
   }
 
   this.delete = function(){
-    this.station = station;
-    var index = station.connections.indexOf(this);
-    if(station && index !== -1){
+    this.route = null;
+    this.station = null;
+    this.next = null;
+    this.last = null;
+    var index = this.station.connections.indexOf(this);
+    if(index !== -1){
       station.connections.slice(index, 1);
-      this.route = null;
-      this.station = null;
-      this.next = null;
-      this.last = null;
     }
   }
 }

@@ -41,11 +41,11 @@ var createStations = function(gm){
   // start = gm.travelNodes[3];
   // gm.trains.push(new Train(start.station.x, start.station.y, start, gm.routes.blue))
 
-  gm.stations[2].passengers.unshift(new Passenger(gm.stations[3], "triangle"));
-  gm.stations[2].passengers.unshift(new Passenger(gm.stations[3], "square"));
-  gm.stations[2].passengers.unshift(new Passenger(gm.stations[3], "plus"));
-  gm.stations[2].passengers.unshift(new Passenger(gm.stations[3], "square"));
-  gm.stations[2].passengers.unshift(new Passenger(gm.stations[3], "square"));
+  // gm.stations[2].passengers.unshift(new Passenger(gm.stations[2], "triangle"));
+  // gm.stations[2].passengers.unshift(new Passenger(gm.stations[2], "square"));
+  // gm.stations[2].passengers.unshift(new Passenger(gm.stations[2], "plus"));
+  gm.stations[0].passengers.unshift(new Passenger(gm.stations[0], "circle"));
+  // gm.stations[2].passengers.unshift(new Passenger(gm.stations[2], "square"));
 
 
 }

@@ -11,14 +11,14 @@ var Train = function(){
   this.rotation = 90;
   this.target = null;
 
-  this.setTrainParams = function(x, y, route, travelNode){
+  this.setParams = function(x, y, route, travelNode){
     this.x = x;
     this.y = y;
     this.route = route;
     this.travelNode = travelNode;
   }
 
-  this.clearTrainParams = function(){
+  this.clearParams = function(){
     this.x = null;
     this.y = null;
     this.route = null;
@@ -26,6 +26,8 @@ var Train = function(){
   }
 
   this.draw = function(ctx){
+    if(this.x === null || this.y === null || this.travelNode === null || this.route === null){return 0;}
+    var passengersDeliveredCount = 0;
     if(this.forward){
       this.target = this.travelNode.next;
     } else {
@@ -62,8 +64,10 @@ var Train = function(){
           var passenger = this.passengers[i];
           if(passenger.itinerary[0] === this.target){
             console.log("disembarking")
+            if(passenger.shape === this.target.station.shape){
+              passengersDeliveredCount += 1;
+            }
             passenger.disembark(this, this.target.station, i);
-            console.log(this.target.station.passengers)
           }
         }
         var stationPassengers = this.target.station.passengers;
@@ -111,5 +115,6 @@ var Train = function(){
     ctx.rotate(-this.rotation);
     ctx.translate(-this.x, -this.y);
 
+    return passengersDeliveredCount;
   }
 }
