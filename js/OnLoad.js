@@ -46,50 +46,6 @@ $(document).ready(function(){
   })
 
   $("#metro").on("mouseup", function(e){
-    var rect = this.getBoundingClientRect();
-    var x = (e.clientX - rect.left) - gm.metro.width/2;
-    var y = (e.clientY - rect.top) - gm.metro.height/2;
-    // if(gm.connectingStation && gm.connectingRoute && gm.connectingNode){
-    //   var newRoute = false;
-    //   var route = gm.connectingRoute;
-    //   if(route.tail(route.head) === route.head){
-    //     newRoute = true;
-    //   }
-    //   for(var i = 0; i < gm.stations.length; i++){
-    //     var station = gm.stations[i];
-    //     if(x <= station.x + gm.clickBox && x >= station.x - gm.clickBox && y <= station.y + gm.clickBox && y >= station.y - gm.clickBox){
-    //       if(gm.connectingStation !== this){
-    //         var valid = gm.isValidConnection(gm.connectingRoute.head, station);
-    //         if(valid){
-    //           console.log("Valid connection")
-    //           var node = new TravelNode(gm.getTravelNodeId(), gm.connectingRoute);
-    //           if(gm.connectingNode.next){
-    //             node.next = gm.connectingRoute.head;
-    //             node.setStation(station);
-    //             gm.connectingRoute.head.last = node;
-    //             gm.connectingRoute.head = node
-    //           } else {
-    //             node.setStation(station);
-    //             var tail = gm.connectingRoute.tail(gm.connectingRoute.head);
-    //             tail.next = node;
-    //             node.last = tail;
-    //           }
-    //           if(newRoute){
-    //             console.log("NewRoute")
-    //             for(var i = 0; i < gm.trains.length; i++){
-    //               var train = gm.trains[i];
-    //               if(train.route === null){
-    //                 train.setParams(gm.connectingRoute.head.station.x, gm.connectingRoute.head.station.y, gm.connectingRoute, gm.connectingRoute.head);
-    //                 console.log(train)
-    //                 break;
-    //               }
-    //             }
-    //           }
-    //           gm.allPassengersUpdateItinerary();
-    //         }
-    //       }
-    //     }
-    //   }
     var route = gm.connectingRoute;
     if(route.tail(route.head) === route.head){
       console.log("Not a valid route")

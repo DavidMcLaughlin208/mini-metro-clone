@@ -23,14 +23,15 @@ var Train = function(){
     this.y = null;
     this.route = null;
     this.travelNode = null;
+    this.target = null;
   }
 
   this.draw = function(ctx){
     if(this.x === null || this.y === null || this.travelNode === null || this.route === null){return 0;}
     var passengersDeliveredCount = 0;
-    if(this.forward){
+    if(!this.target && this.forward){
       this.target = this.travelNode.next;
-    } else {
+    } else if(!this.target && !this.forward) {
       this.target = this.travelNode.last;
     }
     var remainingDistanceX = this.x - this.target.station.x
@@ -78,22 +79,36 @@ var Train = function(){
             passenger.embark(this, this.target.station, i);
           }
         }
+        if(!this.target.next && !this.target.last){
+          this.state = "toTerminal";
+          break
+        }
         if(this.forward){
           if(this.target.next !== null){
             this.travelNode = this.target;
+            this.target = this.travelNode.next;
           } else {
             this.travelNode = this.target;
             this.forward = !this.forward;
+            this.target = this.travelNode.last;
           }
         } else {
           if(this.target.last !== null){
             this.travelNode = this.target;
+            this.target = this.travelNode.last;
           } else {
             this.travelNode = this.target;
             this.forward = !this.forward;
+            this.target = this.travelNode.next;
           }
         }
         this.state = "travel";
+        break;
+      case "toTerminal":
+        for(var i = this.passengers.length - 1; i >= 0; i--){
+          passenger.disembark(this, this.target.station, i);
+        }
+        this.clearParams();
         break;
       default:
     }

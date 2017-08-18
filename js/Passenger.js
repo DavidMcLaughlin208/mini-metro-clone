@@ -179,6 +179,7 @@ var Passenger = function(station, shape){
     }
     this.station = station;
     station.passengers.unshift(this);
+    this.getAndSetItinerary();
   }
 
   this.calcStationX = function(index){
