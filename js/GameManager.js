@@ -26,6 +26,7 @@ var GameManager = function(){
   this.connectingNode = null;
   this.connectingRoute = null;
   this.connectingHandle = null;
+  this.hoverStation = null;
   this.mouseX = 0;
   this.mouseY = 0;
   this.travelNodeIdCounter = 0;
