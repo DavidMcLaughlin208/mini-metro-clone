@@ -61,6 +61,10 @@ var Train = function(){
 
         break;
       case "dock":
+        if(!this.target.next && !this.target.last){
+          this.state = "toTerminal";
+          break;
+        }
         for(var i = this.passengers.length - 1; i >= 0; i--){
           var passenger = this.passengers[i];
           if(passenger.itinerary[0] === this.target){
@@ -78,10 +82,6 @@ var Train = function(){
             console.log("embarking")
             passenger.embark(this, this.target.station, i);
           }
-        }
-        if(!this.target.next && !this.target.last){
-          this.state = "toTerminal";
-          break
         }
         if(this.forward){
           if(this.target.next !== null){

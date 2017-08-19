@@ -19,6 +19,14 @@ var GameManager = function(){
     "PURPLE": "#ff3feb",
     "TEMPROUTE": "rgba(0, 0, 0, 0.5)"
   }
+  this.shapes = [
+    "circle",
+    "square",
+    "triangle",
+    // "plus",
+    // "teardrop",
+    // "diamond"
+  ];
 
   this.clickBox = 40;
 
@@ -129,15 +137,14 @@ var GameManager = function(){
     for(var i = 0; i < this.stations.length; i++){
       var station = this.stations[i];
       for(var j = 0; j < station.passengers.length; j++){
-        var passenger = station.passengers[i];
+        var passenger = station.passengers[j];
         passenger.getAndSetItinerary();
-        console.log(passenger.itinerary);
       }
     }
     for(var i = 0; i < this.trains.length; i++){
       var train = this.trains[i];
       for(var j = 0; j < train.passengers.length; j++){
-        var passenger = train.passengers[i];
+        var passenger = train.passengers[j];
         passenger.getAndSetItinerary(train.target.station);
         if(passenger.itinerary[0] === train.route){
           passenger.itinerary.shift();
@@ -146,5 +153,14 @@ var GameManager = function(){
         }
       }
     }
+  }
+
+  this.spawnPasenger = function(){
+    var station = this.stations[Math.floor(Math.random() * this.stations.length)];
+    var shape = station.shape;
+    while(shape === station.shape){
+      shape = this.shapes[Math.floor(Math.random() * this.shapes.length)];
+    }
+    station.passengers.unshift(new Passenger(station, shape));
   }
 }

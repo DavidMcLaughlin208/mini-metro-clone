@@ -111,7 +111,7 @@ var Passenger = function(station, shape){
       if(node.station.shape === this.shape){
         return this.reconstructPath(cameFrom, node);
       }
-      var neighbors = node.station.connections;
+      var neighbors = node.station.connections === connections ? [] : node.station.connections;
       if(node.next){neighbors.push(node.next)}
       if(node.last){neighbors.push(node.last)}
 
@@ -149,7 +149,7 @@ var Passenger = function(station, shape){
       }
       current = cameFrom[current.getId()];
     }
-    console.log(itinerary)
+    // console.log(itinerary)
     return itinerary;
   }
 
@@ -174,7 +174,7 @@ var Passenger = function(station, shape){
     train.passengers.splice(index, 1);
     this.train = null;
     if(station.shape === this.shape){
-      console.log("Arrived at destination");
+      // console.log("Arrived at destination");
       return 1;
     }
     this.station = station;

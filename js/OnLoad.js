@@ -3,7 +3,49 @@ $(document).ready(function(){
   gm.metro.ctx.translate(gm.metro.width/2, gm.metro.height/2);
 
   var gameLoop = setInterval(gm.draw.bind(gm), 2)
-  createStations(gm)
+  var passengerLoop = setInterval(gm.spawnPasenger.bind(gm), 4000)
+  createStations(gm);
+
+  $("#pause").on("click", function(e){
+    e.preventDefault();
+    clearInterval(gameLoop);
+    clearInterval(passengerLoop);
+  })
+
+  $("#play").on("click", function(e){
+    e.preventDefault();
+    clearInterval(gameLoop);
+    clearInterval(passengerLoop);
+    gameLoop = setInterval(gm.draw.bind(gm), 2);
+    passengerLoop = setInterval(gm.spawnPasenger.bind(gm), 4000)
+  })
+
+  $("#updateItin").on("click", function(e){
+    e.preventDefault();
+    gm.allPassengersUpdateItinerary();
+  })
+
+  $("#printPassengers").on("click", function(e){
+    e.preventDefault();
+    var passengerTotal = 0;
+    for(var i = 0; i < gm.stations.length; i++){
+      var station = gm.stations[i];
+      for(var j = 0; j < station.passengers.length; j++){
+        var passenger = station.passengers[j];
+        passengerTotal += 1;
+        console.log(passenger);
+      }
+    }
+    for(var i = 0; i < gm.trains.length; i++){
+      var train = gm.trains[i];
+      for(var j = 0; j < train.passengers.length; j++){
+        var passenger = train.passengers[j];
+        passengerTotal += 1;
+        console.log(passenger);
+      }
+    }
+    console.log(passengerTotal);
+  })
 
   $("#metro").on("mousedown", function(e){
     var rect = this.getBoundingClientRect();
@@ -47,7 +89,7 @@ $(document).ready(function(){
 
   $("#metro").on("mouseup", function(e){
     var route = gm.connectingRoute;
-    if(route.tail(route.head) === route.head){
+    if(route && route.tail(route.head) === route.head){
       console.log("Not a valid route")
       route.deleteAllNodes();
     }
@@ -107,13 +149,18 @@ $(document).ready(function(){
               gm.connectingNode = node;
               gm.connectingStation = node.station;
               if(newRoute){
-                console.log("NewRoute")
-                for(var i = 0; i < gm.trains.length; i++){
-                  var train = gm.trains[i];
-                  if(train.route === null){
-                    train.setParams(gm.connectingRoute.head.station.x, gm.connectingRoute.head.station.y, gm.connectingRoute, gm.connectingRoute.head);
-                    console.log(train)
-                    break;
+                var anyTrainsOnRoute = gm.trains.some(function(arrVal) {
+                  return arrVal.route === gm.connectingRoute;
+                });
+                if(!anyTrainsOnRoute){
+                  console.log("NewRoute")
+                  for(var i = 0; i < gm.trains.length; i++){
+                    var train = gm.trains[i];
+                    if(train.route === null){
+                      train.setParams(gm.connectingRoute.head.station.x, gm.connectingRoute.head.station.y, gm.connectingRoute, gm.connectingRoute.head);
+                      console.log(train)
+                      break;
+                    }
                   }
                 }
               }
@@ -133,7 +180,7 @@ $(document).ready(function(){
           var newDistanceX = Math.pow(gm.mouseX - head.next.station.x, 2);
           var newDistanceY = Math.pow(gm.mouseY - head.next.station.y, 2);
           var newTotalDistance = Math.sqrt(distanceX + distanceY);
-          if(newTotalDistance < totalDistance){
+          if(newTotalDistance + gm.hoverStation.size/2 < totalDistance){
             var route = gm.connectingRoute;
             route.head = route.head.next;
             route.head.last = null;
@@ -149,7 +196,7 @@ $(document).ready(function(){
           var newDistanceY = Math.pow(gm.mouseY - tail.last.station.y, 2);
           var newTotalDistance = Math.sqrt(newDistanceX + newDistanceY);
 
-          if(newTotalDistance < totalDistance){
+          if(newTotalDistance + gm.hoverStation.size/2 < totalDistance){
             var route = gm.connectingRoute;
             tail.last.next = null;
             tail.last = null;
