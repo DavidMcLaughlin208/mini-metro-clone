@@ -8,7 +8,7 @@ var Passenger = function(station, shape){
   this.y = station.y;
 
   this.draw = function(ctx, index){
-    if(this.station === null && this.train == null){console.log("not drawing passenger");return};
+    if(this.station === null && this.train == null){return};
     ctx.fillStyle = "rgba(0, 0, 0, 0.8)"
     switch(this.state) {
     case "station":
@@ -139,12 +139,12 @@ var Passenger = function(station, shape){
   }
 
   this.reconstructPath = function(cameFrom, endPoint){
-    var itinerary = [endPoint];
+    var itinerary = [endPoint.station];
     itinerary.unshift(endPoint.route);
     var current = endPoint;
     while(Object.keys(cameFrom).indexOf(current.getId()) !== -1){
       if(current.route !== cameFrom[current.getId()].route){
-        itinerary.unshift(cameFrom[current.getId()]);
+        itinerary.unshift(cameFrom[current.getId()].station);
         itinerary.unshift(cameFrom[current.getId()].route);
       }
       current = cameFrom[current.getId()];

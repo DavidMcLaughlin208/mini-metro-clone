@@ -3,21 +3,25 @@ $(document).ready(function(){
   gm.metro.ctx.translate(gm.metro.width/2, gm.metro.height/2);
 
   var gameLoop = setInterval(gm.draw.bind(gm), 2)
-  var passengerLoop = setInterval(gm.spawnPasenger.bind(gm), 4000)
+  var passengerLoop = setInterval(gm.spawnPasenger.bind(gm), 4000);
+  var stationLoop = setInterval(gm.spawnStation.bind(gm), 10000);
   createStations(gm);
 
   $("#pause").on("click", function(e){
     e.preventDefault();
     clearInterval(gameLoop);
     clearInterval(passengerLoop);
+    clearInterval(stationLoop);
   })
 
   $("#play").on("click", function(e){
     e.preventDefault();
     clearInterval(gameLoop);
     clearInterval(passengerLoop);
+    clearInterval(stationLoop);
     gameLoop = setInterval(gm.draw.bind(gm), 2);
-    passengerLoop = setInterval(gm.spawnPasenger.bind(gm), 4000)
+    passengerLoop = setInterval(gm.spawnPasenger.bind(gm), 4000);
+    stationLoop = setInterval(gm.spawnStation.bind(gm), 10000);
   })
 
   $("#updateItin").on("click", function(e){
@@ -67,6 +71,7 @@ $(document).ready(function(){
     for(var i = 0; i < gm.stations.length; i++){
       var station = gm.stations[i];
       if(x <= station.x + gm.clickBox && x >= station.x - gm.clickBox && y <= station.y + gm.clickBox && y >= station.y - gm.clickBox){
+        console.log(station.connections)
         var route = null;
         for (var property in gm.routes) {
           if (gm.routes.hasOwnProperty(property) && gm.routes[property].head === null) {
@@ -76,6 +81,7 @@ $(document).ready(function(){
         }
         if(route){
           route.head = new TravelNode(gm.getTravelNodeId(), route);
+          console.log("Creating new node")
           route.head.setStation(station);
           gm.connectingNode = route.head;
           gm.connectingRoute = route;
@@ -135,6 +141,7 @@ $(document).ready(function(){
             if(valid){
               console.log("Valid connection")
               var node = new TravelNode(gm.getTravelNodeId(), gm.connectingRoute);
+              console.log("Creating New Node")
               if(gm.connectingNode.next){
                 node.next = gm.connectingRoute.head;
                 node.setStation(station);
@@ -157,7 +164,10 @@ $(document).ready(function(){
                   for(var i = 0; i < gm.trains.length; i++){
                     var train = gm.trains[i];
                     if(train.route === null){
-                      train.setParams(gm.connectingRoute.head.station.x, gm.connectingRoute.head.station.y, gm.connectingRoute, gm.connectingRoute.head);
+                      train.setParams(gm.connectingRoute.head.station.x,
+                                      gm.connectingRoute.head.station.y,
+                                      gm.connectingRoute,
+                                      gm.connectingRoute.head);
                       console.log(train)
                       break;
                     }
@@ -170,24 +180,33 @@ $(document).ready(function(){
         }
       }
       if(!isHovering && gm.hoverStation){
-        var tail = gm.connectingRoute.tail(gm.connectingRoute.head);
         var head = gm.connectingRoute.head;
-        if(gm.hoverStation === head.station && head.next){
+        var tail = gm.connectingRoute.tail(gm.connectingRoute.head);
+        if(gm.hoverStation === head.station && head.next && gm.connectingHandle === gm.connectingRoute.headHandle){
           var distanceX = Math.pow(head.station.x - head.next.station.x, 2);
           var distanceY = Math.pow(head.station.y - head.next.station.y, 2);
           var totalDistance = Math.sqrt(distanceX + distanceY);
 
           var newDistanceX = Math.pow(gm.mouseX - head.next.station.x, 2);
           var newDistanceY = Math.pow(gm.mouseY - head.next.station.y, 2);
-          var newTotalDistance = Math.sqrt(distanceX + distanceY);
+          var newTotalDistance = Math.sqrt(newDistanceX + newDistanceY);
+          console.log("Trying to remove head");
           if(newTotalDistance + gm.hoverStation.size/2 < totalDistance){
+            console.log("Removing head")
             var route = gm.connectingRoute;
+            console.log(gm.hoverStation.connections)
+            var index = gm.hoverStation.connections.indexOf(head);
+            if(index !== -1){
+              gm.hoverStation.connections.splice(index, 1);
+            }
+            console.log(gm.hoverStation.connections)
             route.head = route.head.next;
+            route.head.last.next = null;
             route.head.last = null;
             gm.connectingNode = route.head;
             gm.connectingStation = route.head.station;
           }
-        } else if(gm.hoverStation === tail.station && tail.last){
+        } else if(gm.hoverStation === tail.station && tail.last && gm.connectingHandle === gm.connectingRoute.tailHandle){
           var distanceX = Math.pow(tail.station.x - tail.last.station.x, 2);
           var distanceY = Math.pow(tail.station.y - tail.last.station.y, 2);
           var totalDistance = Math.sqrt(distanceX + distanceY);
@@ -196,8 +215,14 @@ $(document).ready(function(){
           var newDistanceY = Math.pow(gm.mouseY - tail.last.station.y, 2);
           var newTotalDistance = Math.sqrt(newDistanceX + newDistanceY);
 
+          console.log("Trying to remove tail");
           if(newTotalDistance + gm.hoverStation.size/2 < totalDistance){
+            console.log("Removing tail")
             var route = gm.connectingRoute;
+            var connections = gm.hoverStation.connections;
+            console.log(connections)
+            connections.splice(connections.indexOf(tail), 1)
+            console.log(connections)
             tail.last.next = null;
             tail.last = null;
             var newTail = route.tail(route.head);

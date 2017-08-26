@@ -13,14 +13,14 @@ var Route = function(color){
   this.deleteAllNodes = function(){
     var headNode = this.head;
     this.head = null;
-    this.deleteNext(this.head);
+    this.deleteNext(headNode);
   }
 
   this.deleteNext = function(node){
     if(node === null || node === undefined){return}
-    if(node.next){
-      var nextNode = node.next;
-      node.delete();
+    var nextNode = node.next;
+    node.delete();
+    if(nextNode){
       this.deleteNext(nextNode);
     }
   }

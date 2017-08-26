@@ -24,6 +24,14 @@ var Train = function(){
     this.route = null;
     this.travelNode = null;
     this.target = null;
+    this.forward = true;
+  }
+
+  this.allPassengersUpdateItinerary = function(){
+    for(var i in this.passengers){
+      var passenger = this.passengers[i];
+      passenger.getAndSetItinerary(this.target.station);
+    }
   }
 
   this.draw = function(ctx){
@@ -61,18 +69,42 @@ var Train = function(){
 
         break;
       case "dock":
-        if(!this.target.next && !this.target.last){
-          this.state = "toTerminal";
-          break;
-        }
         for(var i = this.passengers.length - 1; i >= 0; i--){
           var passenger = this.passengers[i];
-          if(passenger.itinerary[0] === this.target){
+          if(passenger.itinerary[0] === this.target.station){
             console.log("disembarking")
             if(passenger.shape === this.target.station.shape){
               passengersDeliveredCount += 1;
             }
             passenger.disembark(this, this.target.station, i);
+          }
+        }
+        if(!this.target.next && !this.target.last){
+          var toTerminal = true;
+          for(var i in this.target.station.connections){
+            var node = this.target.station.connections[i];
+            if(node.route === this.route){
+              this.target = node;
+              if(this.target.next){
+                this.travelNode = this.target.next;
+                this.forward = false;
+              } else if(this.target.last){
+                this.travelNode = this.target.last;
+                this.forward = true;
+              } else {
+                continue;
+              }
+              toTerminal = false;
+              this.allPassengersUpdateItinerary();
+              break;
+            }
+          }
+          if(toTerminal){
+            for(var i = this.passengers.length - 1; i >= 0; i--){
+              passenger.disembark(this, this.target.station, i);
+            }
+            this.clearParams();
+            return;
           }
         }
         var stationPassengers = this.target.station.passengers;
@@ -103,12 +135,6 @@ var Train = function(){
           }
         }
         this.state = "travel";
-        break;
-      case "toTerminal":
-        for(var i = this.passengers.length - 1; i >= 0; i--){
-          passenger.disembark(this, this.target.station, i);
-        }
-        this.clearParams();
         break;
       default:
     }

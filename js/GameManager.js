@@ -2,7 +2,7 @@ var GameManager = function(){
   this.metro = new Canvas('metro', 900, 600);
   this.passengers = [];
   this.passengersDelivered = 0;
-  this.trains = [new Train(), new Train(), new Train()];
+  this.trains = [new Train(), new Train(), new Train(), new Train()];
   this.stations = [];
   this.travelNodes = [];
   this.routes = {
@@ -23,10 +23,16 @@ var GameManager = function(){
     "circle",
     "square",
     "triangle",
-    // "plus",
-    // "teardrop",
-    // "diamond"
+    "plus",
+    "teardrop",
+    "diamond"
   ];
+
+  this.activeShapes = [
+    "circle",
+    "square",
+    "triangle"
+  ]
 
   this.clickBox = 40;
 
@@ -159,8 +165,36 @@ var GameManager = function(){
     var station = this.stations[Math.floor(Math.random() * this.stations.length)];
     var shape = station.shape;
     while(shape === station.shape){
-      shape = this.shapes[Math.floor(Math.random() * this.shapes.length)];
+      shape = this.activeShapes[Math.floor(Math.random() * this.activeShapes.length)];
     }
     station.passengers.unshift(new Passenger(station, shape));
+  }
+
+  this.spawnStation = function(){
+    var x = 0;
+    var y = 0;
+    var xModifier = 0;
+    var yModifier = 0;
+    var sufficientDistance = false;
+    while(!sufficientDistance){
+      sufficientDistance = true;
+      xModifier = Math.random() * 100 + 10;
+      yModifier = Math.random() * 100 + 10;
+      Math.random() > 0.5 ? xModifier *= -1 : xModifier *= 1;
+      Math.random() > 0.5 ? yModifier *= -1 : yModifier *= 1;
+      x += xModifier;
+      y += yModifier;
+      for(var i in this.stations){
+        var station = this.stations[i];
+        var distanceX = Math.pow(station.x - x, 2);
+        var distanceY = Math.pow(station.y - y, 2);
+        var totalDistance = Math.sqrt(distanceX + distanceY);
+        if(totalDistance < 200){
+          sufficientDistance = false;
+        }
+      }
+    }
+    var shape = this.activeShapes[Math.floor(Math.random() * this.activeShapes.length)];
+    this.stations.push(new Station(x, y, shape))
   }
 }
