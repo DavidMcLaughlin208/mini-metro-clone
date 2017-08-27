@@ -114,9 +114,33 @@ var GameManager = function(){
   this.drawTempRoute = function(ctx){
     ctx.strokeStyle = this.connectingRoute.color;
     ctx.lineWidth = this.sizes.route.lineWidth;
+    var xDistance = Math.abs(this.connectingStation.x - this.mouseX);
+    var yDistance = Math.abs(this.connectingStation.y - this.mouseY);
+    var modifier = 1;
+    var midX = this.connectingStation.x;
+    var midY = this.connectingStation.y;
+    if(xDistance > yDistance) {
+      if(this.mouseX < this.connectingStation.x) {
+        modifier = -1;
+      }
+    } else {
+      if(this.mouseY < this.connectingStation.y) {
+        modifier = -1;
+      }
+    }
+    while(Math.abs(xDistance - yDistance) > 2) {
+      if(xDistance > yDistance) {
+        midX += modifier;
+      } else {
+        midY += modifier;
+      }
+      xDistance = Math.abs(this.mouseX - midX);
+      yDistance = Math.abs(this.mouseY - midY);
+    }
 
     ctx.beginPath();
     ctx.moveTo(this.connectingStation.x, this.connectingStation.y)
+    ctx.lineTo(midX, midY);
     ctx.lineTo(this.mouseX, this.mouseY);
     ctx.stroke();
     ctx.closePath();
