@@ -10,9 +10,9 @@ var createStations = function(gm){
   // gm.stations.push(new Station(-100, 100, "plus"))
   // gm.stations.push(new Station(-300, 100, "circle"))
 
-  gm.stations.push(new Station(-50, -150, "circle"))
-  gm.stations.push(new Station(-250, 100, "square"))
-  gm.stations.push(new Station(150, 75, "triangle"))
+  gm.stations.push(new Station(-50, -150, "circle", gm.sizeRatio))
+  gm.stations.push(new Station(-250, 100, "square", gm.sizeRatio))
+  gm.stations.push(new Station(150, 75, "triangle", gm.sizeRatio))
 
   // for(var i = 0; i < 3; i++){
   //   gm.travelNodes.push(new TravelNode(gm.getTravelNodeId(), gm.routes.red));
@@ -50,6 +50,6 @@ var createStations = function(gm){
   // gm.stations[2].passengers.unshift(new Passenger(gm.stations[2], "plus"));
   // gm.stations[0].passengers.unshift(new Passenger(gm.stations[0], "circle"));
   // gm.stations[2].passengers.unshift(new Passenger(gm.stations[2], "square"));
-  
+
 
 }

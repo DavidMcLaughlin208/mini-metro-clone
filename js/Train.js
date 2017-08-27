@@ -1,8 +1,6 @@
 var Train = function(){
   this.x = null;
   this.y = null;
-  this.width = 60;
-  this.height = 30;
   this.route = null;
   this.travelNode = null;
   this.state = "travel";
@@ -10,6 +8,7 @@ var Train = function(){
   this.passengers = [];
   this.rotation = 90;
   this.target = null;
+
 
   this.setParams = function(x, y, route, travelNode){
     this.x = x;
@@ -34,7 +33,7 @@ var Train = function(){
     }
   }
 
-  this.draw = function(ctx){
+  this.draw = function(ctx, sizes){
     if(this.x === null || this.y === null || this.travelNode === null || this.route === null){return 0;}
     var passengersDeliveredCount = 0;
     if(!this.target && this.forward){
@@ -55,9 +54,11 @@ var Train = function(){
         var distanceY = Math.pow(this.travelNode.y - this.target.y, 2);
         var totalDistance = Math.sqrt(distanceX + distanceY);
 
+        var speedRatio = sizes.train.speed;
+
         var normalizeFactor = Math.max(Math.max(Math.abs(remainingDistanceX), 1), Math.max(Math.abs(remainingDistanceY), 1));
-        var normalizedX = (remainingDistanceX/normalizeFactor) * 0.4;
-        var normalizedY = (remainingDistanceY/normalizeFactor) * 0.4;
+        var normalizedX = (remainingDistanceX/normalizeFactor) * 0.4 * speedRatio;
+        var normalizedY = (remainingDistanceY/normalizeFactor) * 0.4 * speedRatio;
         var lastX = this.x;
         var lastY = this.y;
 
@@ -140,14 +141,17 @@ var Train = function(){
     }
 
     // Draw
+    var width = sizes.train.width;
+    var height = sizes.train.height;
+
     ctx.translate(this.x, this.y);
     ctx.rotate(this.rotation);
     ctx.beginPath();
 
-    ctx.lineWidth = 10;
-    ctx.strokeStyle = this.route.color;
-    ctx.rect(-this.width/2, -this.height/2, this.width, this.height);
-    ctx.stroke();
+    // ctx.lineWidth = 10;
+    // ctx.strokeStyle = this.route.color;
+    ctx.rect(-width/2, -height/2, width, height);
+    // ctx.stroke();
 
     ctx.fillStyle = this.route.color;
     ctx.fill();

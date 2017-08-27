@@ -1,10 +1,17 @@
 var GameManager = function(){
   this.metro = new Canvas('metro', 900, 600);
+  this.sizeRatio = 1;
   this.passengers = [];
   this.passengersDelivered = 0;
   this.trains = [new Train(), new Train(), new Train(), new Train()];
   this.stations = [];
   this.travelNodes = [];
+  this.sizes = {
+    station: {size: 47, lineWidth: 8},
+    passenger: {size: 12},
+    train: {width: 80, height: 45, speed: 1},
+    route: {width: 20}
+  }
   this.routes = {
     "red": new Route("#ff4444"),
     "blue": new Route("#4f83ff"),
@@ -45,6 +52,7 @@ var GameManager = function(){
   this.mouseY = 0;
   this.travelNodeIdCounter = 0;
 
+  this.sufficientDistance = 500;
 
   this.draw = function(){
 
@@ -54,11 +62,12 @@ var GameManager = function(){
     this.metro.ctx.fillStyle = this.colors.BACKGROUND;
     this.metro.ctx.fillRect(-this.metro.width/2, -this.metro.height/2, this.metro.width, this.metro.height);
 
+    this.zoomOut();
     // Draw routes
     for (var property in this.routes) {
       if (this.routes.hasOwnProperty(property)) {
         var route = this.routes[property];
-        route.draw(this.metro.ctx, route.head);
+        route.draw(this.metro.ctx, route.head, this.sizes);
       }
     }
     // Draw route handles
@@ -67,30 +76,32 @@ var GameManager = function(){
         var route = this.routes[property];
         route.drawHandle(route.head, route.headHandle,
                          this.metro.ctx, this,
-                         route.headHandle !== this.connectingHandle);
+                         route.headHandle !== this.connectingHandle,
+                         this.sizes);
         route.drawHandle(route.tail(route.head), route.tailHandle,
                          this.metro.ctx, this,
-                         route.tailHandle !== this.connectingHandle);
+                         route.tailHandle !== this.connectingHandle,
+                         this.sizes);
       }
     }
     // Draw route being drawn
     if(this.connectingStation){
-      this.drawTempRoute(this.metro.ctx)
+      this.drawTempRoute(this.metro.ctx, this.sizes)
     }
     // Draw stations and passengers at stations
     for(var i in this.stations){
-      this.stations[i].draw(this.metro.ctx);
+      this.stations[i].draw(this.metro.ctx, this.sizes);
       var passengers = this.stations[i].passengers;
       for(var j in passengers) {
-        passengers[j].draw(this.metro.ctx, j);
+        passengers[j].draw(this.metro.ctx, j, this.sizes);
       }
     }
     // Draw trains and passengers on trains
     for(var i in this.trains){
-      this.passengersDelivered += this.trains[i].draw(this.metro.ctx);
+      this.passengersDelivered += this.trains[i].draw(this.metro.ctx, this.sizes);
       var passengers = this.trains[i].passengers;
       for(var j in passengers){
-        passengers[j].draw(this.metro.ctx, j);
+        passengers[j].draw(this.metro.ctx, j, this.sizes);
       }
     }
 
@@ -98,7 +109,7 @@ var GameManager = function(){
 
   this.drawTempRoute = function(ctx){
     ctx.strokeStyle = this.connectingRoute.color;
-    ctx.lineWidth = 20;
+    ctx.lineWidth = this.sizes.route.lineWidth;
 
     ctx.beginPath();
     ctx.moveTo(this.connectingStation.x, this.connectingStation.y)
@@ -167,7 +178,7 @@ var GameManager = function(){
     while(shape === station.shape){
       shape = this.activeShapes[Math.floor(Math.random() * this.activeShapes.length)];
     }
-    station.passengers.unshift(new Passenger(station, shape));
+    station.passengers.unshift(new Passenger(station, shape, this.sizeRatio));
   }
 
   this.spawnStation = function(){
@@ -189,12 +200,77 @@ var GameManager = function(){
         var distanceX = Math.pow(station.x - x, 2);
         var distanceY = Math.pow(station.y - y, 2);
         var totalDistance = Math.sqrt(distanceX + distanceY);
-        if(totalDistance < 200){
+        if(totalDistance < this.sufficientDistance){
           sufficientDistance = false;
         }
       }
     }
     var shape = this.activeShapes[Math.floor(Math.random() * this.activeShapes.length)];
-    this.stations.push(new Station(x, y, shape))
+    this.stations.push(new Station(x, y, shape, this.sizeRatio))
+  }
+
+  this.zoomOut = function() {
+    var furthestX = 0;
+    var furthestY = 0;
+    for(var i in this.stations) {
+      var station = this.stations[i];
+      if(Math.abs(station.x) > furthestX) {
+        furthestX = Math.abs(station.x);
+      }
+      if(Math.abs(station.y) > furthestY) {
+        furthestY = Math.abs(station.y);
+      }
+    }
+    var currentWidth = this.metro.mycanvas.width;
+    var currentHeight = this.metro.mycanvas.height;
+
+    var xRatio = 1;
+    var yRatio = 1;
+    if(furthestX > currentWidth/2){
+      xRatio = parseFloat(currentWidth/2)/parseFloat(furthestX);
+    }
+    if(furthestY > currentHeight/2) {
+      yRatio = parseFloat(currentHeight/2)/parseFloat(furthestY);
+    }
+
+    var newRatio = Math.min(xRatio, yRatio);
+    if(xRatio < 1 || yRatio < 1){
+      // console.log("xRatio: ", xRatio);
+      // console.log("yRatio: ", yRatio);
+    }
+    if(newRatio < 1.0){
+      this.sizeRatio *= newRatio;
+      // console.log("SizeRatio: ", this.sizeRatio)
+      for(var station of this.stations) {
+        station.x *= this.sizeRatio;
+        station.y *= this.sizeRatio;
+        for(var passenger of station.passengers) {
+          passenger.size *= this.sizeRatio;
+          passenger.x *= this.sizeRatio;
+          passenger.y *= this.sizeRatio;
+        }
+      }
+      for(var train of this.trains) {
+        train.x *= this.sizeRatio;
+        train.y *= this.sizeRatio;
+        for(var passenger of train.passengers) {
+          passenger.x *= this.sizeRatio;
+          passenger.y *= this.sizeRatio;
+        }
+      }
+      this.scaleAllInObject(this.sizes);
+      this.sufficientDistance *= this.sizeRatio;
+      this.clickBox *= this.sizeRatio;
+    }
+  }
+
+  this.scaleAllInObject = function(obj) {
+    for(var key of Object.keys(obj)) {
+      if(key && obj[key].constructor === Object) {
+        this.scaleAllInObject(obj[key]);
+      } else {
+        obj[key] *= this.sizeRatio;
+      }
+    }
   }
 }

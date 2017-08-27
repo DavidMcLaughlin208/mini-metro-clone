@@ -1,19 +1,19 @@
-var Passenger = function(station, shape){
+var Passenger = function(station, shape, sizeRatio){
   this.station = station;
   this.shape = shape;
   this.train = null;
   this.state = "station";
-  this.size = 12;
   this.x = station.x;
   this.y = station.y;
 
-  this.draw = function(ctx, index){
+  this.draw = function(ctx, index, sizes){
+    var size = sizes.passenger.size;
     if(this.station === null && this.train == null){return};
     ctx.fillStyle = "rgba(0, 0, 0, 0.8)"
     switch(this.state) {
     case "station":
-      this.x = this.calcStationX(index);
-      this.y = this.calcStationY(index);
+      this.x = this.calcStationX(index, size);
+      this.y = this.calcStationY(index, size);
       break;
     case "train":
       ctx.translate(this.train.x + this.train.width/2, this.train.y);
@@ -29,7 +29,7 @@ var Passenger = function(station, shape){
       case "square":
         ctx.translate(this.x, this.y);
         ctx.beginPath();
-        ctx.rect(-this.size/2, -this.size/2, this.size, this.size);
+        ctx.rect(-size/2, -size/2, size, size);
         ctx.fill();
         ctx.closePath();
         ctx.translate(-this.x, -this.y);
@@ -37,7 +37,7 @@ var Passenger = function(station, shape){
       case "circle":
         ctx.translate(this.x, this.y);
         ctx.beginPath();
-        ctx.arc(0, 0, this.size/1.7, 0, 2 * Math.PI, false);
+        ctx.arc(0, 0, size/1.7, 0, 2 * Math.PI, false);
         ctx.fill();
         ctx.closePath();
         ctx.translate(-this.x, -this.y);
@@ -45,11 +45,11 @@ var Passenger = function(station, shape){
       case "triangle":
         ctx.translate(this.x, this.y);
         ctx.beginPath();
-        ctx.moveTo(0, -this.size/2);
-        ctx.lineTo(this.size/1.7, this.size/2);
-        ctx.lineTo(-this.size/1.7, this.size/2);
-        ctx.lineTo(0, -this.size/2);
-        ctx.lineTo(this.size/1.7, this.size/2);
+        ctx.moveTo(0, -size/2);
+        ctx.lineTo(size/1.7, size/2);
+        ctx.lineTo(-size/1.7, size/2);
+        ctx.lineTo(0, -size/2);
+        ctx.lineTo(size/1.7, size/2);
         ctx.fill();
         ctx.closePath();
         ctx.translate(-this.x, -this.y);
@@ -58,7 +58,7 @@ var Passenger = function(station, shape){
         ctx.translate(this.x, this.y);
         ctx.rotate(45*Math.PI/180);
         ctx.beginPath();
-        ctx.rect(-this.size/2, -this.size/2, this.size, this.size);
+        ctx.rect(-size/2, -size/2, size, size);
         ctx.fill();
         ctx.closePath();
         ctx.rotate(-45*Math.PI/180);
@@ -67,8 +67,8 @@ var Passenger = function(station, shape){
       case "plus":
         ctx.translate(this.x, this.y);
         ctx.beginPath()
-        ctx.rect(-this.size/5, -this.size/2, this.size/2.5, this.size);
-        ctx.rect(-this.size/2, -this.size/5, this.size, this.size/2.5);
+        ctx.rect(-size/5, -size/2, size/2.5, size);
+        ctx.rect(-size/2, -size/5, size, size/2.5);
         ctx.fill();
         ctx.closePath();
         ctx.translate(-this.x, -this.y);
@@ -77,10 +77,10 @@ var Passenger = function(station, shape){
         ctx.translate(this.x, this.y);
         ctx.rotate(Math.PI);
         ctx.beginPath();
-        ctx.arc(0, 0, this.size/1.7, Math.PI, false);
-        ctx.moveTo(-this.size/1.7, 0);
-        ctx.lineTo(0, this.size/1.7);
-        ctx.lineTo(this.size/1.7, 0);
+        ctx.arc(0, 0, size/1.7, Math.PI, false);
+        ctx.moveTo(-size/1.7, 0);
+        ctx.lineTo(0, size/1.7);
+        ctx.lineTo(size/1.7, 0);
         ctx.fill();
         ctx.rotate(-Math.PI);
         ctx.translate(-this.x, -this.y);
@@ -182,17 +182,17 @@ var Passenger = function(station, shape){
     this.getAndSetItinerary();
   }
 
-  this.calcStationX = function(index){
-    return this.station.x - this.station.size + index * this.size * 1.4;
+  this.calcStationX = function(index, size){
+    return this.station.x - this.station.size + index * size * 1.4;
   }
-  this.calcStationY = function(index){
+  this.calcStationY = function(index, size){
     // var multiplier = 1;
     // var rows = 1 + index;
     // while(rows > 4){
     //   rows -= 4;
     //   multiplier += 1;
     // }
-    return this.station.y - this.station.size - this.size;
+    return this.station.y - this.station.size - size;
   }
   this.calcTrainY = function(ctx, index){
     if(index % 2 === 0){

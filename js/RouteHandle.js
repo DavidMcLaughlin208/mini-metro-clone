@@ -1,9 +1,7 @@
-var RouteHandle = function(route, location){
+var RouteHandle = function(route, location, sizeRatio){
   this.x = null;
   this.y = null;
   this.route = route;
-  this.width = 15;
-  this.height = 4;
   this.location = location;
   this.state = "node";
 
@@ -15,8 +13,10 @@ var RouteHandle = function(route, location){
     }
   }
 
-  this.draw = function(x, y, rotation, station, ctx, drawNode){
+  this.draw = function(x, y, rotation, station, ctx, drawNode, sizes){
+    var size = sizes.route.lineWidth;
     if(true){
+      ctx.lineWidth = size;
       this.x = x;
       this.y = y;
       ctx.beginPath();
@@ -29,8 +29,8 @@ var RouteHandle = function(route, location){
       ctx.rotate(rotation);
 
       ctx.beginPath();
-      ctx.moveTo(0, station.size/1.5);
-      ctx.lineTo(0, -station.size/1.5);
+      ctx.moveTo(0, sizes.station.size/1.5);
+      ctx.lineTo(0, -sizes.station.size/1.5);
       ctx.stroke();
       ctx.closePath();
 

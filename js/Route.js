@@ -1,4 +1,4 @@
-var Route = function(color){
+var Route = function(color, sizeRatio){
   this.color = color;
   this.head = null;
   this.tail = function(node){
@@ -28,10 +28,11 @@ var Route = function(color){
   this.headHandle = new RouteHandle(this, "head");
   this.tailHandle = new RouteHandle(this, "tail");
 
-  this.draw = function(ctx, node){
+  this.draw = function(ctx, node, sizes){
+    var lineWidth = sizes.route.lineWidth;
     if(node && node.next !== null){
       ctx.strokeStyle = this.color;
-      ctx.lineWidth = 20;
+      ctx.lineWidth = lineWidth;
 
       ctx.beginPath();
       ctx.moveTo(node.station.x, node.station.y)
@@ -39,13 +40,13 @@ var Route = function(color){
       ctx.stroke();
       ctx.closePath();
 
-      this.draw(ctx, node.next)
+      this.draw(ctx, node.next, sizes)
     } else {
       return;
     }
   }
 
-  this.drawHandle = function(node, handle, ctx, gm, drawNode){
+  this.drawHandle = function(node, handle, ctx, gm, drawNode, sizes){
     if(handle && node){
       var targetX;
       var targetY;
@@ -70,8 +71,8 @@ var Route = function(color){
       distanceY = Math.abs(node.station.y - targetY);
 
       var normalizeFactor = Math.max(Math.max(Math.abs(distanceX), 1), Math.max(Math.abs(distanceY), 1));
-      var normalizedX = (distanceX/normalizeFactor) * node.station.size * 1.5;
-      var normalizedY = (distanceY/normalizeFactor) * node.station.size * 1.5;
+      var normalizedX = (distanceX/normalizeFactor) * sizes.station.size * 1.5;
+      var normalizedY = (distanceY/normalizeFactor) * sizes.station.size * 1.5;
       if(node.station.x < targetX){
         normalizedX *= -1;
       }
@@ -91,7 +92,7 @@ var Route = function(color){
 
       var slope = (targetY - node.station.y) / (targetX - node.station.x);
       var rotation = Math.atan(slope);
-      handle.draw(x, y, rotation, node.station, ctx, drawNode);
+      handle.draw(x, y, rotation, node.station, ctx, drawNode, sizes);
     }
   }
 }

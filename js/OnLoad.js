@@ -4,7 +4,7 @@ $(document).ready(function(){
 
   var gameLoop = setInterval(gm.draw.bind(gm), 2)
   var passengerLoop = setInterval(gm.spawnPasenger.bind(gm), 4000);
-  var stationLoop = setInterval(gm.spawnStation.bind(gm), 10000);
+  var stationLoop = setInterval(gm.spawnStation.bind(gm), 5000);
   createStations(gm);
 
   $("#pause").on("click", function(e){
@@ -96,7 +96,7 @@ $(document).ready(function(){
   $("#metro").on("mouseup", function(e){
     var route = gm.connectingRoute;
     if(route && route.tail(route.head) === route.head){
-      console.log("Not a valid route")
+      console.log("Not a valid route. Deleting all nodes")
       route.deleteAllNodes();
     }
     gm.connectingNode = null;
@@ -107,12 +107,12 @@ $(document).ready(function(){
   })
 
   $("#metro").on("mouseleave", function(e){
-    gm.connectingNode = null;
-    gm.connectingStation = null;
     var route = gm.connectingRoute;
     if(route && route.tail(route.head) === route.head){
       gm.connectingRoute.deleteAllNodes();
     }
+    gm.connectingNode = null;
+    gm.connectingStation = null;
     gm.connectingRoute = null;
     gm.connectingHandle = null;
     console.log("mouseleave")
@@ -194,12 +194,12 @@ $(document).ready(function(){
           if(newTotalDistance + gm.hoverStation.size/2 < totalDistance){
             console.log("Removing head")
             var route = gm.connectingRoute;
-            console.log(gm.hoverStation.connections)
-            var index = gm.hoverStation.connections.indexOf(head);
-            if(index !== -1){
-              gm.hoverStation.connections.splice(index, 1);
-            }
-            console.log(gm.hoverStation.connections)
+            var connections = gm.hoverStation.connections;
+            connections.splice(connections.indexOf(head), 1)
+            // var index = gm.hoverStation.connections.indexOf(head);
+            // if(index !== -1){
+            //   gm.hoverStation.connections.splice(index, 1);
+            // }
             route.head = route.head.next;
             route.head.last.next = null;
             route.head.last = null;
@@ -220,9 +220,7 @@ $(document).ready(function(){
             console.log("Removing tail")
             var route = gm.connectingRoute;
             var connections = gm.hoverStation.connections;
-            console.log(connections)
             connections.splice(connections.indexOf(tail), 1)
-            console.log(connections)
             tail.last.next = null;
             tail.last = null;
             var newTail = route.tail(route.head);

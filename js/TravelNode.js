@@ -26,8 +26,12 @@ var TravelNode = function(id, route){
       this.station.connections.splice(index, 1);
     }
     this.route = null;
-    this.station = null;
+    setTimeout(removeStation.bind(this), 20000);
     this.next = null;
     this.last = null;
+  }
+
+  function removeStation() {
+    this.station = null;
   }
 }
