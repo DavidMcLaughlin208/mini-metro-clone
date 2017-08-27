@@ -4,7 +4,7 @@ $(document).ready(function(){
 
   var gameLoop = setInterval(gm.draw.bind(gm), 2)
   var passengerLoop = setInterval(gm.spawnPasenger.bind(gm), 4000);
-  var stationLoop = setInterval(gm.spawnStation.bind(gm), 5000);
+  var stationLoop = setInterval(gm.spawnStation.bind(gm), 30000);
   createStations(gm);
 
   $("#pause").on("click", function(e){

@@ -1,6 +1,7 @@
 var GameManager = function(){
   this.metro = new Canvas('metro', 900, 600);
   this.sizeRatio = 1;
+  this.targetRatio = 1;
   this.passengers = [];
   this.passengersDelivered = 0;
   this.trains = [new Train(), new Train(), new Train(), new Train()];
@@ -12,7 +13,7 @@ var GameManager = function(){
     station: {size: 47, lineWidth: 8},
     passenger: {size: 12},
     train: {width: 80, height: 45, speed: 1},
-    route: {width: 20}
+    route: {lineWidth: 18}
   }
   this.routes = {
     "red": new Route("#ff4444"),
@@ -54,7 +55,7 @@ var GameManager = function(){
   this.mouseY = 0;
   this.travelNodeIdCounter = 0;
 
-  this.sufficientDistance = 500;
+  this.sufficientDistance = 200;
 
   this.draw = function(){
 
@@ -64,6 +65,7 @@ var GameManager = function(){
     this.metro.ctx.fillStyle = this.colors.BACKGROUND;
     this.metro.ctx.fillRect(-this.metro.width/2, -this.metro.height/2, this.metro.width, this.metro.height);
 
+    this.calcuateScale();
     this.zoomOut();
     // Draw routes
     for (var property in this.routes) {
@@ -211,7 +213,7 @@ var GameManager = function(){
     this.stations.push(new Station(x, y, shape, this.sizeRatio))
   }
 
-  this.zoomOut = function() {
+  this.calcuateScale = function() {
     var furthestX = 0;
     var furthestY = 0;
     for(var i in this.stations) {
@@ -232,24 +234,48 @@ var GameManager = function(){
     var xRatio = 1;
     var yRatio = 1;
     if(furthestX > currentWidth/2){
-      console.log("furthestX: ", furthestX);
-      console.log("Current Width: ", currentWidth/2);
       xRatio = parseFloat(currentWidth/2)/parseFloat(furthestX);
     }
     if(furthestY > currentHeight/2) {
-      console.log("furthestY: ", furthestY);
-      console.log("Current Height: ", currentHeight);
       yRatio = parseFloat(currentHeight/2)/parseFloat(furthestY);
     }
 
     var newRatio = Math.min(xRatio, yRatio);
-    if(xRatio < 1 || yRatio < 1){
-      console.log("xRatio: ", xRatio);
-      console.log("yRatio: ", yRatio);
-    }
-    if(newRatio < 1.0){
-      this.sizeRatio *= newRatio;
-      console.log("SizeRatio: ", this.sizeRatio)
+    this.targetRatio = this.sizeRatio * newRatio;
+  }
+
+  this.zoomOut = function() {
+    // var furthestX = 0;
+    // var furthestY = 0;
+    // for(var i in this.stations) {
+    //   var station = this.stations[i];
+    //   if(Math.abs(station.x) > furthestX) {
+    //     furthestX = Math.abs(station.x);
+    //   }
+    //   if(Math.abs(station.y) > furthestY) {
+    //     furthestY = Math.abs(station.y);
+    //   }
+    // }
+    // furthestX += this.sizes.station.size * 2;
+    // furthestY += this.sizes.station.size * 2;
+    //
+    // var currentWidth = this.metro.mycanvas.width;
+    // var currentHeight = this.metro.mycanvas.height;
+    //
+    // var xRatio = 1;
+    // var yRatio = 1;
+    // if(furthestX > currentWidth/2){
+    //   xRatio = parseFloat(currentWidth/2)/parseFloat(furthestX);
+    // }
+    // if(furthestY > currentHeight/2) {
+    //   yRatio = parseFloat(currentHeight/2)/parseFloat(furthestY);
+    // }
+    //
+    // var newRatio = Math.min(xRatio, yRatio);
+    // if(newRatio < 1.0){
+
+    if(this.targetRatio < this.sizeRatio) {
+      var newRatio = 1 - (this.sizeRatio - this.targetRatio) * .01;
       for(var station of this.stations) {
         station.x *= newRatio;
         station.y *= newRatio;
