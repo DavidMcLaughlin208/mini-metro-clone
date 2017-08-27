@@ -12,14 +12,14 @@ var Passenger = function(station, shape, sizeRatio){
     ctx.fillStyle = "rgba(0, 0, 0, 0.8)"
     switch(this.state) {
     case "station":
-      this.x = this.calcStationX(index, size);
-      this.y = this.calcStationY(index, size);
+      this.x = this.calcStationX(index, sizes);
+      this.y = this.calcStationY(index, sizes);
       break;
     case "train":
-      ctx.translate(this.train.x + this.train.width/2, this.train.y);
+      ctx.translate(this.train.x + sizes.train.width/2, this.train.y);
       ctx.rotate(this.train.rotation*Math.PI/180);
-      this.x = this.calcTrainX(ctx, index);
-      this.y = this.calcTrainY(ctx, index);
+      this.x = this.calcTrainX(ctx, index, sizes);
+      this.y = this.calcTrainY(ctx, index, sizes);
       break
     default:
       break;
@@ -89,7 +89,7 @@ var Passenger = function(station, shape, sizeRatio){
     }
     if(this.state === "train") {
       ctx.rotate(-this.train.rotation*Math.PI/180);
-      ctx.translate(-this.train.x - this.train.width/2, -this.train.y);
+      ctx.translate(-this.train.x - sizes.train.width/2, -this.train.y);
     }
   }
 
@@ -182,26 +182,26 @@ var Passenger = function(station, shape, sizeRatio){
     this.getAndSetItinerary();
   }
 
-  this.calcStationX = function(index, size){
-    return this.station.x - this.station.size + index * size * 1.4;
+  this.calcStationX = function(index, sizes){
+    return this.station.x - sizes.station.size + index * sizes.passenger.size * 1.4;
   }
-  this.calcStationY = function(index, size){
+  this.calcStationY = function(index, sizes){
     // var multiplier = 1;
     // var rows = 1 + index;
     // while(rows > 4){
     //   rows -= 4;
     //   multiplier += 1;
     // }
-    return this.station.y - this.station.size - size;
+    return this.station.y - sizes.station.size - sizes.passenger.size;
   }
-  this.calcTrainY = function(ctx, index){
+  this.calcTrainY = function(ctx, index, sizes){
     if(index % 2 === 0){
-      return this.train.height/4 + this.train.height/16;
+      return sizes.train.height/4 + sizes.train.height/16;
     } else {
-      return -this.train.height/4 - this.train.height/16;
+      return -sizes.train.height/4 - sizes.train.height/16;
     }
   }
-  this.calcTrainX = function(ctx, index){
-    return -(Math.ceil(index/2) * this.train.width/4 + this.train.width/5);
+  this.calcTrainX = function(ctx, index, sizes){
+    return -(Math.ceil(index/2) * sizes.train.width/4 + sizes.train.width/5);
   }
 }

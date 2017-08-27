@@ -6,6 +6,8 @@ var GameManager = function(){
   this.trains = [new Train(), new Train(), new Train(), new Train()];
   this.stations = [];
   this.travelNodes = [];
+  this.scaledWidth = this.metro.mycanvas.width;
+  this.scaledHeight = this.metro.mycanvas.height;
   this.sizes = {
     station: {size: 47, lineWidth: 8},
     passenger: {size: 12},
@@ -221,55 +223,61 @@ var GameManager = function(){
         furthestY = Math.abs(station.y);
       }
     }
+    furthestX += this.sizes.station.size * 2;
+    furthestY += this.sizes.station.size * 2;
+
     var currentWidth = this.metro.mycanvas.width;
     var currentHeight = this.metro.mycanvas.height;
 
     var xRatio = 1;
     var yRatio = 1;
     if(furthestX > currentWidth/2){
+      console.log("furthestX: ", furthestX);
+      console.log("Current Width: ", currentWidth/2);
       xRatio = parseFloat(currentWidth/2)/parseFloat(furthestX);
     }
     if(furthestY > currentHeight/2) {
+      console.log("furthestY: ", furthestY);
+      console.log("Current Height: ", currentHeight);
       yRatio = parseFloat(currentHeight/2)/parseFloat(furthestY);
     }
 
     var newRatio = Math.min(xRatio, yRatio);
     if(xRatio < 1 || yRatio < 1){
-      // console.log("xRatio: ", xRatio);
-      // console.log("yRatio: ", yRatio);
+      console.log("xRatio: ", xRatio);
+      console.log("yRatio: ", yRatio);
     }
     if(newRatio < 1.0){
       this.sizeRatio *= newRatio;
-      // console.log("SizeRatio: ", this.sizeRatio)
+      console.log("SizeRatio: ", this.sizeRatio)
       for(var station of this.stations) {
-        station.x *= this.sizeRatio;
-        station.y *= this.sizeRatio;
+        station.x *= newRatio;
+        station.y *= newRatio;
         for(var passenger of station.passengers) {
-          passenger.size *= this.sizeRatio;
-          passenger.x *= this.sizeRatio;
-          passenger.y *= this.sizeRatio;
+          passenger.x *= newRatio;
+          passenger.y *= newRatio;
         }
       }
       for(var train of this.trains) {
-        train.x *= this.sizeRatio;
-        train.y *= this.sizeRatio;
+        train.x *= newRatio;
+        train.y *= newRatio;
         for(var passenger of train.passengers) {
-          passenger.x *= this.sizeRatio;
-          passenger.y *= this.sizeRatio;
+          passenger.x *= newRatio;
+          passenger.y *= newRatio;
         }
       }
-      this.scaleAllInObject(this.sizes);
-      this.sufficientDistance *= this.sizeRatio;
-      this.clickBox *= this.sizeRatio;
+      this.scaleAllInObject(this.sizes, newRatio);
+      this.sufficientDistance *= newRatio;
+      this.clickBox *= newRatio;
     }
   }
 
-  this.scaleAllInObject = function(obj) {
+  this.scaleAllInObject = function(obj, newRatio) {
     for(var key of Object.keys(obj)) {
       if(key && obj[key].constructor === Object) {
-        this.scaleAllInObject(obj[key]);
+        this.scaleAllInObject(obj[key], newRatio);
       } else {
-        obj[key] *= this.sizeRatio;
+        obj[key] *= newRatio;
       }
     }
   }
