@@ -50,12 +50,14 @@ var GameManager = function(){
   this.connectingNode = null;
   this.connectingRoute = null;
   this.connectingHandle = null;
+  this.tempMidX = null;
+  this.tempMidY = null;
   this.hoverStation = null;
   this.mouseX = 0;
   this.mouseY = 0;
   this.travelNodeIdCounter = 0;
 
-  this.sufficientDistance = 200;
+  this.sufficientDistance = 400;
 
   this.draw = function(){
 
@@ -117,8 +119,8 @@ var GameManager = function(){
     var xDistance = Math.abs(this.connectingStation.x - this.mouseX);
     var yDistance = Math.abs(this.connectingStation.y - this.mouseY);
     var modifier = 1;
-    var midX = this.connectingStation.x;
-    var midY = this.connectingStation.y;
+    this.tempMidX = this.connectingStation.x;
+    this.tempMidY = this.connectingStation.y;
     if(xDistance > yDistance) {
       if(this.mouseX < this.connectingStation.x) {
         modifier = -1;
@@ -130,17 +132,17 @@ var GameManager = function(){
     }
     while(Math.abs(xDistance - yDistance) > 2) {
       if(xDistance > yDistance) {
-        midX += modifier;
+        this.tempMidX += modifier;
       } else {
-        midY += modifier;
+        this.tempMidY += modifier;
       }
-      xDistance = Math.abs(this.mouseX - midX);
-      yDistance = Math.abs(this.mouseY - midY);
+      xDistance = Math.abs(this.mouseX - this.tempMidX);
+      yDistance = Math.abs(this.mouseY - this.tempMidY);
     }
 
     ctx.beginPath();
     ctx.moveTo(this.connectingStation.x, this.connectingStation.y)
-    ctx.lineTo(midX, midY);
+    ctx.lineTo(this.tempMidX, this.tempMidY);
     ctx.lineTo(this.mouseX, this.mouseY);
     ctx.stroke();
     ctx.closePath();
@@ -269,40 +271,15 @@ var GameManager = function(){
   }
 
   this.zoomOut = function() {
-    // var furthestX = 0;
-    // var furthestY = 0;
-    // for(var i in this.stations) {
-    //   var station = this.stations[i];
-    //   if(Math.abs(station.x) > furthestX) {
-    //     furthestX = Math.abs(station.x);
-    //   }
-    //   if(Math.abs(station.y) > furthestY) {
-    //     furthestY = Math.abs(station.y);
-    //   }
-    // }
-    // furthestX += this.sizes.station.size * 2;
-    // furthestY += this.sizes.station.size * 2;
-    //
-    // var currentWidth = this.metro.mycanvas.width;
-    // var currentHeight = this.metro.mycanvas.height;
-    //
-    // var xRatio = 1;
-    // var yRatio = 1;
-    // if(furthestX > currentWidth/2){
-    //   xRatio = parseFloat(currentWidth/2)/parseFloat(furthestX);
-    // }
-    // if(furthestY > currentHeight/2) {
-    //   yRatio = parseFloat(currentHeight/2)/parseFloat(furthestY);
-    // }
-    //
-    // var newRatio = Math.min(xRatio, yRatio);
-    // if(newRatio < 1.0){
-
     if(this.targetRatio < this.sizeRatio) {
       var newRatio = 1 - (this.sizeRatio - this.targetRatio) * .01;
       for(var station of this.stations) {
         station.x *= newRatio;
         station.y *= newRatio;
+        for(var node of station.connections) {
+          node.midX *= newRatio;
+          node.midY *= newRatio;
+        }
         for(var passenger of station.passengers) {
           passenger.x *= newRatio;
           passenger.y *= newRatio;
@@ -319,6 +296,7 @@ var GameManager = function(){
       this.scaleAllInObject(this.sizes, newRatio);
       this.sufficientDistance *= newRatio;
       this.clickBox *= newRatio;
+      this.recalculateNodeMidpoints();
     }
   }
 
@@ -328,6 +306,14 @@ var GameManager = function(){
         this.scaleAllInObject(obj[key], newRatio);
       } else {
         obj[key] *= newRatio;
+      }
+    }
+  }
+
+  this.recalculateNodeMidpoints = function() {
+    for(var station of this.stations) {
+      for(var node of station.connections) {
+        node.recalculateMidpoint();
       }
     }
   }

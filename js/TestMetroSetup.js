@@ -10,7 +10,7 @@ var createStations = function(gm){
   // gm.stations.push(new Station(-100, 100, "plus"))
   // gm.stations.push(new Station(-300, 100, "circle"))
 
-  gm.stations.push(new Station(-50, -150, "circle", gm.sizeRatio))
+  gm.stations.push(new Station(250, -150, "circle", gm.sizeRatio))
   gm.stations.push(new Station(-250, 100, "square", gm.sizeRatio))
   gm.stations.push(new Station(150, 75, "triangle", gm.sizeRatio))
 

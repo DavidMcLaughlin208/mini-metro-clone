@@ -8,6 +8,7 @@ var Train = function(){
   this.passengers = [];
   this.rotation = 90;
   this.target = null;
+  this.passedMid = false;
 
 
   this.setParams = function(x, y, route, travelNode){
@@ -41,11 +42,27 @@ var Train = function(){
     } else if(!this.target && !this.forward) {
       this.target = this.travelNode.last;
     }
-    var remainingDistanceX = this.x - this.target.station.x
-    var remainingDistanceY = this.y - this.target.station.y
-    var remainingdistance = Math.sqrt(Math.pow(remainingDistanceX, 2) + Math.pow(remainingDistanceY, 2));
-    if(remainingdistance <= 1){
+    var targetX = null;
+    var targetY = null;
+    if(this.passedMid) {
+      targetX = this.target.station.x;
+      targetY = this.target.station.y;
+    } else {
+      if(this.forward){
+        targetX = this.target.midX;
+        targetY = this.target.midY;
+      } else {
+        targetX = this.target.next.midX;
+        targetY = this.target.next.midY;
+      }
+    }
+    var remainingDistanceX = this.x - targetX;
+    var remainingDistanceY = this.y - targetY;
+    var remainingDistance = Math.sqrt(Math.pow(remainingDistanceX, 2) + Math.pow(remainingDistanceY, 2));
+    if(this.passedMid && remainingDistance <= 1){
       this.state = "dock";
+    } else if(!this.passedMid && remainingDistance <= 1) {
+      this.passedMid = true;
     }
 
     switch(this.state) {
@@ -135,6 +152,7 @@ var Train = function(){
             this.target = this.travelNode.next;
           }
         }
+        this.passedMid = false;
         this.state = "travel";
         break;
       default:

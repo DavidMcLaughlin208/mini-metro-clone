@@ -4,7 +4,7 @@ $(document).ready(function(){
 
   var gameLoop = setInterval(gm.draw.bind(gm), 2)
   var passengerLoop = setInterval(gm.spawnPasenger.bind(gm), 4000);
-  var stationLoop = setInterval(gm.spawnStation.bind(gm), 30000);
+  var stationLoop = setInterval(gm.spawnStation.bind(gm), 5000);
   createStations(gm);
 
   $("#pause").on("click", function(e){
@@ -140,7 +140,8 @@ $(document).ready(function(){
             var valid = gm.isValidConnection(gm.connectingRoute.head, station);
             if(valid){
               console.log("Valid connection")
-              var node = new TravelNode(gm.getTravelNodeId(), gm.connectingRoute);
+              var node = new TravelNode(gm.getTravelNodeId(), gm.connectingRoute, gm.tempMidX, gm.tempMidY);
+              console.log(gm.tempMidX, gm.tempMidY)
               console.log("Creating New Node")
               if(gm.connectingNode.next){
                 node.next = gm.connectingRoute.head;

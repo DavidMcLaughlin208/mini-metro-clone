@@ -36,6 +36,8 @@ var Route = function(color, sizeRatio){
 
       ctx.beginPath();
       ctx.moveTo(node.station.x, node.station.y)
+      ctx.lineTo(node.next.midX, node.next.midY);
+      ctx.stroke();
       ctx.lineTo(node.next.station.x, node.next.station.y);
       ctx.stroke();
       ctx.closePath();
