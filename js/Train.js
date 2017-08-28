@@ -6,7 +6,8 @@ var Train = function(){
   this.state = "travel";
   this.forward = true;
   this.passengers = [];
-  this.rotation = 90;
+  this.rotation = null;
+  this.targetRotation = null;
   this.target = null;
   this.passedMid = false;
 
@@ -74,16 +75,26 @@ var Train = function(){
         var speedRatio = sizes.train.speed;
 
         var normalizeFactor = Math.max(Math.max(Math.abs(remainingDistanceX), 1), Math.max(Math.abs(remainingDistanceY), 1));
-        var normalizedX = (remainingDistanceX/normalizeFactor) * 0.4 * speedRatio;
-        var normalizedY = (remainingDistanceY/normalizeFactor) * 0.4 * speedRatio;
+        var normalizedX = (remainingDistanceX/normalizeFactor) * 0.3 * speedRatio;
+        var normalizedY = (remainingDistanceY/normalizeFactor) * 0.3 * speedRatio;
         var lastX = this.x;
         var lastY = this.y;
 
         this.x -= normalizedX;
         this.y -= normalizedY;
 
-        var slope = (this.y - lastY) / (this.x - lastX);
-        this.rotation = Math.atan(slope);
+        var slope = Math.atan((this.y - lastY) / (this.x - lastX));
+        this.rotation = slope;
+
+        // if(!this.rotation){this.rotation = slope}
+        // this.targetRotation = slope;
+        // console.log(this.targetRotation)
+        // if(this.targetRotation > this.rotation) {
+        //   this.rotation += .005;
+        // } else {
+        //   this.rotation -= .005;
+        // }
+        // console.log(this.rotation)
 
         break;
       case "dock":
@@ -165,12 +176,7 @@ var Train = function(){
     ctx.translate(this.x, this.y);
     ctx.rotate(this.rotation);
     ctx.beginPath();
-
-    // ctx.lineWidth = 10;
-    // ctx.strokeStyle = this.route.color;
     ctx.rect(-width/2, -height/2, width, height);
-    // ctx.stroke();
-
     ctx.fillStyle = this.route.color;
     ctx.fill();
 
