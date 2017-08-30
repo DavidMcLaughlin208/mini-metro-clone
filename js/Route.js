@@ -50,8 +50,10 @@ var Route = function(color, sizeRatio){
 
   this.drawHandle = function(node, handle, ctx, gm, drawNode, sizes){
     if(handle && node){
-      var targetX;
-      var targetY;
+      var targetX1;
+      var targetY1;
+      var targetX2;
+      var targetY2;
       var distanceX;
       var distanceY;
       if(drawNode){

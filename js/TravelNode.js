@@ -13,8 +13,8 @@ var TravelNode = function(id, route, midX, midY){
 
   this.setStation = function(station){
     this.station = station;
-    if(!this.midX){this.midX = station.x}
-    if(!this.midY){this.midY = station.y}
+    // if(!this.midX){this.midX = station.x}
+    // if(!this.midY){this.midY = station.y}
     if(station.connections.indexOf(this) === -1){
       station.connections.push(this);
     }

@@ -192,7 +192,7 @@ $(document).ready(function(){
           var newDistanceY = Math.pow(gm.mouseY - head.next.station.y, 2);
           var newTotalDistance = Math.sqrt(newDistanceX + newDistanceY);
           console.log("Trying to remove head");
-          if(newTotalDistance + gm.hoverStation.size/2 < totalDistance){
+          if(newTotalDistance + gm.sizes.station.size/2 < totalDistance){
             console.log("Removing head")
             var route = gm.connectingRoute;
             var connections = gm.hoverStation.connections;
@@ -217,7 +217,7 @@ $(document).ready(function(){
           var newTotalDistance = Math.sqrt(newDistanceX + newDistanceY);
 
           console.log("Trying to remove tail");
-          if(newTotalDistance + gm.hoverStation.size/2 < totalDistance){
+          if(newTotalDistance + gm.sizes.station.size/2 < totalDistance){
             console.log("Removing tail")
             var route = gm.connectingRoute;
             var connections = gm.hoverStation.connections;
