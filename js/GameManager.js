@@ -1,6 +1,6 @@
 var GameManager = function(){
   this.metro = new Canvas('metro', 900, 600);
-  this.ui = new UI(30);
+  this.ui = new UI(this.metro);
   this.sizeRatio = 1;
   this.targetRatio = 1;
   this.passengers = [];
