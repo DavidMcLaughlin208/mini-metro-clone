@@ -1,5 +1,6 @@
 var GameManager = function(){
   this.metro = new Canvas('metro', 900, 600);
+  this.ui = new UI(30);
   this.sizeRatio = 1;
   this.targetRatio = 1;
   this.passengers = [];
@@ -57,6 +58,9 @@ var GameManager = function(){
   this.mouseY = 0;
   this.travelNodeIdCounter = 0;
 
+  this.paused = false;
+  this.finished = true;
+
   this.sufficientDistance = 400;
   this.gmDrawStartTime = Date.now();
   this.routeDrawStartTime = Date.now();
@@ -73,6 +77,7 @@ var GameManager = function(){
   this.longestTrainDraw = 0;
 
   this.draw = function(){
+    this.finished = false;
     this.startTime = Date.now();
 
     // Reset canvas and draw background
@@ -156,8 +161,9 @@ var GameManager = function(){
       this.longestTrainDraw = finish - this.drawTrainsAndPassengersStartTime;
       console.log("Longest Train Draw: ", this.longestTrainDraw);
     }
-    // console.log(parseFloat(Date.now()) - parseFloat(this.startTime));
+    this.ui.draw(this.metro.ctx, this.passengersDelivered);
 
+    this.finished = true;
   }
 
   this.drawTempRoute = function(ctx){
@@ -212,6 +218,7 @@ var GameManager = function(){
 
   this.getTravelNodeId = function(){
     this.travelNodeIdCounter += 1;
+    console.log("TravelNodeId: ", this.travelNodeIdCounter);
     return this.travelNodeIdCounter;
   }
 

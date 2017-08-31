@@ -95,23 +95,30 @@ var Passenger = function(station, shape, sizeRatio){
 
   this.getItinerary = function(station){
     var checkedNodes = {};
-    var badNodes = [];
+    var badNodes = {};
     var cameFrom = {};
     var queue = [];
+    var queueHelper = {};
     var connections = station ? station.connections : this.station.connections;
     for(var node of connections){
       queue.push(node);
+      queueHelper[node.getId()] = true;
     }
     for(var i in queue){
       checkedNodes[queue[i].getId()] = 0;
     }
     while(queue.length > 0){
       var node = queue.shift();
-      badNodes.push(node);
+      badNodes[node.getId()] = true;
       if(node.station.shape === this.shape){
         return this.reconstructPath(cameFrom, node);
       }
-      var neighbors = node.station.connections === connections ? [] : node.station.connections;
+      var neighbors = [];
+      if(node.station.connections !== connections) {
+        for(var neighborNode of node.station.connections) {
+          neighbors.push(neighborNode);
+        }
+      }
       if(node.next){neighbors.push(node.next)}
       if(node.last){neighbors.push(node.last)}
 
@@ -119,11 +126,12 @@ var Passenger = function(station, shape, sizeRatio){
         var neighbor = neighbors[j];
 
         if(neighbor === node){continue}
-        if(badNodes.indexOf(neighbor) !== -1){
+        if(badNodes[neighbor.getId()]){
           continue;
         }
-        if(queue.indexOf(neighbor) === -1){
+        if(!queueHelper[neighbor.getId()]){
           queue.push(neighbor);
+          queueHelper[node.getId()] = true;
         }
 
         var score = checkedNodes[node.getId()] + 1;

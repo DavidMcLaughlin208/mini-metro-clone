@@ -1,25 +1,32 @@
 $(document).ready(function(){
+  var gameLoop = function() {
+    if(!this.paused && this.finished) {
+      this.draw();
+    }
+  }
   var gm = new GameManager();
   gm.metro.ctx.translate(gm.metro.width/2, gm.metro.height/2);
 
-  var gameLoop = setInterval(gm.draw.bind(gm), 2)
+  var checkFinishedLoop = setInterval(gameLoop.bind(gm), 2);
   var passengerLoop = setInterval(gm.spawnPasenger.bind(gm), 4000);
   var stationLoop = setInterval(gm.spawnStation.bind(gm), 5000);
   createStations(gm);
 
   $("#pause").on("click", function(e){
     e.preventDefault();
-    clearInterval(gameLoop);
+    gm.paused = true;
+    clearInterval(checkFinishedLoop);
     clearInterval(passengerLoop);
     clearInterval(stationLoop);
   })
 
   $("#play").on("click", function(e){
     e.preventDefault();
-    clearInterval(gameLoop);
+    gm.paused = false;
+    clearInterval(checkFinishedLoop);
     clearInterval(passengerLoop);
     clearInterval(stationLoop);
-    gameLoop = setInterval(gm.draw.bind(gm), 2);
+    checkFinishedLoop = setInterval(gm.draw.bind(gm), 2);
     passengerLoop = setInterval(gm.spawnPasenger.bind(gm), 4000);
     stationLoop = setInterval(gm.spawnStation.bind(gm), 10000);
   })
