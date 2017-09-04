@@ -68,9 +68,9 @@ var Train = function(){
 
     switch(this.state) {
       case "travel":
-        var distanceX = Math.pow(this.travelNode.x - this.target.x, 2);
-        var distanceY = Math.pow(this.travelNode.y - this.target.y, 2);
-        var totalDistance = Math.sqrt(distanceX + distanceY);
+        // var distanceX = Math.pow(this.travelNode.x - this.target.x, 2);
+        // var distanceY = Math.pow(this.travelNode.y - this.target.y, 2);
+        // var totalDistance = Math.sqrt(distanceX + distanceY);
 
         var speedRatio = sizes.train.speed;
 
@@ -83,19 +83,13 @@ var Train = function(){
         this.x -= normalizedX;
         this.y -= normalizedY;
 
+        var newDistanceX = Math.pow(this.x - lastX, 2);
+        var newDistanceY = Math.pow(this.y - lastY, 2);
+        var newTotalTraveled = Math.sqrt(newDistanceX + newDistanceY);
+        // console.log("Units Traveled: ", newTotalTraveled);
+
         var slope = Math.atan((this.y - lastY) / (this.x - lastX));
         this.rotation = slope;
-
-        // if(!this.rotation){this.rotation = slope}
-        // this.targetRotation = slope;
-        // console.log(this.targetRotation)
-        // if(this.targetRotation > this.rotation) {
-        //   this.rotation += .005;
-        // } else {
-        //   this.rotation -= .005;
-        // }
-        // console.log(this.rotation)
-
         break;
       case "dock":
         for(var i = this.passengers.length - 1; i >= 0; i--){

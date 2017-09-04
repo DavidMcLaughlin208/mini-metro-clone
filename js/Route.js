@@ -49,52 +49,40 @@ var Route = function(color, sizeRatio){
   }
 
   this.drawHandle = function(node, handle, ctx, gm, drawNode, sizes){
+    if(!drawNode){return}
     if(handle && node){
-      var targetX1;
-      var targetY1;
-      var targetX2;
-      var targetY2;
-      var distanceX;
-      var distanceY;
-      if(drawNode){
-        var othernode;
-        if(node.next){
-          otherNode = node.next;
-        } else if(node.last){
-          otherNode = node.last;
-        } else {
-          return;
-        }
-        targetX = otherNode.station.x;
-        targetY = otherNode.station.y;
+      var x1, x2, y1, y2;
+      if(node.next){
+        x1 = node.station.x;
+        y1 = node.station.y;
+        x2 = node.next.midX;
+        y2 = node.next.midY;
+      } else if(node.last){
+        x1 = node.station.x;
+        y1 = node.station.y;
+        x2 = node.midX;
+        y2 = node.midY;
       } else {
-        targetX = gm.mouseX;
-        targetY = gm.mouseY;
+        return;
       }
-      distanceX = Math.abs(node.station.x - targetX);
-      distanceY = Math.abs(node.station.y - targetY);
+
+      var distanceX = Math.abs(x1 - x2);
+      var distanceY = Math.abs(y1 - y2);
 
       var normalizeFactor = Math.max(Math.max(Math.abs(distanceX), 1), Math.max(Math.abs(distanceY), 1));
       var normalizedX = (distanceX/normalizeFactor) * sizes.station.size * 1.5;
       var normalizedY = (distanceY/normalizeFactor) * sizes.station.size * 1.5;
-      if(node.station.x < targetX){
+      if(x1 < x2){
         normalizedX *= -1;
       }
-      if(node.station.y > targetY){
+      if(y1 > y2){
         normalizedY *= -1;
       }
-      var x;
-      var y;
-      if(drawNode){
-        x = node.station.x + normalizedX;
-        y = node.station.y - normalizedY;
-      } else {
-        x = gm.mouseX;
-        y = gm.mouseY;
-      }
+      var x = x1 + normalizedX;
+      var y = y1 - normalizedY;
       ctx.strokeStyle = this.color;
 
-      var slope = (targetY - node.station.y) / (targetX - node.station.x);
+      var slope = (y1 - y2) / (x1 - x2);
       var rotation = Math.atan(slope);
       handle.draw(x, y, rotation, node.station, ctx, drawNode, sizes);
     }

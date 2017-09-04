@@ -199,6 +199,26 @@ var GameManager = function(){
     ctx.lineTo(this.mouseX, this.mouseY);
     ctx.stroke();
     ctx.closePath();
+
+    this.drawTempHandle(ctx);
+  }
+
+  this.drawTempHandle = function(ctx) {
+    var slope = (this.mouseY - this.tempMidY) / (this.mouseX - this.tempMidX);
+    var rotation = Math.atan(slope);
+
+    ctx.lineWidth = this.sizes.route.lineWidth;
+    ctx.translate(this.mouseX, this.mouseY);
+    ctx.rotate(rotation);
+
+    ctx.beginPath();
+    ctx.moveTo(0, this.sizes.station.size/1.5);
+    ctx.lineTo(0, -this.sizes.station.size/1.5);
+    ctx.stroke();
+    ctx.closePath();
+
+    ctx.rotate(-rotation);
+    ctx.translate(-this.mouseX, -this.mouseY);
   }
 
   this.isValidConnection = function(node, station){
