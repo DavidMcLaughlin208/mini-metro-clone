@@ -163,6 +163,7 @@ $(document).ready(function(){
               }
               gm.connectingNode = node;
               gm.connectingStation = node.station;
+              node.recalculateMidpoint();
               if(newRoute){
                 var anyTrainsOnRoute = gm.trains.some(function(arrVal) {
                   return arrVal.route === gm.connectingRoute;
