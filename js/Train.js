@@ -17,6 +17,7 @@ var Train = function(){
     this.y = y;
     this.route = route;
     this.travelNode = travelNode;
+    this.target = this.travelNode.next
   }
 
   this.clearParams = function(){
@@ -127,7 +128,7 @@ var Train = function(){
               passenger.disembark(this, this.target.station, i);
             }
             this.clearParams();
-            return;
+            return passengersDeliveredCount;
           }
         }
         var stationPassengers = this.target.station.passengers;
@@ -179,5 +180,27 @@ var Train = function(){
     ctx.translate(-this.x, -this.y);
 
     return passengersDeliveredCount;
+  }
+
+  this.drawTempRoute = function(ctx, sizes) {
+    if(!this.route){return;}
+    var node1, node2;
+    if(this.forward) {
+      node1 = this.travelNode;
+      node2 = this.target;
+    } else {
+      node1 = this.target;
+      node2 = this.travelNode;
+    }
+    ctx.strokeStyle = this.route.color;
+    ctx.lineWidth = sizes.route.lineWidth;
+
+    ctx.beginPath();
+    ctx.moveTo(node1.station.x, node1.station.y)
+    ctx.lineTo(node2.midX, node2.midY);
+    ctx.stroke();
+    ctx.lineTo(node2.station.x, node2.station.y);
+    ctx.stroke();
+    ctx.closePath();
   }
 }

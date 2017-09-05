@@ -69,7 +69,7 @@ var Route = function(color, sizeRatio){
       var distanceX = Math.abs(x1 - x2);
       var distanceY = Math.abs(y1 - y2);
 
-      var normalizeFactor = Math.max(Math.max(Math.abs(distanceX), 1), Math.max(Math.abs(distanceY), 1));
+      var normalizeFactor = Math.max(Math.abs(distanceX), Math.abs(distanceY));
       var normalizedX = (distanceX/normalizeFactor) * sizes.station.size * 1.5;
       var normalizedY = (distanceY/normalizeFactor) * sizes.station.size * 1.5;
       if(x1 < x2){
@@ -84,7 +84,7 @@ var Route = function(color, sizeRatio){
 
       var slope = (y1 - y2) / (x1 - x2);
       var rotation = Math.atan(slope);
-      handle.draw(x, y, rotation, node.station, ctx, drawNode, sizes);
+      handle.draw(x, y, rotation, node.station, ctx, sizes);
     }
   }
 }

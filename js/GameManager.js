@@ -2,7 +2,7 @@ var GameManager = function(){
   this.metro = new Canvas('metro', 900, 600);
   this.ui = new UI(this.metro);
   this.sizeRatio = 1;
-  this.targetRatio = 1;
+  this.targetRatio = .9999;
   this.passengers = [];
   this.passengersDelivered = 0;
   this.trains = [new Train(), new Train(), new Train(), new Train()];
@@ -94,6 +94,11 @@ var GameManager = function(){
       if (this.routes.hasOwnProperty(property)) {
         var route = this.routes[property];
         route.draw(this.metro.ctx, route.head, this.sizes);
+      }
+    }
+    for (var train of this.trains) {
+      if(train.route) {
+        train.drawTempRoute(this.metro.ctx, this.sizes);
       }
     }
     var finish = Date.now();
@@ -390,5 +395,12 @@ var GameManager = function(){
         node.recalculateMidpoint();
       }
     }
+    // for(var train of this.trains) {
+    //   if(train.forward && train.target) {
+    //     train.target.recalculateMidpoint();
+    //   } else if (!train.forward && train.travelNode) {
+    //     train.travelNode.recalculateMidpoint();
+    //   }
+    // }
   }
 }

@@ -13,31 +13,26 @@ var RouteHandle = function(route, location, sizeRatio){
     }
   }
 
-  this.draw = function(x, y, rotation, station, ctx, drawNode, sizes){
-    var size = sizes.route.lineWidth;
-    if(true){
-      ctx.lineWidth = size;
-      this.x = x;
-      this.y = y;
-      ctx.beginPath();
-      ctx.moveTo(station.x, station.y);
-      ctx.lineTo(x, y);
-      ctx.stroke();
-      ctx.closePath();
+  this.draw = function(x, y, rotation, station, ctx, sizes){
+    ctx.lineWidth = sizes.route.lineWidth;
+    this.x = x;
+    this.y = y;
+    ctx.beginPath();
+    ctx.moveTo(station.x, station.y);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+    ctx.closePath();
 
-      ctx.translate(x, y);
-      ctx.rotate(rotation);
+    ctx.translate(x, y);
+    ctx.rotate(rotation);
 
-      ctx.beginPath();
-      ctx.moveTo(0, sizes.station.size/1.5);
-      ctx.lineTo(0, -sizes.station.size/1.5);
-      ctx.stroke();
-      ctx.closePath();
+    ctx.beginPath();
+    ctx.moveTo(0, sizes.station.size/1.5);
+    ctx.lineTo(0, -sizes.station.size/1.5);
+    ctx.stroke();
+    ctx.closePath();
 
-      ctx.rotate(-rotation);
-      ctx.translate(-x, -y);
-    } else {
-
-    }
+    ctx.rotate(-rotation);
+    ctx.translate(-x, -y);
   }
 }
