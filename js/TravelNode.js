@@ -4,6 +4,9 @@ var TravelNode = function(id, route, midX, midY){
   this.station = null;
   this.next = null;
   this.last = null;
+  this.x = null;
+  this.y = null;
+  this.lane = "middle"
   this.midX = midX;
   this.midY = midY;
 
@@ -13,6 +16,8 @@ var TravelNode = function(id, route, midX, midY){
 
   this.setStation = function(station){
     this.station = station;
+    this.x = station.x;
+    this.y = station.y;
     // if(!this.midX){this.midX = station.x}
     // if(!this.midY){this.midY = station.y}
     if(station.connections.indexOf(this) === -1){

@@ -56,32 +56,161 @@ var Station = function(x, y, shape){
     return port;
   }
 
-  this.calculateInputs = function() {
+  this.calculateInputs = function(sizes) {
+    this.ports = {
+      "1": [],
+      "2": [],
+      "3": [],
+      "4": [],
+      "5": [],
+      "6": [],
+      "7": [],
+      "8": [],
+    }
+    var straight = sizes.station.size/2;
+    var angled = Math.sqrt(sizes.station.size/2)
     for(var node of this.connections) {
       var headPort = null;
       var tailPort = null;
       if(node.isHead() && node.next) {
         var headDeltas = this.headDeltas(node);
-        console.log(headDeltas)
-        console.log(headDeltas.deltaX)
-        console.log(headDeltas.deltaY)
         headPort = this.getPort(headDeltas.deltaX, headDeltas.deltaY);
+
+        this.ports[headPort].push(node);
 
       } else if(node.isTail() && node.last) {
         var tailDeltas = this.tailDeltas(node);
-        console.log(tailDeltas)
-        console.log(tailDeltas.deltaX)
-        console.log(tailDeltas.deltaY)
-        tailPort = this.getPort(tailDeltas.deltaX, tailDeltas.deltaY)
+        tailPort = this.getPort(tailDeltas.deltaX, tailDeltas.deltaY);
+
+        this.ports[tailPort].push(node)
       } else if(node.next) {
         var headDeltas = this.headDeltas(node);
         headPort = this.getPort(headDeltas.deltaX, headDeltas.deltaY);
+        this.ports[headPort].push(node);
 
         var tailDeltas = this.tailDeltas(node);
-        tailPort = this.getPort(tailDeltas.deltaX, tailDeltas.deltaY)
+        tailPort = this.getPort(tailDeltas.deltaX, tailDeltas.deltaY);
+        this.ports[tailPort].push(node)
       }
       console.log("headPort: ", headPort)
       console.log("tailPort: ", tailPort)
+    }
+
+    for(var port = 1; port <= 8; port++) {
+      this.calculateLanes(port.toString(), straight, angled);
+    }
+
+
+  }
+
+  this.calculateLanes = function(port) {
+    var availableLanes = ["middle", "left", "right"];
+    nodes = this.ports["1"];
+    for(var node of nodes) {
+      var index = availableLanes.indexOf(node.lane);
+      if(index !== -1) {
+        availableLanes.splice(index, 1)
+      } else {
+        node.lane = availableLanes.splice(0, 1)[0]
+      }
+      switch(port) {
+        case "1":
+          if(node.lane = "left") {
+            node.x = this.x - angled;
+            node.y = this.y + angled;
+          } else if(node.lane = "right") {
+            node.x = this.x + angled;
+            node.y = this.y - angled;
+          } else {
+            node.x = this.x;
+            node.y = this.y;
+          }
+          break;
+        case "2":
+          if(node.lane = "left") {
+            node.x = this.x - straight;
+            node.y = this.y;
+          } else if(node.lane = "right") {
+            node.x = this.x + straight;
+            node.y = this.y;
+          } else {
+            node.x = this.x;
+            node.y = this.y;
+          }
+          break;
+        case "3":
+          if(node.lane = "left") {
+            node.x = this.x - angled;
+            node.y = this.y - angled;
+          } else if(node.lane = "right") {
+            node.x = this.x + angled;
+            node.y = this.y + angled;
+          } else {
+            node.x = this.x;
+            node.y = this.y;
+          }
+          break;
+        case "4":
+          if(node.lane = "left") {
+            node.x = this.x;
+            node.y = this.y - straight;
+          } else if(node.lane = "right") {
+            node.x = this.x;
+            node.y = this.y + straight;
+          } else {
+            node.x = this.x;
+            node.y = this.y;
+          }
+          break;
+        case "5":
+          if(node.lane = "left") {
+            node.x = this.x + angled;
+            node.y = this.y - angled;
+          } else if(node.lane = "right") {
+            node.x = this.x - angled;
+            node.y = this.y + angled;
+          } else {
+            node.x = this.x;
+            node.y = this.y;
+          }
+          break;
+        case "6":
+          if(node.lane = "left") {
+            node.x = this.x + straight;
+            node.y = this.y;
+          } else if(node.lane = "right") {
+            node.x = this.x - straight;
+            node.y = this.y;
+          } else {
+            node.x = this.x;
+            node.y = this.y;
+          }
+          break;
+        case "7":
+          if(node.lane = "left") {
+            node.x = this.x + angled;
+            node.y = this.y + angled;
+          } else if(node.lane = "right") {
+            node.x = this.x - angled;
+            node.y = this.y - angled;
+          } else {
+            node.x = this.x;
+            node.y = this.y;
+          }
+          break;
+        case "8":
+          if(node.lane = "left") {
+            node.x = this.x;
+            node.y = this.y + straight;
+          } else if(node.lane = "right") {
+            node.x = this.x;
+            node.y = this.y - straight;
+          } else {
+            node.x = this.x;
+            node.y = this.y;
+          }
+          break;
+      }
     }
   }
 
