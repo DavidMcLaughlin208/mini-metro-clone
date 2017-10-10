@@ -96,7 +96,7 @@ var Train = function(){
         for(var i = this.passengers.length - 1; i >= 0; i--){
           var passenger = this.passengers[i];
           if(passenger.itinerary[0] === this.target.station){
-            console.log("disembarking")
+            // console.log("disembarking")
             if(passenger.shape === this.target.station.shape){
               passengersDeliveredCount += 1;
             }
@@ -135,7 +135,7 @@ var Train = function(){
         for(var i = stationPassengers.length - 1; i >= 0; i--) {
           var passenger = stationPassengers[i];
           if(passenger.itinerary[0] === this.route) {
-            console.log("embarking")
+            // console.log("embarking")
             passenger.embark(this, this.target.station, i);
           }
         }

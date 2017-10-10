@@ -62,23 +62,9 @@ var GameManager = function(){
   this.finished = true;
 
   this.sufficientDistance = 400;
-  this.gmDrawStartTime = Date.now();
-  this.routeDrawStartTime = Date.now();
-  this.routeHandleDrawStartTime = Date.now();
-  this.tempRouteDrawStartTime = Date.now();
-  this.drawStationAndPassengersStartTime = Date.now();
-  this.drawTrainsAndPassengersStartTime = Date.now();
-
-  this.longestGmDraw = 0;
-  this.longestRouteDraw = 0;
-  this.longestRouteHandleDraw = 0;
-  this.longestTempRouteDraw = 0;
-  this.longestStationDraw = 0;
-  this.longestTrainDraw = 0;
 
   this.draw = function(){
     this.finished = false;
-    this.startTime = Date.now();
 
     // Reset canvas and draw background
     this.metro.ctx.clearRect(-this.metro.width/2, -this.metro.height/2, this.metro.width, this.metro.height);
@@ -88,8 +74,8 @@ var GameManager = function(){
 
     this.calcuateScale();
     this.zoomOut();
+
     // Draw routes
-    this.routeDrawStartTime = Date.now();
     for (var property in this.routes) {
       if (this.routes.hasOwnProperty(property)) {
         var route = this.routes[property];
@@ -101,13 +87,8 @@ var GameManager = function(){
         train.drawTempRoute(this.metro.ctx, this.sizes);
       }
     }
-    var finish = Date.now();
-    if(finish - this.routeDrawStartTime > this.longestRouteDraw) {
-      this.longestRouteDraw = finish - this.routeDrawStartTime;
-      console.log("Longest Route Draw: ", this.longestRouteDraw);
-    }
+
     // Draw route handles
-    this.routeHandleDrawStartTime = Date.now();
     for (var property in this.routes) {
       if (this.routes.hasOwnProperty(property)) {
         var route = this.routes[property];
@@ -121,24 +102,13 @@ var GameManager = function(){
                          this.sizes);
       }
     }
-    var finish = Date.now();
-    if(finish - this.routeHandleDrawStartTime > this.longestRouteHandleDraw) {
-      this.longestRouteHandleDraw = finish - this.routeHandleDrawStartTime;
-      console.log("Longest Route Handle Draw: ", this.longestRouteHandleDraw);
-    }
+
     // Draw route being drawn
-    this.tempRouteDrawStartTime = Date.now();
     if(this.connectingStation){
       this.drawTempRoute(this.metro.ctx, this.sizes)
     }
-    var finish = Date.now();
-    if(finish - this.tempRouteDrawStartTime > this.longestTempRouteDraw) {
-      this.longestTempRouteDraw = finish - this.tempRouteDrawStartTime;
-      console.log("Longest Temp Route Draw: ", this.longestTempRouteDraw);
-    }
 
     // Draw stations and passengers at stations
-    this.drawStationAndPassengersStartTime = Date.now();
     for(var i in this.stations){
       this.stations[i].draw(this.metro.ctx, this.sizes);
       var passengers = this.stations[i].passengers;
@@ -146,14 +116,8 @@ var GameManager = function(){
         passengers[j].draw(this.metro.ctx, j, this.sizes);
       }
     }
-    var finish = Date.now();
-    if(finish - this.drawStationAndPassengersStartTime > this.longestStationDraw) {
-      this.longestStationDraw = finish - this.drawStationAndPassengersStartTime;
-      console.log("Longest Station Draw: ", this.longestStationDraw);
-    }
 
     // Draw trains and passengers on trains
-    this.drawTrainsAndPassengersStartTime = Date.now();
     for(var i in this.trains){
       this.passengersDelivered += this.trains[i].draw(this.metro.ctx, this.sizes);
       var passengers = this.trains[i].passengers;
@@ -161,11 +125,8 @@ var GameManager = function(){
         passengers[j].draw(this.metro.ctx, j, this.sizes);
       }
     }
-    var finish = Date.now();
-    if(finish - this.drawTrainsAndPassengersStartTime > this.longestTrainDraw) {
-      this.longestTrainDraw = finish - this.drawTrainsAndPassengersStartTime;
-      console.log("Longest Train Draw: ", this.longestTrainDraw);
-    }
+
+
     this.ui.draw(this.metro.ctx, this.passengersDelivered);
 
     this.finished = true;
@@ -227,23 +188,23 @@ var GameManager = function(){
   }
 
   this.isValidConnection = function(node, station){
-    if(node.station === station){return false}
+    if(node.station === station || station.connections.length >= 3){return false}
     if(node.next === null){return true}
     return this.isValidConnection(node.next, station)
   }
 
-  this.headOrTail = function(station, route){
-    if(station === route.head.station){
-      return route.head;
-    } else if (station === route.tail(route.head).station){
-      return route.tail(route.head);
-    }
-    return null;
-  }
+  // this.headOrTail = function(station, route){
+  //   if(station === route.head.station){
+  //     return route.head;
+  //   } else if (station === route.tail(route.head).station){
+  //     return route.tail(route.head);
+  //   }
+  //   return null;
+  // }
 
   this.getTravelNodeId = function(){
     this.travelNodeIdCounter += 1;
-    console.log("TravelNodeId: ", this.travelNodeIdCounter);
+    // console.log("TravelNodeId: ", this.travelNodeIdCounter);
     return this.travelNodeIdCounter;
   }
 

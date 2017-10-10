@@ -39,6 +39,14 @@ var TravelNode = function(id, route, midX, midY){
     this.station = null;
   }
 
+  this.isHead = function() {
+    return this.route.head === this
+  }
+
+  this.isTail = function() {
+    return this.route.tail(this.route.head) === this
+  }
+
   this.recalculateMidpoint = function() {
     if(!this.last){return}
     var xDistance = Math.abs(this.station.x - this.last.station.x);
@@ -55,7 +63,7 @@ var TravelNode = function(id, route, midX, midY){
         modifier = -1;
       }
     }
-    while(Math.abs(xDistance - yDistance) > 2) {
+    while(Math.abs(xDistance - yDistance) > 1) {
       if(xDistance > yDistance) {
         tempMidX += modifier;
       } else {

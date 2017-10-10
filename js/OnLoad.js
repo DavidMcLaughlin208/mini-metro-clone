@@ -9,7 +9,7 @@ $(document).ready(function(){
 
   var checkFinishedLoop = setInterval(gameLoop.bind(gm), 2);
   var passengerLoop = setInterval(gm.spawnPasenger.bind(gm), 4000);
-  var stationLoop = setInterval(gm.spawnStation.bind(gm), 5000);
+  var stationLoop = setInterval(gm.spawnStation.bind(gm), 20000);
   createStations(gm);
 
   $("#pause").on("click", function(e){
@@ -66,8 +66,9 @@ $(document).ready(function(){
       var handle = gm.allRouteHandles[i];
       if(x <= handle.x + gm.clickBox && x >= handle.x - gm.clickBox && y <= handle.y + gm.clickBox && y >= handle.y - gm.clickBox){
         gm.connectingNode = handle.getNode();
+        gm.connectingNode.station.calculateInputs()
         if(gm.connectingNode){
-          console.log("Setting connectors")
+          // console.log("Setting connectors")
           gm.connectingStation = handle.getNode().station;
           gm.connectingRoute = handle.route;
           gm.connectingHandle = handle;
@@ -78,7 +79,8 @@ $(document).ready(function(){
     for(var i = 0; i < gm.stations.length; i++){
       var station = gm.stations[i];
       if(x <= station.x + gm.clickBox && x >= station.x - gm.clickBox && y <= station.y + gm.clickBox && y >= station.y - gm.clickBox){
-        console.log(station.connections)
+        // console.log(station.connections)
+        station.calculateInputs()
         var route = null;
         for (var property in gm.routes) {
           if (gm.routes.hasOwnProperty(property) && gm.routes[property].head === null) {
@@ -88,7 +90,7 @@ $(document).ready(function(){
         }
         if(route){
           route.head = new TravelNode(gm.getTravelNodeId(), route);
-          console.log("Creating new node")
+          // console.log("Creating new node")
           route.head.setStation(station);
           gm.connectingNode = route.head;
           gm.connectingRoute = route;
@@ -103,14 +105,14 @@ $(document).ready(function(){
   $("#metro").on("mouseup", function(e){
     var route = gm.connectingRoute;
     if(route && route.tail(route.head) === route.head){
-      console.log("Not a valid route. Deleting all nodes")
+      // console.log("Not a valid route. Deleting all nodes")
       route.deleteAllNodes();
     }
     gm.connectingNode = null;
     gm.connectingStation = null;
     gm.connectingRoute = null;
     gm.connectingHandle = null;
-    console.log("mouseup")
+    // console.log("mouseup")
   })
 
   $("#metro").on("mouseleave", function(e){
@@ -122,7 +124,7 @@ $(document).ready(function(){
     gm.connectingStation = null;
     gm.connectingRoute = null;
     gm.connectingHandle = null;
-    console.log("mouseleave")
+    // console.log("mouseleave")
   })
 
   $("#metro").on("mousemove", function(e){
@@ -146,10 +148,10 @@ $(document).ready(function(){
           if(gm.connectingStation !== this){
             var valid = gm.isValidConnection(gm.connectingRoute.head, station);
             if(valid){
-              console.log("Valid connection")
+              // console.log("Valid connection")
               var node = new TravelNode(gm.getTravelNodeId(), gm.connectingRoute, gm.tempMidX, gm.tempMidY);
-              console.log(gm.tempMidX, gm.tempMidY)
-              console.log("Creating New Node")
+              // console.log(gm.tempMidX, gm.tempMidY)
+              // console.log("Creating New Node")
               if(gm.connectingNode.next){
                 node.next = gm.connectingRoute.head;
                 node.setStation(station);
@@ -169,7 +171,7 @@ $(document).ready(function(){
                   return arrVal.route === gm.connectingRoute;
                 });
                 if(!anyTrainsOnRoute){
-                  console.log("NewRoute")
+                  // console.log("NewRoute")
                   for(var i = 0; i < gm.trains.length; i++){
                     var train = gm.trains[i];
                     if(train.route === null){
@@ -177,7 +179,7 @@ $(document).ready(function(){
                                       gm.connectingRoute.head.station.y,
                                       gm.connectingRoute,
                                       gm.connectingRoute.head);
-                      console.log(train)
+                      // console.log(train)
                       break;
                     }
                   }
