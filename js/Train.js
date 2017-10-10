@@ -47,8 +47,8 @@ var Train = function(){
     var targetX = null;
     var targetY = null;
     if(this.passedMid) {
-      targetX = this.target.station.x;
-      targetY = this.target.station.y;
+      targetX = this.target.x;
+      targetY = this.target.y;
     } else {
       if(this.forward){
         targetX = this.target.midX;
@@ -196,10 +196,10 @@ var Train = function(){
     ctx.lineWidth = sizes.route.lineWidth;
 
     ctx.beginPath();
-    ctx.moveTo(node1.station.x, node1.station.y)
+    ctx.moveTo(node1.x, node1.y)
     ctx.lineTo(node2.midX, node2.midY);
     ctx.stroke();
-    ctx.lineTo(node2.station.x, node2.station.y);
+    ctx.lineTo(node2.x, node2.y);
     ctx.stroke();
     ctx.closePath();
   }

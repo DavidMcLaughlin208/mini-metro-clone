@@ -9,7 +9,7 @@ $(document).ready(function(){
 
   var checkFinishedLoop = setInterval(gameLoop.bind(gm), 2);
   var passengerLoop = setInterval(gm.spawnPasenger.bind(gm), 4000);
-  var stationLoop = setInterval(gm.spawnStation.bind(gm), 20000);
+  var stationLoop = setInterval(gm.spawnStation.bind(gm), 5000);
   createStations(gm);
 
   $("#pause").on("click", function(e){
@@ -66,7 +66,7 @@ $(document).ready(function(){
       var handle = gm.allRouteHandles[i];
       if(x <= handle.x + gm.clickBox && x >= handle.x - gm.clickBox && y <= handle.y + gm.clickBox && y >= handle.y - gm.clickBox){
         gm.connectingNode = handle.getNode();
-        gm.connectingNode.station.calculateInputs()
+        gm.connectingNode.station.calculateInputs(gm.sizes)
         if(gm.connectingNode){
           // console.log("Setting connectors")
           gm.connectingStation = handle.getNode().station;
@@ -80,7 +80,7 @@ $(document).ready(function(){
       var station = gm.stations[i];
       if(x <= station.x + gm.clickBox && x >= station.x - gm.clickBox && y <= station.y + gm.clickBox && y >= station.y - gm.clickBox){
         // console.log(station.connections)
-        station.calculateInputs()
+        station.calculateInputs(gm.sizes)
         var route = null;
         for (var property in gm.routes) {
           if (gm.routes.hasOwnProperty(property) && gm.routes[property].head === null) {
@@ -175,8 +175,8 @@ $(document).ready(function(){
                   for(var i = 0; i < gm.trains.length; i++){
                     var train = gm.trains[i];
                     if(train.route === null){
-                      train.setParams(gm.connectingRoute.head.station.x,
-                                      gm.connectingRoute.head.station.y,
+                      train.setParams(gm.connectingRoute.head.x,
+                                      gm.connectingRoute.head.y,
                                       gm.connectingRoute,
                                       gm.connectingRoute.head);
                       // console.log(train)

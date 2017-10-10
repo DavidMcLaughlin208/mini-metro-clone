@@ -319,6 +319,8 @@ var GameManager = function(){
         for(var node of station.connections) {
           node.midX *= newRatio;
           node.midY *= newRatio;
+          node.x *= newRatio;
+          node.y *= newRatio;
         }
         for(var passenger of station.passengers) {
           passenger.x *= newRatio;

@@ -35,10 +35,10 @@ var Route = function(color, sizeRatio){
       ctx.lineWidth = lineWidth;
 
       ctx.beginPath();
-      ctx.moveTo(node.station.x, node.station.y)
+      ctx.moveTo(node.x, node.y)
       ctx.lineTo(node.next.midX, node.next.midY);
       ctx.stroke();
-      ctx.lineTo(node.next.station.x, node.next.station.y);
+      ctx.lineTo(node.next.x, node.next.y);
       ctx.stroke();
       ctx.closePath();
 

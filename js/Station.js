@@ -67,7 +67,7 @@ var Station = function(x, y, shape){
       "7": [],
       "8": [],
     }
-    var straight = sizes.station.size/2;
+    var straight = sizes.station.size/3;
     var angled = Math.sqrt(sizes.station.size/2)
     for(var node of this.connections) {
       var headPort = null;
@@ -103,9 +103,9 @@ var Station = function(x, y, shape){
 
   }
 
-  this.calculateLanes = function(port) {
+  this.calculateLanes = function(port, straight, angled) {
     var availableLanes = ["middle", "left", "right"];
-    nodes = this.ports["1"];
+    nodes = this.ports[port];
     for(var node of nodes) {
       var index = availableLanes.indexOf(node.lane);
       if(index !== -1) {
