@@ -19,16 +19,16 @@ var Station = function(x, y, shape){
 
 
   this.headDeltas = function(node) {
-    var deltaX = Math.floor(node.next.midX - this.x);
-    var deltaY = Math.floor(node.next.midY - this.y);
+    var deltaX = Math.floor(node.next.absoluteMidX - this.x);
+    var deltaY = Math.floor(node.next.absoluteMidY - this.y);
 
     return {"deltaX": deltaX,
             "deltaY": deltaY}
   }
 
   this.tailDeltas = function(node) {
-    var deltaX = Math.floor(node.midX - this.x);
-    var deltaY = Math.floor(node.midY - this.y);
+    var deltaX = Math.floor(node.absoluteMidX - this.x);
+    var deltaY = Math.floor(node.absoluteMidY - this.y);
 
     return {"deltaX": deltaX,
             "deltaY": deltaY}
@@ -92,8 +92,8 @@ var Station = function(x, y, shape){
         tailPort = this.getPort(tailDeltas.deltaX, tailDeltas.deltaY);
         this.ports[tailPort].push(node)
       }
-      console.log("headPort: ", headPort)
-      console.log("tailPort: ", tailPort)
+      if(headPort){console.log("headPort: ", headPort)}
+      if(tailPort){console.log("tailPort: ", tailPort)}
     }
 
     for(var port = 1; port <= 8; port++) {
@@ -113,6 +113,7 @@ var Station = function(x, y, shape){
       } else {
         node.lane = availableLanes.splice(0, 1)[0]
       }
+      console.log(node.lane)
       switch(port) {
         case "1":
           if(node.lane = "left") {

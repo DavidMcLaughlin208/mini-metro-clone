@@ -355,7 +355,8 @@ var GameManager = function(){
   this.recalculateNodeMidpoints = function() {
     for(var station of this.stations) {
       for(var node of station.connections) {
-        node.recalculateMidpoint();
+        node.recalculateMidpoint(true);
+        node.recalculateMidpoint(false);
       }
     }
     // for(var train of this.trains) {
@@ -365,5 +366,11 @@ var GameManager = function(){
     //     train.travelNode.recalculateMidpoint();
     //   }
     // }
+  }
+
+  this.calculateAllInputs = function() {
+    for(var station of this.stations) {
+      station.calculateInputs(this.sizes);
+    }
   }
 }

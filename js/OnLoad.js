@@ -66,7 +66,7 @@ $(document).ready(function(){
       var handle = gm.allRouteHandles[i];
       if(x <= handle.x + gm.clickBox && x >= handle.x - gm.clickBox && y <= handle.y + gm.clickBox && y >= handle.y - gm.clickBox){
         gm.connectingNode = handle.getNode();
-        gm.connectingNode.station.calculateInputs(gm.sizes)
+        gm.calculateAllInputs();
         if(gm.connectingNode){
           // console.log("Setting connectors")
           gm.connectingStation = handle.getNode().station;
@@ -80,7 +80,8 @@ $(document).ready(function(){
       var station = gm.stations[i];
       if(x <= station.x + gm.clickBox && x >= station.x - gm.clickBox && y <= station.y + gm.clickBox && y >= station.y - gm.clickBox){
         // console.log(station.connections)
-        station.calculateInputs(gm.sizes)
+        if(station.connections.length > 3) {continue}
+        gm.calculateAllInputs();
         var route = null;
         for (var property in gm.routes) {
           if (gm.routes.hasOwnProperty(property) && gm.routes[property].head === null) {
@@ -165,7 +166,9 @@ $(document).ready(function(){
               }
               gm.connectingNode = node;
               gm.connectingStation = node.station;
-              node.recalculateMidpoint();
+              node.recalculateMidpoint(true);
+              node.recalculateMidpoint(false);
+              gm.calculateAllInputs()
               if(newRoute){
                 var anyTrainsOnRoute = gm.trains.some(function(arrVal) {
                   return arrVal.route === gm.connectingRoute;

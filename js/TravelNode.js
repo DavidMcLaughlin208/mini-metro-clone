@@ -9,6 +9,8 @@ var TravelNode = function(id, route, midX, midY){
   this.lane = "middle"
   this.midX = midX;
   this.midY = midY;
+  this.absoluteMidX = midX;
+  this.absoluteMidY = midY;
 
   this.draw = function(ctx){
 
@@ -52,13 +54,15 @@ var TravelNode = function(id, route, midX, midY){
     return this.route.tail(this.route.head) === this
   }
 
-  this.recalculateMidpoint = function() {
+  this.recalculateMidpoint = function(relative) {
     if(!this.last){return}
-    var xDistance = Math.abs(this.x - this.last.x);
-    var yDistance = Math.abs(this.y - this.last.y);
+    var x = relative ? this.last.x : this.last.station.x;
+    var y = relative ? this.last.y : this.last.station.y;
+    var xDistance = Math.abs(this.x - x);
+    var yDistance = Math.abs(this.y - y);
     var modifier = 1;
-    var tempMidX = this.last.x;
-    var tempMidY = this.last.y;
+    var tempMidX = relative ? this.last.x : this.last.station.x;
+    var tempMidY = relative ? this.last.y : this.last.station.y;
     if(xDistance > yDistance) {
       if(this.x < this.last.x) {
         modifier = -1;
@@ -77,8 +81,12 @@ var TravelNode = function(id, route, midX, midY){
       xDistance = Math.abs(this.x - tempMidX);
       yDistance = Math.abs(this.y - tempMidY);
     }
-
-    this.midX = tempMidX;
-    this.midY = tempMidY;
+    if(relative) {
+      this.midX = tempMidX;
+      this.midY = tempMidY;
+    } else {
+      this.absoluteMidX = tempMidX;
+      this.absoluteMidY = tempMidY;
+    }
   }
 }
