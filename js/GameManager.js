@@ -63,6 +63,10 @@ var GameManager = function(){
 
   this.sufficientDistance = 400;
 
+  this.drawStations = true;
+  this.drawTrains = true;
+  this.drawHandles = true;
+
   this.draw = function(){
     this.finished = false;
 
@@ -89,17 +93,19 @@ var GameManager = function(){
     }
 
     // Draw route handles
-    for (var property in this.routes) {
-      if (this.routes.hasOwnProperty(property)) {
-        var route = this.routes[property];
-        route.drawHandle(route.head, route.headHandle,
-                         this.metro.ctx, this,
-                         route.headHandle !== this.connectingHandle,
-                         this.sizes);
-        route.drawHandle(route.tail(route.head), route.tailHandle,
-                         this.metro.ctx, this,
-                         route.tailHandle !== this.connectingHandle,
-                         this.sizes);
+    if(this.drawHandles) {
+      for (var property in this.routes) {
+        if (this.routes.hasOwnProperty(property)) {
+          var route = this.routes[property];
+          route.drawHandle(route.head, route.headHandle,
+                           this.metro.ctx, this,
+                           route.headHandle !== this.connectingHandle,
+                           this.sizes);
+          route.drawHandle(route.tail(route.head), route.tailHandle,
+                           this.metro.ctx, this,
+                           route.tailHandle !== this.connectingHandle,
+                           this.sizes);
+        }
       }
     }
 
@@ -109,20 +115,24 @@ var GameManager = function(){
     }
 
     // Draw stations and passengers at stations
-    for(var i in this.stations){
-      this.stations[i].draw(this.metro.ctx, this.sizes);
-      var passengers = this.stations[i].passengers;
-      for(var j in passengers) {
-        passengers[j].draw(this.metro.ctx, j, this.sizes);
+    if(this.drawStations) {
+      for(var i in this.stations){
+        this.stations[i].draw(this.metro.ctx, this.sizes);
+        var passengers = this.stations[i].passengers;
+        for(var j in passengers) {
+          passengers[j].draw(this.metro.ctx, j, this.sizes);
+        }
       }
     }
 
     // Draw trains and passengers on trains
-    for(var i in this.trains){
-      this.passengersDelivered += this.trains[i].draw(this.metro.ctx, this.sizes);
-      var passengers = this.trains[i].passengers;
-      for(var j in passengers){
-        passengers[j].draw(this.metro.ctx, j, this.sizes);
+    if(this.drawTrains) {
+      for(var i in this.trains){
+        this.passengersDelivered += this.trains[i].draw(this.metro.ctx, this.sizes);
+        var passengers = this.trains[i].passengers;
+        for(var j in passengers){
+          passengers[j].draw(this.metro.ctx, j, this.sizes);
+        }
       }
     }
 
@@ -372,5 +382,22 @@ var GameManager = function(){
     for(var station of this.stations) {
       station.calculateInputs(this.sizes);
     }
+    // this.calculateAllLanes();
+    // var straight = this.sizes.station.size/2.5;
+    // var angled = this.sizes.station.size/4;
+    // for(var station of this.stations) {
+    //   for(var port = 1; port <= 8; port++) {
+    //     station.calculateLanes(port.toString(), straight, angled);
+    //   }
+    // }
   }
+
+  // this.calculateAllLanes = function() {
+  //   for (var property in this.routes) {
+  //     if (this.routes.hasOwnProperty(property)) {
+  //       var route = this.routes[property];
+  //       route.alternateLanes();
+  //     }
+  //   }
+  // }
 }

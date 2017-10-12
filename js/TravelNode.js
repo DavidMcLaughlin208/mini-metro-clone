@@ -64,11 +64,11 @@ var TravelNode = function(id, route, midX, midY){
     var tempMidX = relative ? this.last.x : this.last.station.x;
     var tempMidY = relative ? this.last.y : this.last.station.y;
     if(xDistance > yDistance) {
-      if(this.x < this.last.x) {
+      if(this.x < x) {
         modifier = -1;
       }
     } else {
-      if(this.y < this.last.y) {
+      if(this.y < y) {
         modifier = -1;
       }
     }

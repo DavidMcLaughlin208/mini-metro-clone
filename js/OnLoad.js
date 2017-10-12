@@ -9,7 +9,7 @@ $(document).ready(function(){
 
   var checkFinishedLoop = setInterval(gameLoop.bind(gm), 2);
   var passengerLoop = setInterval(gm.spawnPasenger.bind(gm), 4000);
-  var stationLoop = setInterval(gm.spawnStation.bind(gm), 5000);
+  var stationLoop = setInterval(gm.spawnStation.bind(gm), 20000);
   createStations(gm);
 
   $("#pause").on("click", function(e){
@@ -19,6 +19,34 @@ $(document).ready(function(){
     clearInterval(passengerLoop);
     clearInterval(stationLoop);
   })
+
+  $("#drawStations").on("click", function(e){
+    e.preventDefault();
+    gm.drawStations = !gm.drawStations;
+    gm.draw()
+  })
+
+  $("#drawTrains").on("click", function(e){
+    e.preventDefault();
+    gm.drawTrains = !gm.drawTrains;
+    gm.draw()
+  })
+
+  $("#drawHandles").on("click", function(e){
+    e.preventDefault();
+    gm.drawHandles = !gm.drawHandles;
+    gm.draw()
+  })
+
+  $("#toggleDraw").on("click", function(e){
+    e.preventDefault();
+    gm.drawTrains = !gm.drawTrains;
+    gm.drawHandles = !gm.drawHandles;
+    gm.drawStations = !gm.drawStations;
+    gm.draw()
+  })
+
+
 
   $("#play").on("click", function(e){
     e.preventDefault();

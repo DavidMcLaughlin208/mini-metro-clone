@@ -67,8 +67,8 @@ var Station = function(x, y, shape){
       "7": [],
       "8": [],
     }
-    var straight = sizes.station.size/3;
-    var angled = Math.sqrt(sizes.station.size/2)
+    var straight = sizes.station.size/2.5;
+    var angled = sizes.station.size/4;//Math.sqrt(sizes.station.size/2.5)
     for(var node of this.connections) {
       var headPort = null;
       var tailPort = null;
@@ -88,9 +88,9 @@ var Station = function(x, y, shape){
         headPort = this.getPort(headDeltas.deltaX, headDeltas.deltaY);
         this.ports[headPort].push(node);
 
-        var tailDeltas = this.tailDeltas(node);
-        tailPort = this.getPort(tailDeltas.deltaX, tailDeltas.deltaY);
-        this.ports[tailPort].push(node)
+        // var tailDeltas = this.tailDeltas(node);
+        // tailPort = this.getPort(tailDeltas.deltaX, tailDeltas.deltaY);
+        // this.ports[tailPort].push(node)
       }
       if(headPort){console.log("headPort: ", headPort)}
       if(tailPort){console.log("tailPort: ", tailPort)}
@@ -107,19 +107,35 @@ var Station = function(x, y, shape){
     var availableLanes = ["middle", "left", "right"];
     nodes = this.ports[port];
     for(var node of nodes) {
-      var index = availableLanes.indexOf(node.lane);
-      if(index !== -1) {
-        availableLanes.splice(index, 1)
+      // if(node.next){node.lane = node.next.lane}
+      if(nodes.length !== 1) {
+        var index = availableLanes.indexOf(node.lane);
+        if(index !== -1) {
+          availableLanes.splice(index, 1)
+        } else {
+          node.lane = availableLanes.splice(0, 1)[0]
+        }
       } else {
-        node.lane = availableLanes.splice(0, 1)[0]
+        node.lane = "middle";
       }
+      if(node.isTail()) {
+        if(node.lane === "left") {
+          node.lane = "right";
+        } else if(node.lane === "right") {
+          node.lane = "left";
+        }
+      }
+      console.log(node.route.color, node.lane)
       console.log(node.lane)
+      console.log(port)
+      // console.log(straight)
+      // console.log(angled)
       switch(port) {
         case "1":
-          if(node.lane = "left") {
+          if(node.lane === "left") {
             node.x = this.x - angled;
             node.y = this.y + angled;
-          } else if(node.lane = "right") {
+          } else if(node.lane === "right") {
             node.x = this.x + angled;
             node.y = this.y - angled;
           } else {
@@ -128,10 +144,10 @@ var Station = function(x, y, shape){
           }
           break;
         case "2":
-          if(node.lane = "left") {
+          if(node.lane === "left") {
             node.x = this.x - straight;
             node.y = this.y;
-          } else if(node.lane = "right") {
+          } else if(node.lane === "right") {
             node.x = this.x + straight;
             node.y = this.y;
           } else {
@@ -140,22 +156,24 @@ var Station = function(x, y, shape){
           }
           break;
         case "3":
-          if(node.lane = "left") {
+          if(node.lane === "left") {
             node.x = this.x - angled;
             node.y = this.y - angled;
-          } else if(node.lane = "right") {
+          } else if(node.lane === "right") {
             node.x = this.x + angled;
             node.y = this.y + angled;
           } else {
             node.x = this.x;
             node.y = this.y;
           }
+          console.log(node.x - this.x)
+          console.log(node.y - this.y)
           break;
         case "4":
-          if(node.lane = "left") {
+          if(node.lane === "left") {
             node.x = this.x;
             node.y = this.y - straight;
-          } else if(node.lane = "right") {
+          } else if(node.lane === "right") {
             node.x = this.x;
             node.y = this.y + straight;
           } else {
@@ -164,10 +182,10 @@ var Station = function(x, y, shape){
           }
           break;
         case "5":
-          if(node.lane = "left") {
+          if(node.lane === "left") {
             node.x = this.x + angled;
             node.y = this.y - angled;
-          } else if(node.lane = "right") {
+          } else if(node.lane === "right") {
             node.x = this.x - angled;
             node.y = this.y + angled;
           } else {
@@ -176,10 +194,10 @@ var Station = function(x, y, shape){
           }
           break;
         case "6":
-          if(node.lane = "left") {
+          if(node.lane === "left") {
             node.x = this.x + straight;
             node.y = this.y;
-          } else if(node.lane = "right") {
+          } else if(node.lane === "right") {
             node.x = this.x - straight;
             node.y = this.y;
           } else {
@@ -188,10 +206,10 @@ var Station = function(x, y, shape){
           }
           break;
         case "7":
-          if(node.lane = "left") {
+          if(node.lane === "left") {
             node.x = this.x + angled;
             node.y = this.y + angled;
-          } else if(node.lane = "right") {
+          } else if(node.lane === "right") {
             node.x = this.x - angled;
             node.y = this.y - angled;
           } else {
@@ -200,10 +218,10 @@ var Station = function(x, y, shape){
           }
           break;
         case "8":
-          if(node.lane = "left") {
+          if(node.lane === "left") {
             node.x = this.x;
             node.y = this.y + straight;
-          } else if(node.lane = "right") {
+          } else if(node.lane === "right") {
             node.x = this.x;
             node.y = this.y - straight;
           } else {

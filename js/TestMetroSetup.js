@@ -13,7 +13,9 @@ var createStations = function(gm){
   gm.stations.push(new Station(250, -150, "circle", gm.sizeRatio))
   gm.stations.push(new Station(-250, 100, "square", gm.sizeRatio))
   gm.stations.push(new Station(150, 75, "triangle", gm.sizeRatio))
+  gm.stations.push(new Station(-350, -85, "teardrop", gm.sizeRatio))
 
+  setTimeout(gm.spawnStation.bind(gm), 5000);
   // for(var i = 0; i < 3; i++){
   //   gm.travelNodes.push(new TravelNode(gm.getTravelNodeId(), gm.routes.red));
   // }
