@@ -35,10 +35,10 @@ var Route = function(color, sizeRatio){
       ctx.lineWidth = lineWidth;
 
       ctx.beginPath();
-      ctx.moveTo(node.x, node.y)
+      ctx.moveTo(node.exitX, node.exitY)
       ctx.lineTo(node.next.midX, node.next.midY);
       ctx.stroke();
-      ctx.lineTo(node.next.x, node.next.y);
+      ctx.lineTo(node.next.enterX, node.next.enterY);
       ctx.stroke();
       ctx.closePath();
 
@@ -88,25 +88,25 @@ var Route = function(color, sizeRatio){
     }
   }
 
-  this.alternateLanes = function() {
-    if(!this.head || !this.head.next) {return}
-    var node = this.head;
-    var lane = node.lane;
-    this.nextLane(node, lane)
-  }
-
-  this.nextLane = function(node, lane) {
-    if(node.next && !node.next.next) {
-      node.next.lane = node.lane;
-      return;
-    }
-    if(lane === "left") {
-      node.lane = "right";
-    } else if(lane === "right") {
-      node.lane = "left";
-    }
-    if(node.next) {
-      this.nextLane(node.next);
-    }
-  }
+  // this.alternateLanes = function() {
+  //   if(!this.head || !this.head.next) {return}
+  //   var node = this.head;
+  //   var lane = node.lane;
+  //   this.nextLane(node, lane)
+  // }
+  //
+  // this.nextLane = function(node, lane) {
+  //   if(node.next && !node.next.next) {
+  //     node.next.lane = node.lane;
+  //     return;
+  //   }
+  //   if(lane === "left") {
+  //     node.lane = "right";
+  //   } else if(lane === "right") {
+  //     node.lane = "left";
+  //   }
+  //   if(node.next) {
+  //     this.nextLane(node.next);
+  //   }
+  // }
 }

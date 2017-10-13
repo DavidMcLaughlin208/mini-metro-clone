@@ -329,8 +329,12 @@ var GameManager = function(){
         for(var node of station.connections) {
           node.midX *= newRatio;
           node.midY *= newRatio;
-          node.x *= newRatio;
-          node.y *= newRatio;
+          node.absoluteMidX *= newRatio;
+          node.absoluteMidY *= newRatio;
+          node.enterX *= newRatio;
+          node.enterY *= newRatio;
+          node.exitX *= newRatio;
+          node.exitY *= newRatio;
         }
         for(var passenger of station.passengers) {
           passenger.x *= newRatio;
@@ -382,22 +386,6 @@ var GameManager = function(){
     for(var station of this.stations) {
       station.calculateInputs(this.sizes);
     }
-    // this.calculateAllLanes();
-    // var straight = this.sizes.station.size/2.5;
-    // var angled = this.sizes.station.size/4;
-    // for(var station of this.stations) {
-    //   for(var port = 1; port <= 8; port++) {
-    //     station.calculateLanes(port.toString(), straight, angled);
-    //   }
-    // }
   }
 
-  // this.calculateAllLanes = function() {
-  //   for (var property in this.routes) {
-  //     if (this.routes.hasOwnProperty(property)) {
-  //       var route = this.routes[property];
-  //       route.alternateLanes();
-  //     }
-  //   }
-  // }
 }

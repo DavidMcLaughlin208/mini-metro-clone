@@ -6,14 +6,14 @@ var Station = function(x, y, shape){
   this.passengers = [];
 
   this.ports = {
-    "1": [],
-    "2": [],
-    "3": [],
-    "4": [],
-    "5": [],
-    "6": [],
-    "7": [],
-    "8": [],
+    "1": {entering: [], exiting: []},
+    "2": {entering: [], exiting: []},
+    "3": {entering: [], exiting: []},
+    "4": {entering: [], exiting: []},
+    "5": {entering: [], exiting: []},
+    "6": {entering: [], exiting: []},
+    "7": {entering: [], exiting: []},
+    "8": {entering: [], exiting: []},
   }
 
 
@@ -58,14 +58,14 @@ var Station = function(x, y, shape){
 
   this.calculateInputs = function(sizes) {
     this.ports = {
-      "1": [],
-      "2": [],
-      "3": [],
-      "4": [],
-      "5": [],
-      "6": [],
-      "7": [],
-      "8": [],
+      "1": {entering: [], exiting: []},
+      "2": {entering: [], exiting: []},
+      "3": {entering: [], exiting: []},
+      "4": {entering: [], exiting: []},
+      "5": {entering: [], exiting: []},
+      "6": {entering: [], exiting: []},
+      "7": {entering: [], exiting: []},
+      "8": {entering: [], exiting: []},
     }
     var straight = sizes.station.size/2.5;
     var angled = sizes.station.size/4;//Math.sqrt(sizes.station.size/2.5)
@@ -76,36 +76,42 @@ var Station = function(x, y, shape){
         var headDeltas = this.headDeltas(node);
         headPort = this.getPort(headDeltas.deltaX, headDeltas.deltaY);
 
-        this.ports[headPort].push(node);
+        this.ports[headPort]["exiting"].push(node);
 
       } else if(node.isTail() && node.last) {
         var tailDeltas = this.tailDeltas(node);
         tailPort = this.getPort(tailDeltas.deltaX, tailDeltas.deltaY);
 
-        this.ports[tailPort].push(node)
+        this.ports[tailPort]["entering"].push(node)
       } else if(node.next) {
         var headDeltas = this.headDeltas(node);
         headPort = this.getPort(headDeltas.deltaX, headDeltas.deltaY);
-        this.ports[headPort].push(node);
+        this.ports[headPort]["exiting"].push(node);
 
-        // var tailDeltas = this.tailDeltas(node);
-        // tailPort = this.getPort(tailDeltas.deltaX, tailDeltas.deltaY);
-        // this.ports[tailPort].push(node)
+        var tailDeltas = this.tailDeltas(node);
+        tailPort = this.getPort(tailDeltas.deltaX, tailDeltas.deltaY);
+        this.ports[tailPort]["entering"].push(node)
       }
       if(headPort){console.log("headPort: ", headPort)}
       if(tailPort){console.log("tailPort: ", tailPort)}
     }
 
     for(var port = 1; port <= 8; port++) {
-      this.calculateLanes(port.toString(), straight, angled);
+      this.calculateLanes(port.toString(), straight, angled, true);
+      this.calculateLanes(port.toString(), straight, angled, false);
     }
 
 
   }
 
-  this.calculateLanes = function(port, straight, angled) {
+  this.calculateLanes = function(port, straight, angled, enteringLanes) {
     var availableLanes = ["middle", "left", "right"];
-    nodes = this.ports[port];
+    var nodes = this.ports[port];
+    if(enteringLanes) {
+      nodes = nodes["entering"];
+    } else {
+      nodes = nodes["exiting"];
+    }
     for(var node of nodes) {
       // if(node.next){node.lane = node.next.lane}
       if(nodes.length !== 1) {
@@ -118,118 +124,133 @@ var Station = function(x, y, shape){
       } else {
         node.lane = "middle";
       }
-      if(node.isTail()) {
+      if(node.isHead()) {
         if(node.lane === "left") {
           node.lane = "right";
         } else if(node.lane === "right") {
           node.lane = "left";
         }
       }
-      console.log(node.route.color, node.lane)
-      console.log(node.lane)
-      console.log(port)
-      // console.log(straight)
-      // console.log(angled)
+      // console.log(node.route.color, node.lane)
+      // console.log(node.lane)
+      // console.log(port)
+
       switch(port) {
         case "1":
           if(node.lane === "left") {
-            node.x = this.x - angled;
-            node.y = this.y + angled;
+            this.applyOffsetX(node, this.x - angled, enteringLanes);
+            this.applyOffsetY(node, this.y + angled, enteringLanes);
           } else if(node.lane === "right") {
-            node.x = this.x + angled;
-            node.y = this.y - angled;
+            this.applyOffsetX(node, this.x + angled, enteringLanes);
+            this.applyOffsetY(node, this.y - angled, enteringLanes);
           } else {
-            node.x = this.x;
-            node.y = this.y;
+            this.applyOffsetX(node, this.x, enteringLanes);
+            this.applyOffsetY(node, this.y, enteringLanes);
           }
           break;
         case "2":
           if(node.lane === "left") {
-            node.x = this.x - straight;
-            node.y = this.y;
+            this.applyOffsetX(node, this.x - straight, enteringLanes);
+            this.applyOffsetY(node, this.y, enteringLanes);
           } else if(node.lane === "right") {
-            node.x = this.x + straight;
-            node.y = this.y;
+            this.applyOffsetX(node, this.x + straight, enteringLanes);
+            this.applyOffsetY(node, this.y, enteringLanes);
           } else {
-            node.x = this.x;
-            node.y = this.y;
+            this.applyOffsetX(node, this.x, enteringLanes);
+            this.applyOffsetY(node, this.y, enteringLanes);
           }
           break;
         case "3":
           if(node.lane === "left") {
-            node.x = this.x - angled;
-            node.y = this.y - angled;
+            this.applyOffsetX(node, this.x - angled, enteringLanes);
+            this.applyOffsetY(node, this.y - angled, enteringLanes);
           } else if(node.lane === "right") {
-            node.x = this.x + angled;
-            node.y = this.y + angled;
+            this.applyOffsetX(node, this.x + angled, enteringLanes);
+            this.applyOffsetY(node, this.y + angled, enteringLanes);
           } else {
-            node.x = this.x;
-            node.y = this.y;
+            this.applyOffsetX(node, this.x, enteringLanes);
+            this.applyOffsetY(node, this.y, enteringLanes);
           }
-          console.log(node.x - this.x)
-          console.log(node.y - this.y)
+          // console.log(node.x - this.x)
+          // console.log(node.y - this.y)
           break;
         case "4":
           if(node.lane === "left") {
-            node.x = this.x;
-            node.y = this.y - straight;
+            this.applyOffsetX(node, this.x, enteringLanes);
+            this.applyOffsetY(node, this.y - straight, enteringLanes);
           } else if(node.lane === "right") {
-            node.x = this.x;
-            node.y = this.y + straight;
+            this.applyOffsetX(node, this.x, enteringLanes);
+            this.applyOffsetY(node, this.y + straight, enteringLanes);
           } else {
-            node.x = this.x;
-            node.y = this.y;
+            this.applyOffsetX(node, this.x, enteringLanes);
+            this.applyOffsetY(node, this.y, enteringLanes);
           }
           break;
         case "5":
           if(node.lane === "left") {
-            node.x = this.x + angled;
-            node.y = this.y - angled;
+            this.applyOffsetX(node, this.x + angled, enteringLanes);
+            this.applyOffsetY(node, this.y - angled, enteringLanes);
           } else if(node.lane === "right") {
-            node.x = this.x - angled;
-            node.y = this.y + angled;
+            this.applyOffsetX(node, this.x - angled, enteringLanes);
+            this.applyOffsetY(node, this.y + angled, enteringLanes);
           } else {
-            node.x = this.x;
-            node.y = this.y;
+            this.applyOffsetX(node, this.x, enteringLanes);
+            this.applyOffsetY(node, this.y, enteringLanes);
           }
           break;
         case "6":
           if(node.lane === "left") {
-            node.x = this.x + straight;
-            node.y = this.y;
+            this.applyOffsetX(node, this.x + straight, enteringLanes);
+            this.applyOffsetY(node, this.y, enteringLanes);
           } else if(node.lane === "right") {
-            node.x = this.x - straight;
-            node.y = this.y;
+            this.applyOffsetX(node, this.x - straight, enteringLanes);
+            this.applyOffsetY(node, this.y, enteringLanes);
           } else {
-            node.x = this.x;
-            node.y = this.y;
+            this.applyOffsetX(node, this.x, enteringLanes);
+            this.applyOffsetY(node, this.y, enteringLanes);
           }
           break;
         case "7":
           if(node.lane === "left") {
-            node.x = this.x + angled;
-            node.y = this.y + angled;
+            this.applyOffsetX(node, this.x + angled, enteringLanes);
+            this.applyOffsetY(node, this.y + angled, enteringLanes);
           } else if(node.lane === "right") {
-            node.x = this.x - angled;
-            node.y = this.y - angled;
+            this.applyOffsetX(node, this.x - angled, enteringLanes);
+            this.applyOffsetY(node, this.y - angled, enteringLanes);
           } else {
-            node.x = this.x;
-            node.y = this.y;
+            this.applyOffsetX(node, this.x, enteringLanes);
+            this.applyOffsetY(node, this.y, enteringLanes);
           }
           break;
         case "8":
           if(node.lane === "left") {
-            node.x = this.x;
-            node.y = this.y + straight;
+            this.applyOffsetX(node, this.x, enteringLanes);
+            this.applyOffsetY(node, this.y + straight, enteringLanes);
           } else if(node.lane === "right") {
-            node.x = this.x;
-            node.y = this.y - straight;
+            this.applyOffsetX(node, this.x, enteringLanes);
+            this.applyOffsetY(node, this.y - straight, enteringLanes);
           } else {
-            node.x = this.x;
-            node.y = this.y;
+            this.applyOffsetX(node, this.x, enteringLanes);
+            this.applyOffsetY(node, this.y, enteringLanes);
           }
           break;
       }
+    }
+  }
+
+  this.applyOffsetX = function(node, value, entering) {
+    if(entering) {
+      node.enterX = value;
+    } else {
+      node.exitX = value;
+    }
+  }
+
+  this.applyOffsetY = function(node, value, entering) {
+    if(entering) {
+      node.enterY = value;
+    } else {
+      node.exitY = value;
     }
   }
 

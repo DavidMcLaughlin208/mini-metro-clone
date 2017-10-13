@@ -4,8 +4,10 @@ var TravelNode = function(id, route, midX, midY){
   this.station = null;
   this.next = null;
   this.last = null;
-  this.x = null;
-  this.y = null;
+  this.enterX = null;
+  this.enterY = null;
+  this.exitX = null;
+  this.exitY = null;
   this.lane = "middle"
   this.midX = midX;
   this.midY = midY;
@@ -18,8 +20,10 @@ var TravelNode = function(id, route, midX, midY){
 
   this.setStation = function(station){
     this.station = station;
-    this.x = station.x;
-    this.y = station.y;
+    this.enterX = station.x;
+    this.enterY = station.y;
+    this.exitX = station.x;
+    this.exitY = station.y;
     // if(!this.midX){this.midX = station.x}
     // if(!this.midY){this.midY = station.y}
     if(station.connections.indexOf(this) === -1){
@@ -56,19 +60,19 @@ var TravelNode = function(id, route, midX, midY){
 
   this.recalculateMidpoint = function(relative) {
     if(!this.last){return}
-    var x = relative ? this.last.x : this.last.station.x;
-    var y = relative ? this.last.y : this.last.station.y;
-    var xDistance = Math.abs(this.x - x);
-    var yDistance = Math.abs(this.y - y);
+    var x = relative ? this.last.exitX : this.last.station.x;
+    var y = relative ? this.last.exitY : this.last.station.y;
+    var xDistance = Math.abs(this.enterX - x);
+    var yDistance = Math.abs(this.enterY - y);
     var modifier = 1;
-    var tempMidX = relative ? this.last.x : this.last.station.x;
-    var tempMidY = relative ? this.last.y : this.last.station.y;
+    var tempMidX = relative ? this.last.exitX : this.last.station.x;
+    var tempMidY = relative ? this.last.exitY : this.last.station.y;
     if(xDistance > yDistance) {
-      if(this.x < x) {
+      if(this.enterX < x) {
         modifier = -1;
       }
     } else {
-      if(this.y < y) {
+      if(this.enterY < y) {
         modifier = -1;
       }
     }
@@ -78,8 +82,8 @@ var TravelNode = function(id, route, midX, midY){
       } else {
         tempMidY += modifier;
       }
-      xDistance = Math.abs(this.x - tempMidX);
-      yDistance = Math.abs(this.y - tempMidY);
+      xDistance = Math.abs(this.enterX - tempMidX);
+      yDistance = Math.abs(this.enterY - tempMidY);
     }
     if(relative) {
       this.midX = tempMidX;

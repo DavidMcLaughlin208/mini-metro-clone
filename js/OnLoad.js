@@ -206,8 +206,8 @@ $(document).ready(function(){
                   for(var i = 0; i < gm.trains.length; i++){
                     var train = gm.trains[i];
                     if(train.route === null){
-                      train.setParams(gm.connectingRoute.head.x,
-                                      gm.connectingRoute.head.y,
+                      train.setParams(gm.connectingRoute.head.exitX,
+                                      gm.connectingRoute.head.exitY,
                                       gm.connectingRoute,
                                       gm.connectingRoute.head);
                       // console.log(train)
