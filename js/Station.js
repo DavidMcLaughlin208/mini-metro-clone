@@ -68,29 +68,33 @@ var Station = function(x, y, shape){
       "8": {entering: [], exiting: []},
     }
     var straight = sizes.station.size/2.5;
-    var angled = sizes.station.size/4;//Math.sqrt(sizes.station.size/2.5)
+    var angled = sizes.station.size/5;//Math.sqrt(sizes.station.size/2.5)
     for(var node of this.connections) {
       var headPort = null;
       var tailPort = null;
       if(node.isHead() && node.next) {
         var headDeltas = this.headDeltas(node);
         headPort = this.getPort(headDeltas.deltaX, headDeltas.deltaY);
-
+        if(!headPort){return}
         this.ports[headPort]["exiting"].push(node);
 
       } else if(node.isTail() && node.last) {
         var tailDeltas = this.tailDeltas(node);
         tailPort = this.getPort(tailDeltas.deltaX, tailDeltas.deltaY);
-
-        this.ports[tailPort]["entering"].push(node)
+        if(!tailPort){return}
+        this.ports[tailPort]["entering"].push(node);
       } else if(node.next) {
         var headDeltas = this.headDeltas(node);
         headPort = this.getPort(headDeltas.deltaX, headDeltas.deltaY);
-        this.ports[headPort]["exiting"].push(node);
+        if(headPort) {
+          this.ports[headPort]["exiting"].push(node);
+        }
 
         var tailDeltas = this.tailDeltas(node);
         tailPort = this.getPort(tailDeltas.deltaX, tailDeltas.deltaY);
-        this.ports[tailPort]["entering"].push(node)
+        if(tailPort) {
+          this.ports[tailPort]["entering"].push(node);
+        }
       }
       if(headPort){console.log("headPort: ", headPort)}
       if(tailPort){console.log("tailPort: ", tailPort)}
@@ -108,39 +112,53 @@ var Station = function(x, y, shape){
     var availableLanes = ["middle", "left", "right"];
     var nodes = this.ports[port];
     if(enteringLanes) {
-      nodes = nodes["entering"];
+      nodes = nodes["entering"]; //this.resolveEnterLanes(nodes["entering"]);
     } else {
       nodes = nodes["exiting"];
     }
+    var middleTaken = false;
     for(var node of nodes) {
-      // if(node.next){node.lane = node.next.lane}
-      if(nodes.length !== 1) {
-        var index = availableLanes.indexOf(node.lane);
-        if(index !== -1) {
-          availableLanes.splice(index, 1)
+      if(enteringLanes) {
+        if(!middleTaken) {
+          node.enterLane = this.reverseLane(node.last.exitLane);
+          if(node.enterLane === "middle") {
+            middleTaken = true;
+            availableLanes = ["left", "right"];
+          }
         } else {
-          node.lane = availableLanes.splice(0, 1)[0]
+          node.enterLane = availableLanes.splice(0, 1)[0]
         }
       } else {
-        node.lane = "middle";
-      }
-      if(node.isHead()) {
-        if(node.lane === "left") {
-          node.lane = "right";
-        } else if(node.lane === "right") {
-          node.lane = "left";
+        if(nodes.length !== 1) {
+          var index = availableLanes.indexOf(node.exitLane);
+          if(index !== -1) {
+            availableLanes.splice(index, 1)
+          } else {
+            node.exitLane = availableLanes.splice(0, 1)[0]
+          }
+        } else {
+          node.exitLane = "middle";
         }
       }
-      // console.log(node.route.color, node.lane)
-      // console.log(node.lane)
-      // console.log(port)
 
+      if(availableLanes[0] === "middle") {
+        nodes[0].exitLane = "middle";
+      }
+
+      for(var node of nodes) {
+        this.applyOffsetByPort(node, straight, angled, enteringLanes);
+      }
+    }
+
+    this.applyOffsetByPort = function(node, straight, angled, enteringLanes) {
+      // console.log(node.route.color, enteringLanes ? node.enterLane : node.exitLane)
+      var lane = enteringLanes ? node.enterLane : node.exitLane;
       switch(port) {
         case "1":
-          if(node.lane === "left") {
+          if(lane === "left") {
             this.applyOffsetX(node, this.x - angled, enteringLanes);
             this.applyOffsetY(node, this.y + angled, enteringLanes);
-          } else if(node.lane === "right") {
+          } else if(lane === "right") {
             this.applyOffsetX(node, this.x + angled, enteringLanes);
             this.applyOffsetY(node, this.y - angled, enteringLanes);
           } else {
@@ -149,10 +167,10 @@ var Station = function(x, y, shape){
           }
           break;
         case "2":
-          if(node.lane === "left") {
+          if(lane === "left") {
             this.applyOffsetX(node, this.x - straight, enteringLanes);
             this.applyOffsetY(node, this.y, enteringLanes);
-          } else if(node.lane === "right") {
+          } else if(lane === "right") {
             this.applyOffsetX(node, this.x + straight, enteringLanes);
             this.applyOffsetY(node, this.y, enteringLanes);
           } else {
@@ -161,10 +179,10 @@ var Station = function(x, y, shape){
           }
           break;
         case "3":
-          if(node.lane === "left") {
+          if(lane === "left") {
             this.applyOffsetX(node, this.x - angled, enteringLanes);
             this.applyOffsetY(node, this.y - angled, enteringLanes);
-          } else if(node.lane === "right") {
+          } else if(lane === "right") {
             this.applyOffsetX(node, this.x + angled, enteringLanes);
             this.applyOffsetY(node, this.y + angled, enteringLanes);
           } else {
@@ -175,10 +193,10 @@ var Station = function(x, y, shape){
           // console.log(node.y - this.y)
           break;
         case "4":
-          if(node.lane === "left") {
+          if(lane === "left") {
             this.applyOffsetX(node, this.x, enteringLanes);
             this.applyOffsetY(node, this.y - straight, enteringLanes);
-          } else if(node.lane === "right") {
+          } else if(lane === "right") {
             this.applyOffsetX(node, this.x, enteringLanes);
             this.applyOffsetY(node, this.y + straight, enteringLanes);
           } else {
@@ -187,10 +205,10 @@ var Station = function(x, y, shape){
           }
           break;
         case "5":
-          if(node.lane === "left") {
+          if(lane === "left") {
             this.applyOffsetX(node, this.x + angled, enteringLanes);
             this.applyOffsetY(node, this.y - angled, enteringLanes);
-          } else if(node.lane === "right") {
+          } else if(lane === "right") {
             this.applyOffsetX(node, this.x - angled, enteringLanes);
             this.applyOffsetY(node, this.y + angled, enteringLanes);
           } else {
@@ -199,10 +217,10 @@ var Station = function(x, y, shape){
           }
           break;
         case "6":
-          if(node.lane === "left") {
+          if(lane === "left") {
             this.applyOffsetX(node, this.x + straight, enteringLanes);
             this.applyOffsetY(node, this.y, enteringLanes);
-          } else if(node.lane === "right") {
+          } else if(lane === "right") {
             this.applyOffsetX(node, this.x - straight, enteringLanes);
             this.applyOffsetY(node, this.y, enteringLanes);
           } else {
@@ -211,10 +229,10 @@ var Station = function(x, y, shape){
           }
           break;
         case "7":
-          if(node.lane === "left") {
+          if(lane === "left") {
             this.applyOffsetX(node, this.x + angled, enteringLanes);
             this.applyOffsetY(node, this.y + angled, enteringLanes);
-          } else if(node.lane === "right") {
+          } else if(lane === "right") {
             this.applyOffsetX(node, this.x - angled, enteringLanes);
             this.applyOffsetY(node, this.y - angled, enteringLanes);
           } else {
@@ -223,10 +241,10 @@ var Station = function(x, y, shape){
           }
           break;
         case "8":
-          if(node.lane === "left") {
+          if(lane === "left") {
             this.applyOffsetX(node, this.x, enteringLanes);
             this.applyOffsetY(node, this.y + straight, enteringLanes);
-          } else if(node.lane === "right") {
+          } else if(lane === "right") {
             this.applyOffsetX(node, this.x, enteringLanes);
             this.applyOffsetY(node, this.y - straight, enteringLanes);
           } else {
@@ -252,6 +270,36 @@ var Station = function(x, y, shape){
     } else {
       node.exitY = value;
     }
+  }
+
+  this.reverseLane = function(lane) {
+    if(lane === "left") {
+      return "right";
+    } else if(lane === "right") {
+      return "left";
+    } else {
+      return "middle";
+    }
+  }
+
+  this.resolveEnterLanes = function(nodes) {
+    var availableLanes = ["middle", "left", "right"];
+    for(var node of nodes) {
+      if(nodes.length !== 1) {
+        var index = availableLanes.indexOf(node.enterLane);
+        if(index !== -1) {
+          availableLanes.splice(index, 1)
+        } else {
+          node.enterLane = availableLanes.splice(0, 1)[0]
+        }
+      } else {
+        node.enterLane = "middle";
+      }
+    }
+    if(availableLanes === ["middle"]) {
+      nodes[0].enterLane = "middle";
+    }
+    return nodes;
   }
 
   this.draw = function(ctx, sizes){

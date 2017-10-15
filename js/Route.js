@@ -40,6 +40,8 @@ var Route = function(color, sizeRatio){
       ctx.stroke();
       ctx.lineTo(node.next.enterX, node.next.enterY);
       ctx.stroke();
+      // ctx.lineTo(node.next.exitX, node.next.exitY);
+      // ctx.stroke();
       ctx.closePath();
 
       this.draw(ctx, node.next, sizes)

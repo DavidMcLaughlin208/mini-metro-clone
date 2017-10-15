@@ -141,6 +141,7 @@ $(document).ready(function(){
     gm.connectingStation = null;
     gm.connectingRoute = null;
     gm.connectingHandle = null;
+    gm.calculateAllInputs();
     // console.log("mouseup")
   })
 
