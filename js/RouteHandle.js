@@ -50,8 +50,8 @@ var RouteHandle = function(route, location, sizeRatio){
     this.setPositionByPort(targetPort.toString(), straight, angled);
   }
 
-  this.draw = function(ctx, sizes) {
-    if(!this.getNode()) {return}
+  this.draw = function(ctx, sizes, connectingHandle) {
+    if(connectingHandle === this || !this.getNode()) {return}
     var handleGirth = sizes.station.size * 0.63;
 
     ctx.strokeStyle = this.getNode().route.color;
@@ -82,15 +82,24 @@ var RouteHandle = function(route, location, sizeRatio){
   this.validatePort = function(port) {
     var initialValue = port;
     var ports = this.getNode().station.ports;
+    var subtract = true;
+    var modifier = 0;
     while(true) {
       var noLanesInPort = ports[port].entering.length === 0 && ports[port].exiting.length === 0;
       if(noLanesInPort && !ports[port].routeHandle) {
         ports[port].routeHandle = this;
         return port;
       } else {
-        port += 1;
-        if(port > 8) {port = 1}
-        if(port === initialValue) {return}
+        if(modifier === 8) {return}
+        if(subtract) {
+          port -= modifier;
+        } else {
+          port += modifier;
+        }
+        subtract = !subtract;
+        modifier += 1
+        if(port > 8) {port -= 8}
+        if(port < 1) {port += 8}
       }
     }
   }

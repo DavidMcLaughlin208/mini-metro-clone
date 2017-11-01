@@ -110,12 +110,8 @@ var GameManager = function(){
     // }
 
     if(this.drawHandles) {
-      for (var property in this.routes) {
-        if (this.routes.hasOwnProperty(property)) {
-          var route = this.routes[property];
-          route.headHandle.draw(this.metro.ctx, this.sizes);
-          route.tailHandle.draw(this.metro.ctx, this.sizes);
-        }
+      for (var handle of this.allRouteHandles) {
+        handle.draw(this.metro.ctx, this.sizes, this.connectingHandle);
       }
     }
 
