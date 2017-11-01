@@ -10,6 +10,17 @@ var Route = function(color, sizeRatio){
     }
   }
 
+  this.getLength = function() {
+    if(!this.head) {return 0}
+    return this.nextLength(this.head, 0);
+  }
+
+  this.nextLength = function(node, length) {
+    length += 1;
+    if(!node.next) {return length}
+    return this.nextLength(node.next, length);
+  }
+
   this.deleteAllNodes = function(){
     var headNode = this.head;
     this.head = null;

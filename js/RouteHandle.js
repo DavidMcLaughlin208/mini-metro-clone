@@ -14,28 +14,29 @@ var RouteHandle = function(route, location, sizeRatio){
     }
   }
 
-  this.draw = function(x, y, rotation, station, ctx, sizes){
-    ctx.lineWidth = sizes.route.lineWidth;
-    this.x = x;
-    this.y = y;
-    ctx.beginPath();
-    ctx.moveTo(station.x, station.y);
-    ctx.lineTo(x, y);
-    ctx.stroke();
-    ctx.closePath();
-
-    ctx.translate(x, y);
-    ctx.rotate(rotation);
-
-    ctx.beginPath();
-    ctx.moveTo(0, sizes.station.size/1.5);
-    ctx.lineTo(0, -sizes.station.size/1.5);
-    ctx.stroke();
-    ctx.closePath();
-
-    ctx.rotate(-rotation);
-    ctx.translate(-x, -y);
-  }
+  // this.draw = function(x, y, rotation, station, ctx, sizes){
+  //   if(this.route.getLength() <= 1 && this.location === "tail") {return}
+  //   ctx.lineWidth = sizes.route.lineWidth;
+  //   this.x = x;
+  //   this.y = y;
+  //   ctx.beginPath();
+  //   ctx.moveTo(station.x, station.y);
+  //   ctx.lineTo(x, y);
+  //   ctx.stroke();
+  //   ctx.closePath();
+  //
+  //   ctx.translate(x, y);
+  //   ctx.rotate(rotation);
+  //
+  //   ctx.beginPath();
+  //   ctx.moveTo(0, sizes.station.size/1.5);
+  //   ctx.lineTo(0, -sizes.station.size/1.5);
+  //   ctx.stroke();
+  //   ctx.closePath();
+  //
+  //   ctx.rotate(-rotation);
+  //   ctx.translate(-x, -y);
+  // }
 
   this.calculatePort = function(sizes) {
     if(!this.getNode()) {return}
@@ -52,6 +53,7 @@ var RouteHandle = function(route, location, sizeRatio){
 
   this.draw = function(ctx, sizes, connectingHandle) {
     if(connectingHandle === this || !this.getNode()) {return}
+    if(this.route.getLength() <= 1) {return}
     var handleGirth = sizes.station.size * 0.63;
 
     ctx.strokeStyle = this.getNode().route.color;
