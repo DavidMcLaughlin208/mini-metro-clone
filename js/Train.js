@@ -59,8 +59,13 @@ var Train = function(){
         targetX = this.target.midX;
         targetY = this.target.midY;
       } else {
-        targetX = this.target.next.midX;
-        targetY = this.target.next.midY;
+        if(this.target.next) {
+          targetX = this.target.next.midX;
+          targetY = this.target.next.midY;
+        } else {
+          targetX = this.target.previousTailMidX;
+          targetY = this.target.previousTailMidY;
+        }
       }
     }
     var remainingDistanceX = this.x - targetX;

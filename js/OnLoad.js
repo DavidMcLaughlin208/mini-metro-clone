@@ -264,6 +264,8 @@ $(document).ready(function(){
             var route = gm.connectingRoute;
             var connections = gm.hoverStation.connections;
             connections.splice(connections.indexOf(tail), 1)
+            tail.last.previousTailMidX = tail.midX;
+            tail.last.previousTailMidY = tail.midY;
             tail.last.next = null;
             tail.last = null;
             var newTail = route.tail(route.head);

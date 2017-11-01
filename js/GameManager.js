@@ -120,17 +120,6 @@ var GameManager = function(){
       this.drawTempRoute(this.metro.ctx, this.sizes)
     }
 
-    // Draw stations and passengers at stations
-    if(this.drawStations) {
-      for(var i in this.stations){
-        this.stations[i].draw(this.metro.ctx, this.sizes);
-        var passengers = this.stations[i].passengers;
-        for(var j in passengers) {
-          passengers[j].draw(this.metro.ctx, j, this.sizes);
-        }
-      }
-    }
-
     // Draw trains and passengers on trains
     if(this.drawTrains) {
       for(var i in this.trains){
@@ -142,6 +131,16 @@ var GameManager = function(){
       }
     }
 
+    // Draw stations and passengers at stations
+    if(this.drawStations) {
+      for(var i in this.stations){
+        this.stations[i].draw(this.metro.ctx, this.sizes);
+        var passengers = this.stations[i].passengers;
+        for(var j in passengers) {
+          passengers[j].draw(this.metro.ctx, j, this.sizes);
+        }
+      }
+    }
 
     this.ui.draw(this.metro.ctx, this.passengersDelivered);
 
@@ -333,14 +332,7 @@ var GameManager = function(){
         station.x *= newRatio;
         station.y *= newRatio;
         for(var node of station.connections) {
-          node.midX *= newRatio;
-          node.midY *= newRatio;
-          node.absoluteMidX *= newRatio;
-          node.absoluteMidY *= newRatio;
-          node.enterX *= newRatio;
-          node.enterY *= newRatio;
-          node.exitX *= newRatio;
-          node.exitY *= newRatio;
+          this.scaleNode(node, newRatio);
         }
         for(var passenger of station.passengers) {
           passenger.x *= newRatio;
@@ -350,6 +342,12 @@ var GameManager = function(){
       for(var train of this.trains) {
         train.x *= newRatio;
         train.y *= newRatio;
+        if(train.target && !train.target.next && !train.target.last) {
+          this.scaleNode(train.target, newRatio);
+        }
+        if(train.travelNode && !train.travelNode.next && !train.travelNode.last) {
+          this.scaleNode(train.travelNode, newRatio);
+        }
         for(var passenger of train.passengers) {
           passenger.x *= newRatio;
           passenger.y *= newRatio;
@@ -374,6 +372,17 @@ var GameManager = function(){
         obj[key] *= newRatio;
       }
     }
+  }
+
+  this.scaleNode = function(node, newRatio) {
+    node.midX *= newRatio;
+    node.midY *= newRatio;
+    node.absoluteMidX *= newRatio;
+    node.absoluteMidY *= newRatio;
+    node.enterX *= newRatio;
+    node.enterY *= newRatio;
+    node.exitX *= newRatio;
+    node.exitY *= newRatio;
   }
 
   this.recalculateNodeMidpoints = function() {
