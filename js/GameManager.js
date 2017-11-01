@@ -93,18 +93,28 @@ var GameManager = function(){
     }
 
     // Draw route handles
+    // if(this.drawHandles) {
+    //   for (var property in this.routes) {
+    //     if (this.routes.hasOwnProperty(property)) {
+    //       var route = this.routes[property];
+    //       route.drawHandle(route.head, route.headHandle,
+    //                        this.metro.ctx, this,
+    //                        route.headHandle !== this.connectingHandle,
+    //                        this.sizes);
+    //       route.drawHandle(route.tail(route.head), route.tailHandle,
+    //                        this.metro.ctx, this,
+    //                        route.tailHandle !== this.connectingHandle,
+    //                        this.sizes);
+    //     }
+    //   }
+    // }
+
     if(this.drawHandles) {
       for (var property in this.routes) {
         if (this.routes.hasOwnProperty(property)) {
           var route = this.routes[property];
-          route.drawHandle(route.head, route.headHandle,
-                           this.metro.ctx, this,
-                           route.headHandle !== this.connectingHandle,
-                           this.sizes);
-          route.drawHandle(route.tail(route.head), route.tailHandle,
-                           this.metro.ctx, this,
-                           route.tailHandle !== this.connectingHandle,
-                           this.sizes);
+          route.headHandle.draw(this.metro.ctx, this.sizes);
+          route.tailHandle.draw(this.metro.ctx, this.sizes);
         }
       }
     }
@@ -349,6 +359,10 @@ var GameManager = function(){
           passenger.y *= newRatio;
         }
       }
+      for(var handle of this.allRouteHandles) {
+        handle.x *= newRatio;
+        handle.y *= newRatio;
+      }
       this.scaleAllInObject(this.sizes, newRatio);
       this.sufficientDistance *= newRatio;
       this.clickBox *= newRatio;
@@ -385,6 +399,10 @@ var GameManager = function(){
   this.calculateAllInputs = function() {
     for(var station of this.stations) {
       station.calculateInputs(this.sizes);
+    }
+
+    for(var handle of this.allRouteHandles) {
+      handle.calculatePort(this.sizes);
     }
   }
 

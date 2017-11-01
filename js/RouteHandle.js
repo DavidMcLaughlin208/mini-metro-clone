@@ -4,6 +4,7 @@ var RouteHandle = function(route, location, sizeRatio){
   this.route = route;
   this.location = location;
   this.state = "node";
+  this.rotation = 0;
 
   this.getNode = function(){
     if(this.location === "head"){
@@ -34,5 +35,110 @@ var RouteHandle = function(route, location, sizeRatio){
 
     ctx.rotate(-rotation);
     ctx.translate(-x, -y);
+  }
+
+  this.calculatePort = function(sizes) {
+    if(!this.getNode()) {return}
+    var port = this.location === "head" ? this.getNode().exitPort : this.getNode().enterPort;
+    if(!port) {return}
+    var straight = sizes.station.size * 1.7;
+    var angled = Math.sqrt(Math.pow(straight, 2)/2);
+
+    var oppositePort = this.getOppositePort(parseInt(port));
+    var targetPort = this.validatePort(oppositePort);
+    if(!targetPort) {return}
+    this.setPositionByPort(targetPort.toString(), straight, angled);
+  }
+
+  this.draw = function(ctx, sizes) {
+    if(!this.getNode()) {return}
+    var handleGirth = sizes.station.size * 0.63;
+
+    ctx.strokeStyle = this.getNode().route.color;
+    ctx.lineWidth = sizes.route.lineWidth;
+
+    ctx.beginPath();
+    ctx.moveTo(this.getNode().station.x, this.getNode().station.y);
+    ctx.lineTo(this.x, this.y);
+    ctx.stroke();
+
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.rotation);
+    ctx.moveTo(-handleGirth, 0);
+    ctx.lineTo(handleGirth, 0)
+    ctx.stroke();
+    ctx.rotate(-this.rotation);
+    ctx.translate(-this.x, -this.y);
+  }
+
+  this.getOppositePort = function(port) {
+    var oppositePort = port + 4;
+    if(oppositePort > 8) {
+      oppositePort -= 8;
+    }
+    return oppositePort;
+  }
+
+  this.validatePort = function(port) {
+    var initialValue = port;
+    var ports = this.getNode().station.ports;
+    while(true) {
+      var noLanesInPort = ports[port].entering.length === 0 && ports[port].exiting.length === 0;
+      if(noLanesInPort && !ports[port].routeHandle) {
+        ports[port].routeHandle = this;
+        return port;
+      } else {
+        port += 1;
+        if(port > 8) {port = 1}
+        if(port === initialValue) {return}
+      }
+    }
+  }
+
+  this.setPositionByPort = function(port, straight, angled) {
+    var stationX = this.getNode().station.x;
+    var stationY = this.getNode().station.y;
+    switch(port) {
+      case "1":
+        this.x = stationX - angled;
+        this.y = stationY - angled;
+        this.rotation = 315 * Math.PI/180;
+        break;
+      case "2":
+        this.x = stationX;
+        this.y = stationY - straight;
+        this.rotation = 0 * Math.PI/180;
+        break;
+      case "3":
+        this.x = stationX + angled;
+        this.y = stationY - angled;
+        this.rotation = 45 * Math.PI/180;
+        break;
+      case "4":
+        this.x = stationX + straight;
+        this.y = stationY;
+        this.rotation = 90 * Math.PI/180;
+        break;
+      case "5":
+        this.x = stationX + angled;
+        this.y = stationY + angled;
+        this.rotation = 135 * Math.PI/180;
+        break;
+      case "6":
+        this.x = stationX;
+        this.y = stationY + straight;
+        this.rotation = 180 * Math.PI/180;
+        break;
+      case "7":
+        this.x = stationX - angled;
+        this.y = stationY + angled;
+        this.rotation = 225 * Math.PI/180;
+        break;
+      case "8":
+        this.x = stationX - straight;
+        this.y = stationY;
+        this.rotation = 270 * Math.PI/180;
+        break;
+    }
   }
 }

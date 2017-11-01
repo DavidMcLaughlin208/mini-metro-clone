@@ -6,14 +6,14 @@ var Station = function(x, y, shape){
   this.passengers = [];
 
   this.ports = {
-    "1": {entering: [], exiting: []},
-    "2": {entering: [], exiting: []},
-    "3": {entering: [], exiting: []},
-    "4": {entering: [], exiting: []},
-    "5": {entering: [], exiting: []},
-    "6": {entering: [], exiting: []},
-    "7": {entering: [], exiting: []},
-    "8": {entering: [], exiting: []},
+    "1": {entering: [], exiting: [], routeHandle: null},
+    "2": {entering: [], exiting: [], routeHandle: null},
+    "3": {entering: [], exiting: [], routeHandle: null},
+    "4": {entering: [], exiting: [], routeHandle: null},
+    "5": {entering: [], exiting: [], routeHandle: null},
+    "6": {entering: [], exiting: [], routeHandle: null},
+    "7": {entering: [], exiting: [], routeHandle: null},
+    "8": {entering: [], exiting: [], routeHandle: null},
   }
 
 
@@ -58,17 +58,17 @@ var Station = function(x, y, shape){
 
   this.calculateInputs = function(sizes) {
     this.ports = {
-      "1": {entering: [], exiting: []},
-      "2": {entering: [], exiting: []},
-      "3": {entering: [], exiting: []},
-      "4": {entering: [], exiting: []},
-      "5": {entering: [], exiting: []},
-      "6": {entering: [], exiting: []},
-      "7": {entering: [], exiting: []},
-      "8": {entering: [], exiting: []},
+      "1": {entering: [], exiting: [], routeHandle: null},
+      "2": {entering: [], exiting: [], routeHandle: null},
+      "3": {entering: [], exiting: [], routeHandle: null},
+      "4": {entering: [], exiting: [], routeHandle: null},
+      "5": {entering: [], exiting: [], routeHandle: null},
+      "6": {entering: [], exiting: [], routeHandle: null},
+      "7": {entering: [], exiting: [], routeHandle: null},
+      "8": {entering: [], exiting: [], routeHandle: null},
     }
     var straight = sizes.station.size/2.5;
-    var angled = sizes.station.size/5;//Math.sqrt(sizes.station.size/2.5)
+    var angled = Math.sqrt(Math.pow(straight, 2)/2); //sizes.station.size/5;//Math.sqrt(sizes.station.size/2.5)
     for(var node of this.connections) {
       var headPort = null;
       var tailPort = null;
@@ -76,12 +76,14 @@ var Station = function(x, y, shape){
         var headDeltas = this.headDeltas(node);
         headPort = this.getPort(headDeltas.deltaX, headDeltas.deltaY);
         if(!headPort){return}
+        node.exitPort = headPort;
         this.ports[headPort]["exiting"].push(node);
 
       } else if(node.isTail() && node.last) {
         var tailDeltas = this.tailDeltas(node);
         tailPort = this.getPort(tailDeltas.deltaX, tailDeltas.deltaY);
         if(!tailPort){return}
+        node.enterPort = tailPort;
         this.ports[tailPort]["entering"].push(node);
       } else if(node.next) {
         var headDeltas = this.headDeltas(node);
@@ -112,22 +114,22 @@ var Station = function(x, y, shape){
     var availableLanes = ["middle", "left", "right"];
     var nodes = this.ports[port];
     if(enteringLanes) {
-      nodes = nodes["entering"]; //this.resolveEnterLanes(nodes["entering"]);
+      nodes = this.resolveEnterLanes(nodes["entering"]); //nodes["entering"]; //this.resolveEnterLanes(nodes["entering"]); //
     } else {
       nodes = nodes["exiting"];
     }
     var middleTaken = false;
     for(var node of nodes) {
       if(enteringLanes) {
-        if(!middleTaken) {
+        // if(!middleTaken) {
           node.enterLane = this.reverseLane(node.last.exitLane);
-          if(node.enterLane === "middle") {
-            middleTaken = true;
-            availableLanes = ["left", "right"];
-          }
-        } else {
-          node.enterLane = availableLanes.splice(0, 1)[0]
-        }
+          // if(node.enterLane === "middle") {
+          //   middleTaken = true;
+          //   availableLanes = ["left", "right"];
+          // }
+        // } else {
+        //   node.enterLane = availableLanes.splice(0, 1)[0]
+        // }
       } else {
         if(nodes.length !== 1) {
           var index = availableLanes.indexOf(node.exitLane);
@@ -145,7 +147,20 @@ var Station = function(x, y, shape){
         nodes[0].exitLane = "middle";
       }
 
+      availableLanes = ["middle", "left", "right"];
+
       for(var node of nodes) {
+        var lane = enteringLanes ? node.enterLane : node.exitLane;
+        var index = availableLanes.indexOf(lane);
+        if(index !== -1) {
+          availableLanes.splice(index, 1)
+        } else {
+          if(enteringLanes) {
+            node.enterLane = availableLanes.splice(0, 1)[0]
+          } else {
+            node.exitLane = availableLanes.splice(0, 1)[0]
+          }
+        }
         this.applyOffsetByPort(node, straight, angled, enteringLanes);
       }
     }
@@ -153,6 +168,12 @@ var Station = function(x, y, shape){
     this.applyOffsetByPort = function(node, straight, angled, enteringLanes) {
       // console.log(node.route.color, enteringLanes ? node.enterLane : node.exitLane)
       var lane = enteringLanes ? node.enterLane : node.exitLane;
+      // console.log(port)
+      // console.log("midX: ", node.midX);
+      // console.log("midY: ", node.midY);
+      // console.log("absoluteMidX: ", node.absoluteMidX);
+      // console.log("absoluteMidY: ", node.absoluteMidY);
+      // console.log()
       switch(port) {
         case "1":
           if(lane === "left") {
@@ -239,6 +260,8 @@ var Station = function(x, y, shape){
             this.applyOffsetX(node, this.x, enteringLanes);
             this.applyOffsetY(node, this.y, enteringLanes);
           }
+          console.log("X: ", node.enterX);
+          console.log("Y: ", node.enterY);
           break;
         case "8":
           if(lane === "left") {
