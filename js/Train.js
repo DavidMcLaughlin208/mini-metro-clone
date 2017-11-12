@@ -143,6 +143,7 @@ var Train = function(){
         }
         var stationPassengers = this.target.station.passengers;
         for(var i = stationPassengers.length - 1; i >= 0; i--) {
+          if(this.passengers.length >= 8) {break}
           var passenger = stationPassengers[i];
           if(passenger.itinerary[0] === this.route) {
             // console.log("embarking")

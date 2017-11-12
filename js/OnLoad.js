@@ -8,8 +8,8 @@ $(document).ready(function(){
   gm.metro.ctx.translate(gm.metro.width/2, gm.metro.height/2);
 
   var checkFinishedLoop = setInterval(gameLoop.bind(gm), 2);
-  var passengerLoop = setInterval(gm.spawnPasenger.bind(gm), 4000);
-  var stationLoop = setInterval(gm.spawnStation.bind(gm), 20000);
+  var passengerLoop = setInterval(gm.spawnPasenger.bind(gm), 400);
+  // var stationLoop = setInterval(gm.spawnStation.bind(gm), 20000);
   createStations(gm);
 
   $("#pause").on("click", function(e){

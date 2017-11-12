@@ -12,7 +12,7 @@ var GameManager = function(){
   this.scaledHeight = this.metro.mycanvas.height;
   this.sizes = {
     station: {size: 47, lineWidth: 8},
-    passenger: {size: 12},
+    passenger: {size: 14},
     train: {width: 80, height: 45, speed: 1},
     route: {lineWidth: 18}
   }
@@ -40,9 +40,8 @@ var GameManager = function(){
   ];
 
   this.activeShapes = [
-    "circle",
     "square",
-    "triangle"
+    "teardrop"
   ]
 
   this.clickBox = 40;
@@ -263,7 +262,7 @@ var GameManager = function(){
     while(shape === station.shape){
       shape = this.activeShapes[Math.floor(Math.random() * this.activeShapes.length)];
     }
-    station.passengers.unshift(new Passenger(station, shape, this.sizeRatio));
+    station.passengers.unshift(new Passenger(station, shape));
   }
 
   this.spawnStation = function(){
@@ -291,7 +290,7 @@ var GameManager = function(){
       }
     }
     var shape = this.activeShapes[Math.floor(Math.random() * this.activeShapes.length)];
-    this.stations.push(new Station(x, y, shape, this.sizeRatio))
+    this.stations.push(new Station(x, y, shape))
   }
 
   this.calcuateScale = function() {

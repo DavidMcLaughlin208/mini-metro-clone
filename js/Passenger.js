@@ -1,4 +1,4 @@
-var Passenger = function(station, shape, sizeRatio){
+var Passenger = function(station, shape){
   this.station = station;
   this.shape = shape;
   this.train = null;
@@ -16,34 +16,32 @@ var Passenger = function(station, shape, sizeRatio){
       this.y = this.calcStationY(index, sizes);
       break;
     case "train":
-      ctx.translate(this.train.x + sizes.train.width/2, this.train.y);
-      ctx.rotate(this.train.rotation*Math.PI/180);
+      ctx.translate(this.train.x, this.train.y);
+      ctx.rotate(this.train.rotation);
       this.x = this.calcTrainX(ctx, index, sizes);
       this.y = this.calcTrainY(ctx, index, sizes);
       break
     default:
       break;
     }
+    ctx.translate(this.x, this.y);
+
+    if(this.state === "train") {ctx.rotate(Math.PI/2)}
 
     switch(this.shape) {
       case "square":
-        ctx.translate(this.x, this.y);
         ctx.beginPath();
         ctx.rect(-size/2, -size/2, size, size);
         ctx.fill();
         ctx.closePath();
-        ctx.translate(-this.x, -this.y);
         break;
       case "circle":
-        ctx.translate(this.x, this.y);
         ctx.beginPath();
         ctx.arc(0, 0, size/1.7, 0, 2 * Math.PI, false);
         ctx.fill();
         ctx.closePath();
-        ctx.translate(-this.x, -this.y);
         break;
       case "triangle":
-        ctx.translate(this.x, this.y);
         ctx.beginPath();
         ctx.moveTo(0, -size/2);
         ctx.lineTo(size/1.7, size/2);
@@ -52,29 +50,23 @@ var Passenger = function(station, shape, sizeRatio){
         ctx.lineTo(size/1.7, size/2);
         ctx.fill();
         ctx.closePath();
-        ctx.translate(-this.x, -this.y);
         break;
       case "diamond":
-        ctx.translate(this.x, this.y);
         ctx.rotate(45*Math.PI/180);
         ctx.beginPath();
         ctx.rect(-size/2, -size/2, size, size);
         ctx.fill();
         ctx.closePath();
         ctx.rotate(-45*Math.PI/180);
-        ctx.translate(-this.x, -this.y);
         break;
       case "plus":
-        ctx.translate(this.x, this.y);
         ctx.beginPath()
         ctx.rect(-size/5, -size/2, size/2.5, size);
         ctx.rect(-size/2, -size/5, size, size/2.5);
         ctx.fill();
         ctx.closePath();
-        ctx.translate(-this.x, -this.y);
         break;
       case "teardrop":
-        ctx.translate(this.x, this.y);
         ctx.rotate(Math.PI);
         ctx.beginPath();
         ctx.arc(0, 0, size/1.7, Math.PI, false);
@@ -83,13 +75,14 @@ var Passenger = function(station, shape, sizeRatio){
         ctx.lineTo(size/1.7, 0);
         ctx.fill();
         ctx.rotate(-Math.PI);
-        ctx.translate(-this.x, -this.y);
         break;
       default:
     }
+    if(this.state === "train") {ctx.rotate(-Math.PI/2)}
+    ctx.translate(-this.x, -this.y);
     if(this.state === "train") {
-      ctx.rotate(-this.train.rotation*Math.PI/180);
-      ctx.translate(-this.train.x - sizes.train.width/2, -this.train.y);
+      ctx.rotate(-this.train.rotation);
+      ctx.translate(-this.train.x, -this.train.y);
     }
   }
 
@@ -204,12 +197,12 @@ var Passenger = function(station, shape, sizeRatio){
   }
   this.calcTrainY = function(ctx, index, sizes){
     if(index % 2 === 0){
-      return sizes.train.height/4 + sizes.train.height/16;
+      return sizes.train.height/4;
     } else {
-      return -sizes.train.height/4 - sizes.train.height/16;
+      return -sizes.train.height/4;
     }
   }
   this.calcTrainX = function(ctx, index, sizes){
-    return -(Math.ceil(index/2) * sizes.train.width/4 + sizes.train.width/5);
+    return -(Math.floor(index/2) * sizes.train.width/4 + sizes.train.width/10) + sizes.train.width/2.2;
   }
 }
